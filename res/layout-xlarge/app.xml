@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+<!-- $Id: app.xml 115 2014-02-20 05:44:09Z xgh $ -->
+
+   <GridView
+        android:id="@+id/gridView_app"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:horizontalSpacing="10dp"
+        android:listSelector="#00000000"
+        android:numColumns="5"
+        android:layout_gravity="center"
+        android:nextFocusDown="@+id/radio2"
+        android:verticalSpacing="20dp" 
+         android:layout_centerInParent="true"
+        >
+    </GridView>
+
+    
+    <RelativeLayout
+        android:id="@+id/app_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progressBar1"
+            android:layout_centerHorizontal="true"
+            android:text="@string/text_trying"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </RelativeLayout>
+
+    
+
+</RelativeLayout>

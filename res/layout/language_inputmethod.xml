@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beijingxuanze"
+     >
+     
+<!-- $Id: language.xml 4 2013-12-12 04:19:52Z kf $ -->
+
+    
+    <!--  <ImageView 
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:layout_alignParentRight="true"
+         android:layout_marginTop="@dimen/top_image_margin_top"
+         android:layout_marginRight="@dimen/top_image_margin_right"
+         android:src="@drawable/title"
+         /> -->
+
+<!-- 中间内容 -->
+<RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:layout_marginTop="150dp"
+    >
+    
+    <!-- 输入法设置 -->
+    <RelativeLayout 
+        android:layout_width="500dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="100dp"
+        android:background="@drawable/language_bar_bg"
+        
+        >
+      <!--   <TextView 
+            android:id="@+id/language_title_inputmethod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:textColor="#fff"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="60dp"
+            android:text="@string/language_title_inputmethod"
+            /> -->
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+           		 android:layout_marginLeft="50dp"
+           		 android:src="@drawable/language_title_im"
+                />
+        
+        
+        <ListView
+        android:id="@+id/inputmethod"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:drawSelectorOnTop="true"
+        android:descendantFocusability="blocksDescendants"
+        android:listSelector="@drawable/selector"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        
+        android:divider="@drawable/language_divider_bg" 
+        android:background="@drawable/language_content_bg" 
+        
+        />
+        
+        
+    </RelativeLayout>
+    
+    
+    <!-- 语言设置 -->
+    <RelativeLayout 
+        android:layout_width="500dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/language_bar_bg"
+        android:layout_alignParentRight="true"
+        >
+        
+        
+<!--         
+         <TextView 
+            android:id="@+id/language_title_inputmethod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:textColor="#fff"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="60dp"
+            android:text="@string/language_title_language"
+            /> -->
+        
+        
+            <ImageView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+           		 android:layout_marginLeft="50dp"
+           		 android:src="@drawable/language_title_lang"
+                />
+         
+         
+         
+        <ListView
+        android:id="@+id/languages"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/language_divider_bg"
+        android:drawSelectorOnTop="true"
+        android:descendantFocusability="blocksDescendants"
+        android:listSelector="@drawable/selector"
+        android:background="@drawable/language_content_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:footerDividersEnabled="true"
+        
+        />
+        
+    </RelativeLayout>
+    
+    
+    
+    
+</RelativeLayout>
+
+    
+    
+    
+        
+</RelativeLayout>

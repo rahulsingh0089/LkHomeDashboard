@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="bottom"
+    android:orientation="horizontal" >
+    
+<!-- $Id: date_view.xml 4 2013-12-12 04:19:52Z kf $ -->
+
+    
+	<TextView 
+	    android:id="@+id/Date"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textSize="25sp"
+	     android:textColor="@android:color/white"
+	    android:layout_alignParentBottom="true"
+	  
+	    />
+	 <TextView 
+        android:id="@+id/Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+          android:layout_marginLeft="18dp"
+        android:textSize="27sp"
+        android:textColor="@android:color/white"
+         android:layout_alignParentBottom="true"
+          android:layout_alignTop="@id/Date"
+	    android:layout_toRightOf="@id/Date"
+        />
+</RelativeLayout>

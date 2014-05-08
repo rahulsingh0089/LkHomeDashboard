@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beijingxuanze"
+    android:orientation="vertical"
+    android:weightSum="5" >
+
+
+
+    <RelativeLayout
+        android:layout_width="1100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="90dp"
+        android:layout_marginTop="70dp" >
+
+        <TextView
+            android:id="@+id/title_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="50dp"
+            android:textColor="@android:color/white"
+            android:textSize="25sp" />
+        
+		<ImageView
+            android:id="@+id/WifiAp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="100dp"
+            android:background="@drawable/wifiap" 
+            android:visibility="gone"
+            />
+        <ImageView
+            android:id="@+id/WifiFlag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/ic_launcher" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/home_backup_ll"
+        android:layout_width="fill_parent"
+        android:layout_height="405dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="120dp" >
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_movie"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/movie_arrow_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/notice_left"
+                android:visibility="invisible" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_move"
+                android:layout_width="1100dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp" />
+
+            <ImageView
+                android:id="@+id/movie_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/notice_right"
+                android:visibility="gone" />
+
+            <lenkeng.com.welcome.view.MyScollView
+                android:id="@+id/moveScroll"
+                android:layout_width="30dp"
+                android:layout_height="350dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:fadingEdge="vertical"
+                android:focusable="false"
+                android:scrollbars="none" >
+            </lenkeng.com.welcome.view.MyScollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_app"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/app_arrow_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/notice_left"
+                android:visibility="invisible" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_app"
+                android:layout_width="1100dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp" />
+
+            <ImageView
+                android:id="@+id/app_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/notice_right"
+                android:visibility="gone" />
+
+            <lenkeng.com.welcome.view.MyScollView
+                android:id="@+id/appScroll"
+                android:layout_width="30dp"
+                android:layout_height="350dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:fadingEdge="vertical"
+                android:focusable="false"
+                android:scrollbars="none" >
+            </lenkeng.com.welcome.view.MyScollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_game"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/game_arrow_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/notice_left"
+                android:visibility="invisible" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_game"
+                android:layout_width="1100dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp" />
+
+            <ImageView
+                android:id="@+id/game_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/notice_right"
+                android:visibility="gone" />
+
+            <lenkeng.com.welcome.view.MyScollView
+                android:id="@+id/gameScroll"
+                android:layout_width="30dp"
+                android:layout_height="350dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:fadingEdge="vertical"
+                android:focusable="false"
+                android:scrollbars="none" >
+            </lenkeng.com.welcome.view.MyScollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_scan"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/scan_arrow_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/notice_left"
+                android:visibility="invisible" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_scan"
+                android:layout_width="1100dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp" />
+
+            <ImageView
+                android:id="@+id/scan_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/notice_right"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_user"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/user_arrow_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/notice_left"
+                android:visibility="invisible" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_user"
+                android:layout_width="1100dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp" />
+
+            <ImageView
+                android:id="@+id/user_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/notice_right"
+                android:visibility="gone" />
+
+            <lenkeng.com.welcome.view.MyScollView
+                android:id="@+id/userScroll"
+                android:layout_width="30dp"
+                android:layout_height="350dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:fadingEdge="vertical"
+                android:focusable="false"
+                android:scrollbars="none" >
+            </lenkeng.com.welcome.view.MyScollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_setting"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/setting_arrow_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/notice_left"
+                android:visibility="invisible" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_settting"
+                android:layout_width="1100dp"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp" />
+
+            <ImageView
+                android:id="@+id/setting_arrow_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/notice_right"
+                android:visibility="gone" />
+
+            <lenkeng.com.welcome.view.MyScollView
+                android:id="@+id/settingScroll"
+                android:layout_width="30dp"
+                android:layout_height="350dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:fadingEdge="vertical"
+                android:focusable="false"
+                android:scrollbars="none" >
+            </lenkeng.com.welcome.view.MyScollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/home_backup_ll_recommend"
+            android:layout_width="1250dp"
+            android:layout_height="405dp"
+            android:gravity="center_horizontal"
+            android:layout_marginLeft="10dp"
+          >
+
+            <ImageButton
+                android:id="@+id/Recommend_one"
+                android:layout_width="447dp"
+                android:layout_height="405dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/re01"
+                android:nextFocusDown="@+id/home_backup_bt_recommend" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <ImageButton
+                        android:id="@+id/Recommend_two"
+                        android:layout_width="210dp"
+                        android:layout_height="200dp"
+                        android:background="@drawable/re02" />
+
+                    <ImageButton
+                        android:id="@+id/Recommend_three"
+                        android:layout_width="425dp"
+                        android:layout_height="200dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/re03" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal" >
+
+                    <ImageButton
+                        android:id="@+id/Recommend_four"
+                        android:layout_width="210dp"
+                        android:layout_height="200dp"
+                        android:background="@drawable/re04"
+                        android:nextFocusDown="@+id/home_backup_bt_recommend" />
+
+                    <ImageButton
+                        android:id="@+id/Recommend_five"
+                        android:layout_width="210dp"
+                        android:layout_height="200dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/re05"
+                        android:nextFocusDown="@+id/home_backup_bt_recommend" />
+
+                    <ImageButton
+                        android:id="@+id/Recommend_six"
+                        android:layout_width="210dp"
+                        android:layout_height="200dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/re06"
+                        android:nextFocusDown="@+id/home_backup_bt_recommend" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/home_buttom_button"
+        android:layout_width="900dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="550dp" >
+
+        <ImageView
+            android:id="@+id/move_frame"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/underline"
+            android:focusable="false" />
+
+        <Button
+            android:id="@+id/home_backup_bt_recommend"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/rec_"
+            android:nextFocusDown="@id/home_backup_bt_recommend"
+            android:nextFocusLeft="@id/home_backup_bt_recommend"
+            android:nextFocusRight="@id/home_backup_bt_movie" />
+
+        <Button
+            android:id="@+id/home_backup_bt_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="120dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/movie_"
+            android:nextFocusDown="@id/home_backup_bt_movie"
+            android:nextFocusLeft="@id/home_backup_bt_recommend"
+            android:nextFocusRight="@id/home_backup_bt_application"
+            android:nextFocusUp="@id/vp_move" />
+
+        <Button
+            android:id="@+id/home_backup_bt_application"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="240dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/app_"
+            android:nextFocusDown="@id/home_backup_bt_application"
+            android:nextFocusLeft="@id/home_backup_bt_movie"
+            android:nextFocusRight="@id/home_backup_bt_game"
+            android:nextFocusUp="@id/vp_app" />
+
+        <Button
+            android:id="@+id/home_backup_bt_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="360dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/game_"
+            android:nextFocusDown="@id/home_backup_bt_game"
+            android:nextFocusLeft="@id/home_backup_bt_application"
+            android:nextFocusRight="@id/home_backup_bt_live"
+            android:nextFocusUp="@id/vp_game" />
+
+        <Button
+            android:id="@+id/home_backup_bt_live"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="480dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/user_"
+            android:nextFocusDown="@id/home_backup_bt_live"
+            android:nextFocusLeft="@id/home_backup_bt_game"
+            android:nextFocusRight="@id/home_backup_bt_setting"
+            android:nextFocusUp="@id/vp_user" />
+
+        <Button
+            android:id="@+id/home_backup_bt_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="600dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/setting_"
+            android:nextFocusDown="@id/home_backup_bt_setting"
+            android:nextFocusLeft="@id/home_backup_bt_live"
+            android:nextFocusRight="@id/home_btMsg"
+            android:nextFocusUp="@id/vp_settting" />
+
+        <RelativeLayout
+            android:id="@+id/rl_msg_back"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="720dp"
+            android:layout_marginTop="35dp" >
+
+            <Button
+                android:id="@id/home_btMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="7dp"
+                android:background="@drawable/new_1"
+                android:gravity="center"
+                android:nextFocusDown="@id/home_btMsg"
+                android:onClick="gotoMessage" />
+
+            <TextView
+                android:id="@+id/msgNumber"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignRight="@+id/home_btMsg"
+                android:layout_alignTop="@+id/home_btMsg"
+                android:gravity="center"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/frame_move"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="95dp"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/temp_frame"
+        android:visibility="invisible" />
+
+</RelativeLayout>

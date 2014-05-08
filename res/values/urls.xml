@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+   <!--  <string name="app_store_img_rec">http://162.211.181.66:8080/AppMarketServer/android/getBanners.do</string>
+    <string name="app_store_game">http://162.211.181.66:8080/AppMarketServer/android/getCategory.do?category=2</string>
+    <string name="app_store_app">http://162.211.181.66:8080/AppMarketServer/android/getCategory.do?category=2</string>
+    <string name="app_store_media">http://162.211.181.66:8080/AppMarketServer/android/getCategory.do?category=4</string>
+    <string name="app_store_search">http://162.211.181.66:8080/AppMarketServer/android/searchApp.do?key=</string>
+    <string name="scan_url">http://162.211.181.66:8080/AppMarketServer/android/webRedirect.do</string>
+<<<<<<< .mine
+    <string name="app_store_hot_rec">http://162.211.181.66:8080/AppMarketServer/android/popuDownload.do</string>
+     -->
+   
+   <!-- 
+   	<string name="home_rec">http://162.211.181.66:8080/AppMarketServer/android/getRecommended.do</string> 
+    -->
+    
+  <!--   <string name="home_rec">http://192.168.16.254:8080/AppMarketServer/android/getRecommended.do</string> 
+    <string name="url_str">http://192.168.16.254:8080/AppMarketServer</string> -->
+    
+    
+</resources>
+
+<!-- $Id: urls.xml 58 2014-01-17 11:06:54Z xgh $ -->
+

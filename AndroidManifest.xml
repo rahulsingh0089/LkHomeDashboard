@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="lenkeng.com.welcome"
+    android:versionCode="9"
+    android:versionName="1.1.4" 
+    >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="17" />
+
+<uses-permission android:name="android.permission.DELETE_CACHE_FILES"/>
+ <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
+    <uses-permission android:name="android.permission.MASTER_CLEAR" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_PROFILE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+    <uses-permission android:name="android.permission.SET_PREFERRED_APPLICATIONS" />
+     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.MOVE_PACKAGE"/>
+       <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+     
+      <uses-permission android:name="android.permission.INSTALL_LOCATION_PROVIDER"/>
+     
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+    
+    
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:name="lenkeng.com.welcome.LKHomeApp"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen" 
+        android:largeHeap="true"
+        android:persistent="true"
+	        >
+        <activity
+            android:name="lenkeng.com.welcome.MainHomeActivity"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" 
+             android:configChanges="orientation|screenSize|smallestScreenSize|locale|keyboard|keyboardHidden"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY" />
+                <category android:name="android.intent.category.LK_HOME" />
+                <category android:name="android.intent.category.HOME" />
+                
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="lenkeng.com.welcome.server.PackageListener" 
+            >
+            
+            <intent-filter>
+                
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <action android:name="unistall_demo"/>
+                <data android:scheme="package" />
+                
+            </intent-filter>
+        </receiver>
+       
+        
+        <activity android:name=".MessageActivity"  
+            android:configChanges="locale|keyboard|keyboardHidden">
+        </activity>
+        <activity android:name=".AppManagerActivity" 
+			android:process=".AppManager"  
+			android:configChanges="locale|keyboard|keyboardHidden"          
+             >
+            <intent-filter >
+                <action android:name="lenkeng.com.appManager"   />
+                 <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+       <!--  <activity android:name=".WeatherSettingActivity" >
+            <intent-filter >
+                <action android:name="lenkeng.com.weatherSetting"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity> -->
+        <activity android:name=".SystemInfoActivity" >
+            <intent-filter >
+                <action android:name="lenkeng.com.systemInfo"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <!-- 语言设置移到LKSetting  <activity 
+            android:name="com.lenkeng.appmarket.LanguagesSet"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" 
+            >
+              <intent-filter >
+                  <action android:name="lenkeng.com.language"/>
+                  <action android:name="android.settings.INPUT_METHOD_SETTINGS"/>
+                  <category android:name="android.intent.category.DEFAULT"/>
+                  
+              </intent-filter>
+              
+          </activity> -->
+        
+        <provider
+            android:name="lenkeng.com.welcome.db.XmppMsgContentProvider"
+            android:authorities="lenkeng.com.welcome.db.xmppdb" >
+        </provider>
+        <service android:name="lenkeng.com.welcome.server.LKService" >
+        </service>
+
+        
+<!--             android:process=":com.lenkeng.Market" -->
+        <activity
+            android:name="com.lenkeng.appmarket.MainActivity"
+            android:label="@string/app_name" 
+            android:launchMode="singleTask"
+            android:configChanges="locale|keyboard|keyboardHidden"
+            >
+        </activity>
+        <activity android:name="lenkeng.com.welcome.LockActivity" 
+            android:configChanges="locale|keyboard|keyboardHidden"
+            >
+          <!--  <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY" />
+            </intent-filter>  -->
+        </activity>
+        <activity android:name="com.lenkeng.appmarket.DetailActivity"   
+            android:launchMode="singleTask"
+            android:configChanges="locale|keyboard|keyboardHidden"
+            >
+        </activity>
+        
+        
+		<activity android:name="lenkeng.com.welcome.ClearActivity"
+		    android:configChanges="locale|keyboard|keyboardHidden"
+		    >
+		    <intent-filter >
+		        <action android:name="lenkeng.com.clear"/>
+		        <category android:name="android.intent.category.DEFAULT"/>
+		    </intent-filter>
+		</activity>
+		<activity android:name="lenkeng.com.welcome.SpeedActivity"
+		    android:configChanges="locale|keyboard|keyboardHidden"
+		    >
+		    <intent-filter >
+		        <action android:name="lenkeng.com.speed"/>
+		        <category android:name="android.intent.category.DEFAULT"/>
+		    </intent-filter>
+		</activity>
+        <service android:name="com.lenkeng.service.MarketService"  >
+        </service>
+
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="lenkeng.com.welcome" />
+
+</manifest>

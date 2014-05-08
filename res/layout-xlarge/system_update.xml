@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beijingxuanze"
+    android:orientation="vertical" >
+
+<!-- $Id: system_update.xml 4 2013-12-12 04:19:52Z kf $ -->
+
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/system_upgrade" />
+
+    <LinearLayout
+        android:layout_width="1000dp"
+        android:layout_height="500dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+         >
+
+        <Button
+            android:id="@+id/check_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/check_update"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:textSize="30sp" 
+            />
+
+        <TextView
+            android:id="@+id/tv_already_newversion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_already_newversion"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:visibility="gone"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_updateInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/newVersion"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/upgrade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/upgradeInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            
+            
+        </LinearLayout>
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:id="@+id/current_version"
+            android:textColor="@android:color/white"
+            android:text="@string/current_version"
+            android:layout_marginTop="200dp"
+            android:layout_marginLeft="100dp"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

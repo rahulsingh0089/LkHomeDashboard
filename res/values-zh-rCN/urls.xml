@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <!--  <string name="app_store_img_rec">http://www.eztv360.com:8080/AppMarketServer/android/getBanners.do</string>
+    <string name="app_store_game">http://www.eztv360.com:8080/AppMarketServer/android/getCategory.do?category=2</string>
+    <string name="app_store_app">http://www.eztv360.com:8080/AppMarketServer/android/getCategory.do?category=2</string>
+    <string name="scan_url">http://www.eztv360.com:8080/AppMarketServer/android/webRedirect.do</string>
+    <string name="app_store_media">http://www.eztv360.com:8080/AppMarketServer/android/getCategory.do?category=4</string>
+    <string name="app_store_search">http://www.eztv360.com:8080/AppMarketServer/android/searchApp.do?key=</string> -->
+    
+   
+ <!--  <string name="app_store_hot_rec">http://www.eztv360.com:8080/AppMarket/android/popuDownload.do</string>
+    <string name="home_rec">http://www.eztv360.com:8080/AppMarket/android/getRecommended.do</string>
+    <string name="url_str">http://www.eztv360.com:8080/AppMarket</string>  -->
+</resources>
+<!-- $Id: urls.xml 58 2014-01-17 11:06:54Z xgh $ -->

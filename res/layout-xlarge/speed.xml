@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beijingxuanze"
+    android:orientation="vertical" >
+
+<!-- $Id: speed.xml 114 2014-02-20 03:35:17Z gww $ -->
+
+    
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/speed" />
+
+    <TextView
+        android:id="@+id/no_user_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="420dp"
+        android:layout_marginTop="300dp"
+        android:text="@string/no_user_task"
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
+        android:gravity="center"
+         android:visibility="gone" 
+       />
+
+    <TextView
+        android:id="@+id/speed_succed"
+        android:layout_width="700dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="260dp"
+        android:layout_marginLeft="300dp"
+        android:gravity="center"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="500dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="150dp"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/my_check"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="771dp" >
+
+            <CheckBox
+                android:id="@+id/selected_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                android:button="@drawable/check" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_all"
+                android:textSize="20dp" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/lv_task"
+            android:layout_width="700dp"
+            android:layout_height="300dp"
+            android:layout_marginLeft="180dp"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:dividerHeight="5dp"
+            android:fastScrollEnabled="true"
+            android:listSelector="#00000000"
+            android:overScrollMode="always"
+            android:scrollbarSize="50dp"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@drawable/vertical_thumb"
+            android:scrollbarTrackVertical="@drawable/vertical_track" >
+        </ListView>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/loading_process"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginLeft="500dp"
+        android:layout_marginTop="220dp"
+        android:indeterminate="false"
+         android:indeterminateDrawable="@drawable/loading"
+        />
+
+    <LinearLayout
+        android:id="@+id/buttom_bt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="610dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/bt_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/clear_bt_clear"
+            android:gravity="center"
+            android:onClick="speed"
+            android:text="@string/speed"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:layout_marginRight="-5dp"
+             />
+
+        <Button
+            android:id="@+id/bt_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/clear_bt_back_selector"
+            android:gravity="center"
+            android:onClick="back"
+            android:text="@string/back"
+            android:textColor="@android:color/white"
+            android:textSize="28sp" />
+    </LinearLayout>
+
+</RelativeLayout>

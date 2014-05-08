@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popu_back"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription" >
+
+<!-- $Id: popu_item.xml 4 2013-12-12 04:19:52Z kf $ -->
+
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/popu_app_ico"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="4dp"
+            android:background="@null"
+            android:focusable="false"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/popu_app_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/popu_app_ico"
+            android:layout_alignLeft="@+id/popu_app_ico"
+            android:layout_alignRight="@+id/popu_app_ico"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:background="@drawable/black"
+            android:visibility="gone"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+</RelativeLayout>

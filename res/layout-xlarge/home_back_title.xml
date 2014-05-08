@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_little_flag"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="40dp" >
+
+    <!-- $Id: home_back_title.xml 33 2014-01-09 07:06:54Z gww $ -->
+
+    <lenkeng.com.welcome.view.DigitalClock
+        android:id="@+id/time"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="130dp" />
+
+    <ImageView
+        android:id="@+id/WifiFlag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_toLeftOf="@id/WeatherCity"
+        android:background="@drawable/ic_launcher"
+        android:layout_marginRight="10dp"
+         />
+
+    <TextView
+        android:id="@+id/WeatherCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="30dp"
+        android:layout_toLeftOf="@+id/WeatherData"
+        android:background="@null"
+        android:text="@string/WeatherData"
+        android:textColor="@android:color/white"
+        android:textSize="25sp" />
+
+    <TextView
+        android:id="@+id/WeatherData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_toLeftOf="@+id/WeatherFlag"
+        android:singleLine="true"
+        android:text="@string/sun"
+        android:textColor="@android:color/white"
+        android:textSize="25sp" />
+
+    <ImageView
+        android:id="@+id/WeatherFlag"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="140dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/a_0" />
+
+    <LinearLayout
+        android:id="@+id/WeatherSetting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</RelativeLayout>

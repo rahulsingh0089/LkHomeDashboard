@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+<!-- $Id: home_view_paper_item.xml 7 2013-12-17 06:32:47Z gww $ -->
+
+  
+    <GridView
+        android:id="@id/home_app_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:horizontalSpacing="3dp"
+        android:listSelector="#00000000"
+        android:drawSelectorOnTop="true"
+        android:scrollbarSize="400dp"
+        android:scrollbars="none"
+        android:scrollbarStyle="outsideInset"
+        android:numColumns="5"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+         android:descendantFocusability="blocksDescendants"
+        android:verticalSpacing="3dp" >
+    </GridView>
+
+</LinearLayout>

@@ -1,0 +1,142 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/appmarket_bg"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+
+    
+    <!--
+         <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/cate_1" />
+    -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="480dp"
+        android:layout_marginTop="160dp"
+        android:gravity="center_horizontal" >
+
+        <FrameLayout 
+            android:id="@+id/fl_body"
+            android:layout_width="1100dp"
+            android:layout_height="480dp"
+            android:padding="5dp"
+            android:visibility="gone"
+            
+            >
+            
+            
+        </FrameLayout> 
+        
+          <com.lenkeng.ui.LKPager
+                android:id="@+id/body"
+                android:layout_width="1100dp"
+                android:layout_height="480dp"
+                android:padding="5dp" >
+            </com.lenkeng.ui.LKPager> 
+        <!-- android:flipInterval="30" -->
+        <!-- android:persistentDrawingCache="animation" -->
+
+        <LinearLayout
+            android:id="@+id/page_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="125dp"
+            android:focusable="false"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/select_up"
+                android:focusable="true" 
+                android:layout_marginBottom="10dp"
+                />
+
+            <TextView
+                android:id="@+id/currPage"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                android:textColor="@android:color/white"
+                android:textSize="26sp" 
+                />
+
+            <Button
+                
+                android:id="@+id/down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/select_down"
+                android:focusable="true"
+                android:layout_marginTop="10dp"
+                 />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/radio1"
+            style="@style/main_category_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/market_movie_selector"
+            android:nextFocusUp="@+id/gridView_movie"
+            android:textSize="30dp" >
+        </RadioButton>
+
+
+        <RadioButton
+            android:id="@+id/radio2"
+            style="@style/main_category_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/market_app_selector"
+            android:textSize="30sp" 
+            android:nextFocusUp="@+id/gridView_app"
+            />
+
+        <RadioButton
+            android:id="@+id/radio3"
+            style="@style/main_category_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/market_game_selector"
+            android:textSize="30sp"
+            android:nextFocusUp="@+id/gridView_game"
+             />
+
+        <RadioButton
+            android:id="@+id/radio4"
+            style="@style/main_category_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:background="@drawable/market_serch_selector"
+            android:nextFocusRight="@+id/search_input"
+            android:textSize="30sp" 
+            android:nextFocusUp="@+id/gridView_search"
+            />
+    </RadioGroup>
+
+</LinearLayout>

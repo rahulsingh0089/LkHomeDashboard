@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- RadioButton样式 -->
+    <style name="radio_btn_style">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+       
+    </style>
+ 
+ 	
+ 	<style name="popu" parent="android:Animation">
+ 	     <item name="android:windowEnterAnimation">@anim/item_anim</item>
+ 	     <item name="android:windowExitAnimation">@anim/pop_exit</item>
+ 	</style>
+ 	
+ 	  <style name="bar">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">center</item>  
+        <item name="android:button">@null</item>  
+    </style>
+    
+    <style name="main_category_radio" parent="bar">
+        <item name="android:padding">0dip</item>
+    </style>
+
+    <style name="ChooseDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+ <!-- //设置背景 -->
+        <item name="android:windowFrame">@null</item>
+ <!-- //去掉边框 -->
+        
+
+    </style>
+	<style name="MyDialog" parent="@android:Theme.Dialog">
+	    <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item> 
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    
+</resources>
+
+<!-- $Id: styles.xml 4 2013-12-12 04:19:52Z kf $ -->
+

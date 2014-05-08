@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_appManager"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="ContentDescription" >
+
+    
+<!-- $Id: app_manager_item.xml 20 2013-12-26 06:25:32Z gww $ -->
+
+    
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+         >
+		<LinearLayout 
+		    android:layout_width="wrap_content"
+		    android:layout_height="80dp"
+		    android:layout_alignParentTop="true"
+		    android:background="@drawable/app_manager_selector"
+		     android:id="@+id/appSelectedBg"
+		    >
+		</LinearLayout>
+        <LinearLayout
+            android:id="@+id/handle_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_manager_handle_bk"
+            android:gravity="center"
+            android:orientation="horizontal" 
+            android:layout_alignParentBottom="true"
+            >
+
+            <ImageButton
+                android:id="@+id/moveTo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/app_manager_handle_selector" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="@string/moveTo"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" 
+                android:id="@+id/tv_move"
+                />
+
+            <ImageButton
+                android:id="@+id/delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="40dp"
+                android:background="@drawable/app_manager_handle_delete_selector" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="@string/appManagerDel"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" 
+                android:id="@+id/tv_delete"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+    
+	 <LinearLayout
+        android:id="@+id/app_manager_up"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="-150dp"
+        android:layout_height="80dp"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/app_manager_icon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/ic_launcher"
+            android:focusable="false" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/app_manager_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

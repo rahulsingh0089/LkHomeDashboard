@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <!-- home_app_list.xml -->
+    <item name="home_app_list" type="id"/>
+    
+    <!-- home_app_item.xml -->
+    <item name="home_app_ico" type="id"/>
+    <item name="home_app_name" type="id"/>
+    
+    <!-- home_btn.xml -->
+    <item name="home_btnGroup" type="id" />
+    <item name="home_movieBtn" type="id"/>
+    <item name="home_gameBtn" type="id"/>
+    <item name="home_appBtn" type="id"/>
+    <item name="home_otherBtn" type="id"/>
+    <item  name="home_btMsg" type="id"/>
+    
+    <!-- home.xml -->
+    <item name="home_settings" type="id" />
+    <item name="home_title_time" type="id" />
+    
+  
+    
+    <!-- recommend_list.xml-->
+    <item name="home_recommend_list_title" type="id" />
+    <item name="recommend_list_list" type="id" />
+    <item name="recommend_Layout" type="id"/>
+    <item name="home_recommend_more" type="id"/>
+    
+    <!-- recommend_item.xml -->
+    <item name="home_recommend_item_icon" type="id" />
+    <item name="recommend_item_title" type="id" />
+    <item name="home_recommend_item_name" type="id" />
+    <item name="home_recommend_item_btn" type="id" />
+    
+    
+    
+    <!-- message.xml  gww -->
+    <item name="bt_app_update" type="id"></item>
+    <item name="bt_recommend_game" type="id"></item>
+    <item name="bt_system_update" type="id"></item>
+    <item name="bt_all_update" type="id"></item>
+    <item name="bt_after_update" type="id"></item>
+    <item name="bt_update_now" type="id"></item>
+    <item name="bt_download_game" type="id"></item>
+    <item name="message_show" type="id"></item>
+    <item name="system_update_title" type="id"></item>
+    <item name="system_update_newVersion" type="id"></item>
+    <item name="system_update_currenVersion" type="id"></item>
+    <item name="update_log" type="id"></item>
+    <item name="view_app_update" type="id"></item>
+    <item name="view_game_recommend" type="id"></item>
+    <item name="view_system_update" type="id"></item>
+    <item name="message_recommend_game_icon" type="id"></item>
+    <item name="message_recommend_game_name" type="id"></item>
+    
+    
+    <!-- app_store_app_manage_layout.xml -->
+    <item name="app_store_app_manage_layout_btn_group" type="id" />
+    <item name="app_store_app_manage_layout_btn1" type="id" />
+    <item name="app_store_app_manage_layout_btn2" type="id" />
+    <item name="app_store_app_manage_layout_btn3" type="id" />
+    
+    <!-- as_appmanage_item.xml -->
+    <item name="as_appmanage_item_appico" type="id" />
+    <item name="as_appmanage_item_appname" type="id" />
+    <item name="as_appmanage_item_btn" type="id" />
+    
+    <!-- as_app_list.xml -->
+    <item name="as_app_list_pg_up" type="id" />
+    <item name="as_app_list_pg_dn" type="id" />
+    
+</resources>
+<!-- $Id: ids.xml 4 2013-12-12 04:19:52Z kf $ -->
+

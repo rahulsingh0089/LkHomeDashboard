@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- $Id: cycle.xml 4 2013-12-12 04:19:52Z kf $ -->
+
+
+<cycleInterpolator xmlns:android="http://schemas.android.com/apk/res/android" 
+android:cycles="40" />

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/beijingxuanze"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+     >
+
+    <!-- $Id: message.xml 114 2014-02-20 03:35:17Z gww $ -->
+
+    <RelativeLayout
+        android:id="@id/message_show"
+        android:layout_width="650dp"
+        android:layout_height="500dp"
+        android:background="@drawable/message_show_bk"
+        android:orientation="vertical" 
+        android:layout_marginTop="80dp"
+        android:gravity="center_horizontal"
+        >
+        
+        <LinearLayout 
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/msg_time"
+                android:textSize="15sp"
+                android:layout_marginLeft="50dp"
+                />
+             <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/msg_status"
+                  android:textSize="12sp"
+                  android:layout_marginLeft="400dp"
+                  android:visibility="invisible"
+                />
+        </LinearLayout>
+        
+        
+        <TextView
+            android:id="@+id/Msg"
+            android:layout_width="600dp"
+            android:layout_height="400dp"
+            android:background="@null"
+            android:onClick="next"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:layout_alignParentBottom="true"
+            android:autoLink="web"
+            android:layout_marginLeft="25dp"
+            android:layout_marginBottom="20dp"
+            android:lines="10"
+            android:ellipsize="end"
+             />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="60dp" 
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        >
+		 <Button
+            android:id="@+id/up"
+            android:layout_width="200dp"
+            android:layout_height="55dp" 
+           android:background="@drawable/detail_left_selector" 
+            android:text="@string/msg_up"
+             android:textColor="@android:color/white"
+             android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/next"
+           android:layout_width="200dp"
+            android:layout_height="55dp" 
+           
+              android:background="@drawable/detail_center_selector"
+            android:text="@string/msg_next"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            />
+        <Button 
+            android:id="@+id/msg_del"
+           android:layout_width="200dp"
+            android:layout_height="55dp" 
+            android:background="@drawable/select_button"
+            android:text="@string/msg_del"
+             android:textColor="@android:color/white"
+             android:textSize="20sp"
+            />
+    </LinearLayout>
+
+  
+
+</LinearLayout>

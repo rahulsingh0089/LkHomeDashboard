@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LKHome</string>
+
+    <!--
+    <string name="host_zh">112.124.54.71:8080</string>
+    <string name="host_en">162.211.181.66:8080</string>
+    -->
+
+    <string name="market_host_zh">appch.eztv360.com:8080</string>
+    <string name="market_host_en">appen.eztv360.com:8080</string>
+    <string name="xmpp_host_zh">tsch.eztv360.com</string>
+    <string name="xmpp_host_en">tsen.eztv360.com</string>
+
+    <!-- message -->
+    <string name="click_check">click to check message</string>
+    <string name="noMsg">No new message currently</string>
+    <string name="text_can_releast">System can Release：</string>
+
+    <!--
+    <string name="text_day">Day</string>
+    <string name="text_month" >Month</string>
+    -->
+    <!-- <string name="text_setup">One key install</string> -->
+    <string name="text_setup">Install</string>
+    <string name="text_download">Download</string>
+    <string name="text_install">Install</string>
+    <string name="text_speed_success_start">speed succed,Total Release  </string>
+    <string name="text_speed_success_middle">  memory,Performance</string>
+    <string name="text_speed_success_end">Make persistent efforts</string>
+    <string name="text_can_noreleast">No process can be cleaned</string>
+    <string name="text_changing">changing the language</string>
+
+    <!-- hometitle.xml -->
+    <string name="seacherWeather">Click to check weather </string>
+    <string name="weatherConfirm">Confirm</string>
+    <string name="text_degree">Download progress：%1$d  %%</string>
+    <string name="text_insall_ok">Installation completed </string>
+    <string name="text_download_start">Download started</string>
+    <string name="text_start_insall">Installation started</string>
+    <string name="text_trying">Download data from network....</string>
+    <string name="text_download_error">Network is not stable, please download again</string>
+    <string name="text_download_full">Reminder:  5 download processes now, please start the new download later </string>
+    <string name="moveTo">Move to Device</string>
+    <string name="moveToSD">Move to SDCard</string>
+    <string name="appManagerDel">Del</string>
+    <string name="select_all">All</string>
+    <string name="today">Today    |</string>
+    <!-- home_backup.xml -->
+    <string name="Date">19:20   9月5日September 5th\n &#160;&#160;&#160;&#160;&#160;             星期二Tuesday</string>
+    <string name="WeatherData">Beijing</string>
+    <string name="home_backup_bt_recommend">recommend</string>
+    <string name="home_backup_bt_live">Other</string>
+    <string name="home_backup_bt_movie">Movies</string>
+    <string name="home_backup_bt_application">Application</string>
+    <string name="home_backup_bt_game">Game</string>
+    <string name="home_backup_bt_scan">Browse</string>
+    <string name="home_backup_bt_settingting">Settings</string>
+    <string name="model">Model</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="AfterTomorrow">Acquired</string>
+    <string name="IP">Ip Address</string>
+    <string name="SystemVersion">System Version</string>
+    <string name="bt_confirm">Confirm</string>
+    <string name="comfirm">Confirm</string>
+    <string name="DialogTitle">Installation Tips </string>
+    <string name="Cancel">Cancel</string>
+    <string name="ShowMsg">The applications installed currently are not classified, Need to classify or not? </string>
+    <string name="NetError">Network error, please try again later</string>
+    <string name="More">More</string>
+    <string name="Wired">Wired network setting</string>
+    <string name="Wireless">Wireless network setting </string>
+    <string name="Net">Broadband dial-up</string>
+    <string name="Wifi">Wireless setting </string>
+    <string name="Show">Display setting</string>
+    <string name="Weather">Weather setting</string>
+    <string name="AppManagerSettingting">Application management</string>
+    <string name="SystemUpdate">System upgrade</string>
+    <string name="SystemInfo">System information</string>
+    <string name="text_wifi_no_connec">network not connected</string>
+    <string name="Dialog_title">Select operation</string>
+    <string name="Dialog_move">Move to</string>
+    <string name="Dialog_unload">Uninstall</string>
+    <string name="AppManager">Uninstall the application</string>
+    <string name="back">Back</string>
+    <string name="text_size">Size:</string>
+    <string name="m">M</string>
+    <string name="parise">Praise</string>
+    <string name="reject">Reject</string>
+    <string name="ticket_used">You have given comment on this application. Thanks for the participation</string>
+    <string name="parise_used">You have praised on this application. Thanks for the participation</string>
+    <string name="reject_used">You have rejected on this application. Thanks for the participation</string>
+    <string name="evaluate">Please give comment on the game you are playing</string>
+    <string name="waitting">Getting the latest information</string>
+    <string name="ticket_updateed">Data has been updated</string>
+    <string name="ticketing">Processing network voting.. please wait</string>
+    <string name="text_hint">Please input a name for search use</string>
+    <string name="text_recommend">Top recommended</string>
+    <string name="text_search_result">Search result</string>
+    <string name="text_no_result">The application which you are looking for can not be found, please try other key words</string>
+    <string name="text_run">Run</string>
+    <string name="text_uninstall">Uninstall</string>
+    <string name="text_settingup">One-click Setup</string>
+    <string name="text_return">Return</string>
+    <string name="text_live">Live</string>
+    <string name="text_movie">Movie</string>
+    <string name="text_app">Application</string>
+    <string name="text_game">Game</string>
+    <string name="text_search">Search</string>
+    <string name="text_download_complete">Download completed</string>
+    <string name="text_downloading">Downloading</string>
+    <string name="text_program_not_ready">Program is not ready</string>
+    <string name="scan_e">Browser</string>
+    <string name="XinLang">Sina</string>
+    <string name="DangDang">DangDang</string>
+    <string name="BaiDu">BaiDu</string>
+    <string name="YouKu">YouKu </string>
+    <string name="Tencent">Tencent </string>
+    <string name="WangYi">NetEase </string>
+    <string name="TieXue">TieXue </string>
+    <string name="Ifeng">Ifeng </string>
+    <string name="TaiPinYang">Pcauto</string>
+    <string name="Sunday">Sunday </string>
+    <string name="Monday">Monday </string>
+    <string name="Tuesday">Tuesday </string>
+    <string name="Wednesday">Wednesday </string>
+    <string name="Thursday">Thursday </string>
+    <string name="Friday">Friday </string>
+    <string name="Satuday">Saturday </string>
+    <string name="Laguage">CN</string>
+    <string name="Choose">Choose the category of this program</string>
+    <string name="current_city">Current city:</string>
+    <string name="weather_settingting">Weather setting</string>
+    <string name="settingting">Setting</string>
+    <string name="resetting">Restore factory setting</string>
+    <string name="resettingConfirm">Restore factory setting or not?</string>
+    <string name="systemWorn">System Warning</string>
+    <string name="check_update">Check the new version</string>
+    <string name="tv_already_newversion">It is the latest version, please enjoy!</string>
+    <string name="newVersion">New version is available to upgrade!</string>
+    <string name="upgrade">Upgrade now</string>
+    <string name="downloadFail">Network speed is too slow, download fails, please try again later!</string>
+    <string name="current_version">Current version</string>
+    <string name="speed">Speed up now</string>
+    <string name="selectedAll">Select all</string>
+    <string name="ClearWorn">Note: Clear space will clear the cache of system and application, including partial pictures and videos, please use with caution!</string>
+    <string name="clear">Clear now</string>
+    <string name="clear_complete">Clear completed</string>
+    <string name="no_user_task">No user process running at the moment</string>
+    <string name="sun">17℃ ~ 22℃</string>
+    <string name="ID">Native ID number</string>
+    <string name="hint">Input password to uninstall this application</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="province">Province </string>
+    <string name="town">City </string>
+    <string name="city">County </string>
+    <string name="prompt">Click the city to change</string>
+    <string name="langue">EN</string>
+    <string name="moveSuccessfully">move successfully</string>
+    <string name="moveFail">move fail</string>
+    <string name="moving">moving...</string>
+    <string name="ez_ui">EZ-UI</string>
+    <string name="msg_next">Next</string>
+    <string name="msg_up">Previous</string>
+    <string name="msg_del">Delete</string>
+    <string name="net_worn_weather">No internet connection. Setting default city failed......</string>
+    <string name="camera_cover_on">Camera cover is on</string>
+    <string name="camera_cover_off">Camara cover is off</string>
+    <string name="memory">Available memory</string>
+    <string name="sdcard">Available SDCard space</string>
+    <string name="space_value">4G</string>
+    <string name=":">:</string>
+    <string name="ticket_error">no connection, do not work</string>
+    <string name="ticket_unsuport">the App does not work </string>
+    <string name="language_title_inputmethod">Input Method Setting</string>
+    <string name="language_title_language">Language Setting</string>
+    <string name="download_no_size">Memory is not enough, please use SD card or upload other applications</string>
+    <string name="wait_install">Wait for install</string>
+    <string name="installing">Installing...</string>
+    <string name="install_fail">Install fail</string>
+    <string name="text_insall_err">Installation failed, please check whether the storage disk is full</string>
+    <string name="install_data_fail">Fail to install,Data space of the application is not enough.</string>
+    <string name="install_sdcard_fail">Fail to install,SDcard space of the application is not enough.</string>
+
+      <string name="operate_type">operation type : </string>
+    <string name="operate_type_all">all</string>
+    <string name="operate_type_ir">remoter</string>
+    <string name="operate_type_mouse">mouse</string>
+    <string name="operate_type_game_handle">remote handle</string>
+    
+    
+</resources>
+
+
+
+
+
+

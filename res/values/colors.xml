@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <drawable name="transparent_background">#00000000</drawable>
+    <drawable name="translucent_background">#6033B5E5</drawable>
+    <drawable name="dialog_button_normal">#333</drawable>
+    <color name="text_white">#FFFFFFFF</color>
+    
+    <drawable name="entry_btn_down">#DF7401</drawable>
+    <drawable name="text_normal">#FF602B19</drawable>
+    
+    
+    
+</resources>
