@@ -20,14 +20,14 @@ import com.lenkeng.logic.Logic;
 public class AppStoreDao {
 	private String TAG = "AppStoreDao";
 	private Context context;
-	private AppDbHelper helper;
+	private AppStoreHelper helper;
 	private static Object LOCK = new Object();
 
 	private static AppStoreDao dao;
 	
 	private AppStoreDao(Context context) {
 		this.context = context;
-		helper = new AppDbHelper(context);
+		helper = new AppStoreHelper(context);
 
 	}
 	public static synchronized AppStoreDao getInstance(Context context){
@@ -249,7 +249,7 @@ public class AppStoreDao {
 
 		synchronized (LOCK) {
 			List<AppInfo> infos = new ArrayList<AppInfo>();
-			SQLiteDatabase db = new AppDbHelper(context).getReadableDatabase();
+			SQLiteDatabase db = helper.getReadableDatabase();
 			//db.enableWriteAheadLogging();
 			Cursor c = db.rawQuery("SELECT * FROM "
 					+ Constant.APPSTORE_TABLE_NAME

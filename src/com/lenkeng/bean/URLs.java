@@ -76,12 +76,15 @@ public class URLs implements Serializable {
 	public static String getXmppHost(){
 		
 		String host="";
-		if(isZhVertion()){
-			host=getContext().getString(R.string.xmpp_host_zh);
+		if(LKHomeUtil.isFactoryMode()){
+			host="192.168.16.226";
 		}else{
-			host=getContext().getString(R.string.xmpp_host_en);
+			if(isZhVertion()){
+				host=getContext().getString(R.string.xmpp_host_zh);
+			}else{
+				host=getContext().getString(R.string.xmpp_host_en);
+			}
 		}
-		
 		Logger.e(TAG, "xgh ,----------------获取的xmpp服务器="+host);
 		
 		return host;
@@ -238,6 +241,14 @@ public class URLs implements Serializable {
 		URL_CATEGORYS = uRL_CATEGORYS;
 	}
 
+	public static String getURL_checkUpload() {
+		return getURL_API_HOST()+URL_SPLITTER+"checkClientUpload.action";
+	}
+	public static String getURL_clientUpload() {
+		return getURL_API_HOST()+URL_SPLITTER+"clientUpload.action";
+	}
+	
+	
 	//应用
 	public  static String  URL_CATEGORY_APP; 
 	public static String getURL_CATEGORY_APP() {

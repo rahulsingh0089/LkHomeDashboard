@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-/*
- * $Id: ClientActionDao.java 4 2013-12-12 04:19:52Z kf $
- */
+
 public class ClientActionDao {
 	private Context context;
 	private AppDbHelper helper;
@@ -18,8 +16,7 @@ public class ClientActionDao {
 	private SharedPreferences sp;
 	public ClientActionDao(Context context) {
 		this.context = context;
-		helper = new AppDbHelper(context);
-		sp=context.getSharedPreferences("config", Context.MODE_PRIVATE);
+		//helper = new AppDbHelper(context);
 	}
 
 	// 查找用户运行过的APP

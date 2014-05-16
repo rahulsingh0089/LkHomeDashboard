@@ -3,6 +3,7 @@ package lenkeng.com.welcome.adapter;
 import java.lang.ref.SoftReference;
 import java.util.List;
 
+import com.lenkeng.logic.Logic;
 import lenkeng.com.welcome.LKHomeApp;
 import lenkeng.com.welcome.MyPopupFactory;
 import lenkeng.com.welcome.R;
@@ -26,10 +27,12 @@ import android.graphics.ColorMatrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -46,6 +49,7 @@ public class AppQueryAdapter extends BaseAdapter {
 	public ViewHolder holder;
 	private Activity context;
 	private List<AppInfo> mList;
+	private Handler mHandler;
 	//private SharedPreferences sp;
 	//private AppStoreDao appStoreDao;
 	//private int page = 0;
@@ -55,8 +59,9 @@ public class AppQueryAdapter extends BaseAdapter {
 	//private String Langue;
 	
 	
-	public AppQueryAdapter(Activity context) {
+	public AppQueryAdapter(Activity context,Handler handler) {
 		this.context = context;
+		this.mHandler=handler;
 		//sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
 		//appStoreDao =AppStoreDao.getInstance(LKHomeApp.getAppContext());
 		//mpf=new MyPopupFactory(context);
@@ -96,6 +101,16 @@ public class AppQueryAdapter extends BaseAdapter {
 					.findViewById(R.id.home_app_name);
 			holder.ico = (ImageButton) convertView
 					.findViewById(R.id.home_app_ico);
+			holder.btn_upload=(ImageView) convertView.findViewById(R.id.btn_upload);
+			holder.btn_upload.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AppInfo app=(AppInfo) v.getTag();
+					String pkg=app.getPackage_name();
+					String appName=app.getName();
+					Logic.getInstance(context).uploadApk(pkg,appName);
+				}
+			});
 			// holder.ico.setFocusable(false);
 			// holder.title.setFocusable(false);
 			//holder.ico.setLayoutParams(new LayoutParams(145,140));
@@ -119,6 +134,7 @@ public class AppQueryAdapter extends BaseAdapter {
 		clissifyApp(position);
 		holder.ico.setFocusable(false);
 		holder.ico.setClickable(false);
+		holder.btn_upload.setTag(info);
 		convertView.setOnHoverListener(hoverListener);
 		return convertView;
 	}
@@ -169,6 +185,11 @@ public class AppQueryAdapter extends BaseAdapter {
 				holder.ico.setBackgroundResource(R.drawable.ic_launcher);
 			}else{
 				holder.ico.setBackground(d);
+			}
+			if(!LKHomeUtil.appStyles.containsKey( info.getPackage_name())){
+				holder.btn_upload.setVisibility(View.VISIBLE);
+			}else{
+				holder.btn_upload.setVisibility(View.GONE);
 			}
 			holder.ll_itemBack.setBackgroundResource(Constant.ITEM_BACKS[position% Constant.ITEM_BACKS.length]);
 		} else {
@@ -248,6 +269,7 @@ public class AppQueryAdapter extends BaseAdapter {
 		TextView title;
 		ImageButton ico;
 		ImageView icon_big;
+		ImageView btn_upload;
 		RelativeLayout ll_itemBack;
 		LinearLayout face;
 		AppInfo info;

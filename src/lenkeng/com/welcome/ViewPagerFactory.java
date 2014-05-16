@@ -15,6 +15,7 @@ import lenkeng.com.welcome.view.MyScollView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
@@ -119,10 +120,13 @@ public class ViewPagerFactory {
 	//private OnPageChangeListener pageChanageListener;
 	private OnFocusChangeListener focusChangedListener;
 	private OnLongClickListener longClickListener;
+
+	private Handler mHandler;
 	//private OnScrollListener onScrollListener;
 
-	public ViewPagerFactory(Activity activity) {
+	public ViewPagerFactory(Activity activity,Handler handler) {
 		this.activity = activity;
+		mHandler=handler;
 		//this.homeUtil = new LKHomeUtil(activity);
 		inflater = activity.getLayoutInflater();
 		findViewPager();
@@ -256,7 +260,7 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_move = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_move.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
 			adapter.setStyleFlag(Constant.CLASSIFY_MOVIE);
 			// adapter.setItemsData(homeUtil.getAppList(i,Constant.CLASSIFY_MOVIE,
 			// allAppInfos), i);
@@ -300,7 +304,7 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_app = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_app.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
 			adapter.setStyleFlag(Constant.CLASSIFY_APPLICATION);
 			// adapter.setItemsData(homeUtil.getAppList(i,Constant.CLASSIFY_APPLICATION,
 			// allAppInfos), i);
@@ -341,7 +345,7 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_game = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_game.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
 			adapter.setStyleFlag(Constant.CLASSIFY_GAME);
 			gv_game.setScrollBarFadeDuration(Integer.MAX_VALUE);
 			// adapter.setItemsData(homeUtil.getAppList(i,
@@ -409,7 +413,7 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_user = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_user.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
 			adapter.setStyleFlag(Constant.CLASSIFY_USER);
 			gv_user.setScrollBarFadeDuration(Integer.MAX_VALUE);
 			// adapter.setItemsData(homeUtil.getAppList(i,
@@ -452,7 +456,7 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_setting = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_setting.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
 			gv_setting.setScrollBarFadeDuration(Integer.MAX_VALUE);
 			adapter.setStyleFlag(Constant.CLASSIFY_SETTING);
 			adapter.setItemsData(LKHomeApp.homeUtil.getAppList(i,

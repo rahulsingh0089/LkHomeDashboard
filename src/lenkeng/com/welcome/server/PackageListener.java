@@ -149,6 +149,7 @@ public class PackageListener extends BroadcastReceiver {
 				}
 			});
             
+            
             long aft=System.currentTimeMillis();
             Logger.d("ww", "$$$------ACTION_PACKAGE_REMOVED---"+(aft-bef));
         }else if("unistall_demo".equals(action)){

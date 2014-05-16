@@ -7,7 +7,9 @@
     android:layout_gravity="center"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:ignore="ContentDescription" >
+    tools:ignore="ContentDescription" 
+    android:descendantFocusability="blocksDescendants"
+    >
     
     
     
@@ -24,6 +26,16 @@
         android:layout_marginTop="35dp"
         android:scaleType="fitCenter" />
 
+  <ImageView 
+        android:id="@+id/btn_upload"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:focusable="true"
+        android:clickable="true"
+        android:background="@drawable/select_upload_button"
+        android:visibility="gone"
+        />
     <ImageView
         android:id="@+id/home_frame"
         android:layout_width="fill_parent"

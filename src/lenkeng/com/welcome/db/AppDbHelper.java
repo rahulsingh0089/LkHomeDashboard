@@ -7,9 +7,10 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppDbHelper extends SQLiteOpenHelper {
-
+	private static int 	APP_VERSION=1;
+	
 	public AppDbHelper(Context context) {
-		super(context, Constant.LKHOME_DATABASE, null, Constant.APP_VERSION);
+		super(context, Constant.LKHOME_DATABASE, null, APP_VERSION);
 	}
 
 	@Override
@@ -19,16 +20,16 @@ public class AppDbHelper extends SQLiteOpenHelper {
 		db.execSQL(sql);
 		
 		
-		String sql1 = "CREATE TABLE "
+		/*String sql1 = "CREATE TABLE "
                 + Constant.APPSTORE_TABLE_NAME
                 + "(summary TEXT,recomm_index INTEGER,package_name TEXT,"
                 +"downloads INTEGER,url TEXT,version TEXT,category TEXT,"
                 +"banner_big TEXT,banner_small TEXT,"
                 +"HDIcon TEXT,name TEXT,rating INTEGER,icon TEXT,recommImage TEXT,style TEXT ,imgs TEXT,size INTEGER,praise INTEGER,reject INTEGER,md5 TEXT,operateType INTEGER)";
-        db.execSQL(sql1);
-        
+        db.execSQL(sql1);*/
+        /*  
         String sql2="CREATE TABLE "+Constant.CLIENT_ACTION_TAB +" (appname TEXT,packagename TEXT,times INTEGER)";
-        db.execSQL(sql2);
+        db.execSQL(sql2);*/
 	}
 
 	@Override

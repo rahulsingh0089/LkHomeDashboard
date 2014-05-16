@@ -2,6 +2,7 @@ package lenkeng.com.welcome.util;
 
 import java.io.File;
 
+import lenkeng.com.welcome.LKHomeApp;
 import lenkeng.com.welcome.bean.AppInfo;
 import lenkeng.com.welcome.db.AppStoreDao;
 import lenkeng.com.welcome.server.LKService;
@@ -150,7 +151,7 @@ public class LKHomeCache {
 							HDIcon = LKService.DOWNLOAD_APPS.get(
 									packageName).getHDIcon();
 						} else {
-							HDIcon = AppStoreDao.getInstance(con)
+							HDIcon = AppStoreDao.getInstance(LKHomeApp.getAppContext())
 									.getIconName(packageName);
 						}
 						//if ("com.coldworks.coldjoke_letv".equals(packageName))

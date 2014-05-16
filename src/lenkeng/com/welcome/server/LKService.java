@@ -1218,7 +1218,7 @@ public class LKService extends Service implements OnClickListener,
 						// }
 					} else if ("ota".equals(strs[0])) {
 
-						bindRemoteServiceOta();
+						//bindRemoteServiceOta();
 					}
 					dtmList.add(tm);
 				}

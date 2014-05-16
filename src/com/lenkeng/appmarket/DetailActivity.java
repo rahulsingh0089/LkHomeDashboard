@@ -23,6 +23,7 @@ import lenkeng.com.welcome.util.LKHomeUtil;
 import lenkeng.com.welcome.util.Logger;
 import lenkeng.com.welcome.util.SPUtil;
 import lenkeng.com.welcome.util.SilentInstall;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -33,12 +34,14 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.os.StatFs;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,6 +69,7 @@ import com.lenkeng.tools.Constants;
 import com.lenkeng.tools.ThreadPoolUtil;
 
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class DetailActivity extends Activity implements OnClickListener,
 		 SilentInstallListener {
 	private static final String TAG = "DetailActivity";
@@ -224,7 +228,9 @@ public class DetailActivity extends Activity implements OnClickListener,
 	@Override
 	protected void onResume() {
 		
-		mApp = (AppInfo) getIntent().getExtras().get("appinfo");
+		if(getIntent().getExtras()!=null){
+			mApp = (AppInfo) getIntent().getExtras().get("appinfo");
+		}
 		
 		
 		if (mApp != null) {
@@ -615,14 +621,14 @@ public class DetailActivity extends Activity implements OnClickListener,
 			  Intent it=new Intent(ACTION_DOWNLOAD_ERR);
 			  it.putExtra("url", bean.getUrl());
 			  it.putExtra("packageName", bean.getPackageName());
-			  sendBroadcast(it);
+			 sendBroadcastAsUser(it, UserHandle.ALL);
 			  
 		  }else if(bean.getStatus()==ApkBean.STATE_COMPLETE){ //下载完成
 			  
 			  Intent it=new Intent(ACTION_DOWNLOAD_COMPLETE);
 			  it.putExtra("url", bean.getUrl());
 			  it.putExtra("packageName", bean.getPackageName());
-			  sendBroadcast(it);
+			  sendBroadcastAsUser(it, UserHandle.ALL);
 			  
 		  }
 			  

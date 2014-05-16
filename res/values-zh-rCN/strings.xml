@@ -206,5 +206,13 @@
     <string name="operate_type_mouse">鼠标</string>
     <string name="operate_type_game_handle">遥控手柄</string>
     
+    <string name="connet_server_for_check">正在连接服务器检测,请稍后</string>
+    <string name="wait_upload">等待上传</string>
+    <string name="uploading">正在上传...</string>
+    <string name="apk_exist">已经存在,感谢您的参与</string>
+    <string name="server_error">服务器繁忙,请稍后再试</string>
+    <string name="start_upload">开始上传</string>
+    <string name="upload_success">上传成功,感谢您的支持</string>
+    <string name="upload_error_no_file">未找到对应的APK文件,上传失败</string>
     
     </resources>

@@ -94,6 +94,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lenkeng.bean.URLs;
+import com.lenkeng.tools.ThreadPoolUtil;
 
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -385,8 +386,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		if (packageName != null && !"".equals(packageName)) { // 安装信息未清除
 
 			SPUtil.putInstallRecord(mContext, "");
-
-			new Thread(new Runnable() {
+			ThreadPoolUtil.execute(new Runnable() {
 				
 				@Override
 				public void run() {
@@ -404,7 +404,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 							HDIcon=HDIcon.substring(HDIcon.lastIndexOf("/") + 1);
 						}
 						tDao.addApp(packageName, flag, appname, HDIcon, version);
-
+						
 						Intent flushHome = new Intent();
 						flushHome.putExtra("installFlag", "install");
 						flushHome.setAction(Constant.ACTION_INSTALED);
@@ -415,7 +415,8 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 						Logger.e(TAG, "~~~~~~数据库不存在,PM中存在,补充记录....");
 					}
 				}
-			}).start();
+			});
+			
 		}
 
 	}
@@ -482,12 +483,20 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
 				PowerManager manager=(PowerManager) getSystemService(Service.POWER_SERVICE);
 				Logger.e("gw", "--------isScreen on----"+manager.isScreenOn());
-				if (Constant.NEED_CHECK_VIDEOMSG && manager.isScreenOn()) {
-					Intent i = new Intent();
-					i.setAction("checkVideo");
-					sendBroadcast(i);
-					Logger.d("kao", "------ check video 2 -----");
+				
+				if(manager.isScreenOn()){
+					if (Constant.NEED_CHECK_VIDEOMSG  ){
+						Intent i = new Intent();
+						i.setAction("checkVideo");
+						sendBroadcast(i);
+						Logger.d("kao", "------ check video 2 -----");
+					}
+					
+					Intent ota=new Intent();
+					ota.setAction("ota");
+					sendBroadcast(ota);
 				}
+				
 				//buttons[0].performClick();
 			} else if ("hasNewMsg".equals(intent.getAction())) {
 
@@ -751,8 +760,8 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		//sp = getSharedPreferences("config", Context.MODE_PRIVATE);
 		
 		//LKHomeUtil.systemAppClassify();
-		vpf = new ViewPagerFactory(this);
-		mpf = new MyPopupFactory(this);
+		vpf = new ViewPagerFactory(this,handler);
+		mpf = new MyPopupFactory(this,handler);
 		animationFactory = new AnimationFactory(this,vpf,mpf);
 		
 		long aft=System.currentTimeMillis();

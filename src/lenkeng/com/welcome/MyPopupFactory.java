@@ -23,6 +23,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,6 +42,7 @@ import android.widget.Toast;
 
 import com.lenkeng.appmarket.DetailActivity;
 import com.lenkeng.appmarket.MainActivity;
+import com.lenkeng.logic.Logic;
 
 @SuppressLint("NewApi")
 public class MyPopupFactory implements android.view.View.OnClickListener {
@@ -54,7 +56,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 	private LayoutInflater inflater;
 	private View convertView;
 	private RelativeLayout rl_popu;
-	private ImageView popu_icon;
+	private ImageView popu_icon,btn_upload;
 	private RelativeLayout.LayoutParams rl_normal;
 	//private ClientActionDao caDao;
 	private SharedPreferences sp;
@@ -65,11 +67,13 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 	//private int position;
 	private TranslateAnimation translateAnimation;
 	private LKDialog dialog;
+	private Handler mHandler;
 	//private LKHomeUtil homeUtil;
 	
-	public MyPopupFactory(Activity context) {
+	public MyPopupFactory(Activity context,Handler handler) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
+		mHandler=handler;
 		//homeUtil=new LKHomeUtil(context);
 		//caDao = new ClientActionDao(context);
 		inflater = context.getLayoutInflater();
@@ -90,6 +94,8 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		mPopupWindow.setBackgroundDrawable(new ColorDrawable(0));
 		convertView = inflater.inflate(R.layout.popu_item, null);
 		rl_popu = (RelativeLayout) convertView.findViewById(R.id.popu_back);
+		btn_upload=(ImageView) convertView.findViewById(R.id.btn_upload);
+		btn_upload.setOnClickListener(clickListener);
 		popu_icon = (ImageView) rl_popu.findViewById(R.id.popu_app_ico);
 		mPopupWindow.setContentView(rl_popu);
 		popu_icon.setOnClickListener(this);
@@ -130,6 +136,11 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		if (Constant.CLASSIFY_USER.equals(style_flag)) {
 			popu_icon.setBackgroundResource(Constant.ITEM_BACKS[position
 			                  % Constant.ITEM_BACKS.length]);
+			if(v.findViewById(R.id.btn_upload).getVisibility()==View.GONE){
+				btn_upload.setVisibility(View.GONE);
+			}else{
+				btn_upload.setVisibility(View.VISIBLE);
+			}
 			popu_icon.setImageDrawable(LKHomeUtil.zoomBitmap(icon
 					.getBackground().mutate(), 100));
 		} else if (!Constant.CLASSIFY_RECOMMEND.equals(style_flag)) {
@@ -340,6 +351,8 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 				}
 			}else if(v.getId() ==R.id.no){
 				dialog.dismiss();
+			}else if(v.getId()==R.id.btn_upload){
+				Logic.getInstance(context).uploadApk(appInfo.getPackage_name(),appInfo.getName());
 			}
 			
 		}

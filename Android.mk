@@ -11,6 +11,9 @@ LOCAL_PROGUARD_ENABLED := disabled
 LOCAL_DEX_PREOPT := false
 
 
+
+
+
 LOCAL_STATIC_JAVA_LIBRARIES := xmpp jackon android-support-v4
 include $(BUILD_PACKAGE)
 

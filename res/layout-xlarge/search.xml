@@ -4,7 +4,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-<!-- $Id: search.xml 115 2014-02-20 05:44:09Z xgh $ -->
 
     
     <RelativeLayout

@@ -122,7 +122,7 @@ public class AppManagerActivity extends Activity implements
 		gv_appList.setAdapter(adapter);
 		gv_appList.setOnItemClickListener(this);
 		gv_appList.setOnItemSelectedListener(this);
-		adapter.setSelect(0,false);
+		adapter.setSelect(0,true);
 		// getCacheSize("com.jingdong.app.tv");
 	}
 
@@ -513,7 +513,7 @@ public class AppManagerActivity extends Activity implements
 			 * if (mPackageMoveObserver == null) { mPackageMoveObserver = new
 			 * PackageMoveObserver(); }
 			 */
-
+			
 			ApplicationInfo info = mPm.getPackageInfo(packagename,
 					PackageManager.GET_UNINSTALLED_PACKAGES).applicationInfo;
 			int moveFlags = (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0 ? PackageManager.MOVE_INTERNAL

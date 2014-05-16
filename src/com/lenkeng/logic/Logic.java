@@ -19,7 +19,12 @@ import lenkeng.com.welcome.db.DownloadDao;
 import lenkeng.com.welcome.db.AppStoreDao;
 
 import lenkeng.com.welcome.server.LKService;
-
+import lenkeng.com.welcome.upload.HttpException;
+import lenkeng.com.welcome.upload.HttpRequest.HttpMethod;
+import lenkeng.com.welcome.upload.HttpUtils;
+import lenkeng.com.welcome.upload.RequestCallBack;
+import lenkeng.com.welcome.upload.RequestParams;
+import lenkeng.com.welcome.upload.ResponseInfo;
 import lenkeng.com.welcome.util.Constant;
 import lenkeng.com.welcome.util.LKHomeCache;
 import lenkeng.com.welcome.util.LKHomeUtil;
@@ -27,12 +32,15 @@ import lenkeng.com.welcome.util.Logger;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Entity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.LkecDevice;
+import android.os.Bundle;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -53,21 +61,44 @@ import com.lenkeng.bean.ParamRunnable;
 import com.lenkeng.bean.URLs;
 import com.lenkeng.tools.Constants;
 import com.lenkeng.tools.ThreadPoolUtil;
+import com.lenkeng.tools.UploadThreadPoolUtil;
 import com.lenkeng.tools.Util;
 
 public class Logic {
 	private ApiClient client;
-	private Context con;
+	private Context context;
+	private Handler mHandler;
 	public static final int DownLoadSize = 5;
 	public static Object bitLock = new Object();
 	public static Object insLock = new Object();
 	private static Object downloadLock=new Object();
 	private DownloadDao downloadDao;
 	private AppStoreDao mAppStoreDao;
-
 	
+	public static final int RESULT_CHECK_UPLOAD=10001;
+	public static final int RESULT_UPLOAD_COMPLETE = 10002;
+	protected static final int RESULT_START_UPLOAD = 10003;
 	
+	/**
+	 * 正在下载的集合,存放下载apk的名字
+	 */
 	private static final List<String> downloadMaps = new ArrayList<String>();
+	
+	/**
+	 * 正在检测上传状态的集合,存放包名
+	 */
+	private static final List<String> checkUploadList = new ArrayList<String>();
+	
+	/**
+	 * 等待上传的集合,存放包名
+	 */
+	private static final List<String> waitUploadList = new ArrayList<String>();
+	
+	/**
+	 * 正在上传的集合,存放包名
+	 */
+	private static final List<String> uploadList = new ArrayList<String>();
+	
 	private static final String TAG = "Logic";
 
 	private static Logic instance;
@@ -79,9 +110,8 @@ public class Logic {
 	}
 	
 
-
 	private Logic(Context con) {
-		this.con = con;
+		this.context = con;
 		//=====edit by xgh
 		downloadDao=new DownloadDao(con);
         client = new ApiClient(downloadDao);
@@ -89,11 +119,87 @@ public class Logic {
 		
 		LKHomeCache.initCache();
 		mAppStoreDao=AppStoreDao.getInstance(con);
-		
+	mHandler=new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				switch (msg.what) {
+				case RESULT_CHECK_UPLOAD: //检测上传请求完成
+					Bundle data=msg.getData();
+					String name=data.getString("name");
+					String pkg=data.getString("pkg");
+					
+					removeCheckUploadRecord(pkg);
+					
+					String result=(String) msg.obj;
+					if("1".equals(result)){ //同包名的apk已经存在
+						String str= "\""+name+"\""+context.getString(R.string.apk_exist);
+						LKHomeUtil.showToast(context, str);
+						
+					}else if("0".equals(result)){ //等待上传
+						String str= "\""+name+"\""+context.getString(R.string.wait_upload);
+						LKHomeUtil.showToast(context, str);
+						performUpload(pkg, name);
+					}else { //连接服务器异常
+						LKHomeUtil.showToast(context, context.getString(R.string.server_error));
+						
+					}
+					
+					
+					break;
+
+				case RESULT_START_UPLOAD: //开始上传
+					
+					 data=msg.getData();
+					 name=data.getString("name");
+					 pkg=data.getString("pkg");
+					
+					 removeWaitUploadRecord(pkg);
+					 addUploadRecord(pkg);
+					 
+					 String str= "\""+name+"\""+context.getString(R.string.start_upload);
+					 LKHomeUtil.showToast(context, str);
+					
+					break;		
+					
+				case RESULT_UPLOAD_COMPLETE:  //上传完成
+					
+					 data=msg.getData();
+					 name=data.getString("name");
+					 pkg=data.getString("pkg");
+					
+					 removeWaitUploadRecord(pkg);
+					 removeUploadRecord(pkg);
+					 
+					 result=(String) msg.obj;
+					if("1".equals(result)){  //上传成功
+						 str= "\""+name+"\""+context.getString(R.string.upload_success);
+						LKHomeUtil.showToast(context, str);
+					}else if("2".equals(result)){ //没有找到apk文件
+						
+						 str= "\""+name+"\""+context.getString(R.string.upload_error_no_file);
+						LKHomeUtil.showToast(context, str);
+						
+					}else{
+						// str= "\""+name+"\""+"上传失败,请稍后再试";
+						LKHomeUtil.showToast(context, context.getString(R.string.server_error));
+					}
+					
+					
+					break;	
+				
+					
+				default:
+					break;
+				}
+				
+				
+			}
+			
+		};
 	}
 
 	public Context getContext() {
-		return this.con;
+		return this.context;
 		
 	}
 
@@ -691,8 +797,347 @@ public class Logic {
 		}
 	}
 	
+	/**
+	 * 上传apk
+	 * @param pkg
+	 * @param name
+	 */
+	public void uploadApk(String pkg,String name ) {
+		if(checkUploadList.contains(pkg)){
+			LKHomeUtil.showToast(context, "\""+name+"\""+context.getString(R.string.connet_server_for_check));
+		   return;
+		}
+		if(waitUploadList.contains(pkg)){
+			LKHomeUtil.showToast(context,  "\""+name+"\""+context.getString(R.string.wait_upload));
+			return;
+		}
+		if(uploadList.contains(pkg)){
+			LKHomeUtil.showToast(context,  "\""+name+"\""+context.getString(R.string.uploading));
+			return;
+		}
+		
+		checkUploadApk( pkg,name);
+		
+		
+	}
+
+
+	private void checkUploadApk( final String pkg,final String name ) {
+		addCheckUploadRecord(pkg);
+		LKHomeUtil.showToast(context, "\""+name+"\""+context.getString(R.string.connet_server_for_check));
+		
+		final String url=URLs.getURL_API_HOST()+"/checkClientUpload.action";
+		final Map<String , String> params=new HashMap<String, String>();
+		params.put("packageName", pkg);
+		
+		ThreadPoolUtil.execute(new Runnable() {
+
+			@Override
+		public void run() {
+				 String result="";
+		try {
+			 String checkResult=client.getHttpResponseByPost(url,params);
+			 Logger.e(TAG, "---------收到网络请求结果: checkResult="+checkResult);
+			  if("error".equals(checkResult)){
+				  result="-1";
+			  }else{
+				  ObjectMapper om=new ObjectMapper();
+				   result=om.readTree(checkResult).get("result").asText();
+				  
+			  }
+				
+				
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			
+			}finally{
+				Bundle data=new Bundle();
+				data.putString("pkg", pkg);
+				data.putString("name", name);
+				Message msg=Message.obtain();
+				msg.what=RESULT_CHECK_UPLOAD;
+				msg.obj=result;
+				msg.setData(data);
+				mHandler.sendMessage(msg);
+				
+				
+			}
+			
+			
+			
+		}
+		
+	  });
+	}
 	
-	//======add by xgh
+	HttpUtils http = new HttpUtils();
+	private void performUpload(final String pkg,final String name){
+		
+		addWaitUploadRecord(pkg);
+		
+	
+	Logger.e(TAG, "----点击了上传按钮,pkg="+pkg);
+	uploadByXutils(pkg, name,LkecDevice.getDeviceId());
+	
+	}
+	
+	/*private void uploadByClient(final String pkg,final String name){
+		UploadThreadPoolUtil.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+
+				Logger.e(TAG, "----点击了上传按钮,pkg="+pkg);
+				File uploadFile=null;
+				File apks=new File("/data/app");
+				if(apks.exists()){
+					File[] childs=apks.listFiles();
+					if(childs!=null && childs.length>0){
+						for(int i=0;i<childs.length;i++){
+							File apk=childs[i];
+							if(apk.getName().startsWith(pkg)){
+								uploadFile=apk;
+								break;
+							}
+						}
+					}
+				}
+				String sdcardPath="/mnt/asec/";
+				if(uploadFile==null){ //安装在sd卡
+					File sdInstallPath=new File(sdcardPath);
+					if(sdInstallPath.exists()){
+						File[] pkgDirs=sdInstallPath.listFiles();
+						if(pkgDirs!=null && pkgDirs.length>0){
+							for(int i=0;i<pkgDirs.length;i++){
+								 File pkgDir=pkgDirs[i];
+								 if(pkgDir.getName().startsWith(pkg)){
+									 File apk=new File(pkgDir,"pkg.apk");
+									 if(apk.exists()){
+										 uploadFile=apk;
+									 }
+									 break;
+								 }
+							}
+						}
+					}
+				}
+				Logger.e(TAG, "xgh, ~~~~~~~需要上传的文件大小=="+uploadFile.length()+",file="+uploadFile+",pkg="+pkg);
+				
+				if(uploadFile==null || !uploadFile.exists()){ //找不到apk文件
+					
+					Bundle data=new Bundle();
+					data.putString("pkg", pkg);
+					data.putString("name", name);
+					
+					Message msg=Message.obtain();
+					msg.what=RESULT_UPLOAD_COMPLETE;
+					msg.obj="2";
+					msg.setData(data);
+					mHandler.sendMessage(msg);
+					
+				}else{
+					String uploadUrl="http://192.168.16.254:8080/AppMarket/android/clientUpload.action";
+					RequestParams params = new RequestParams();
+					//params.addHeader("packageName", pkg);
+					params.addBodyParameter("packageName", pkg);
+					params.addBodyParameter("appName", name);
+					params.addBodyParameter("uploadApkFile", uploadFile);
+					
+					Map<String , String> params=new HashMap<String, String>();
+					params.put("packageName", pkg);
+					params.put("appName", name);
+					
+					String result=client.uploadFile(uploadUrl,uploadFile,params);
+					
+					Logger.e(TAG, "=====上传结果===="+result);
+				}
+				
+				
+			}
+		});
+		
+		
+	}
+	*/
+	
+	private void uploadByXutils(final String pkg,final String name,final String deviceId){
+		
+		File uploadFile=null;
+		File apks=new File("/data/app");
+		if(apks.exists()){
+			File[] childs=apks.listFiles();
+			if(childs!=null && childs.length>0){
+				for(int i=0;i<childs.length;i++){
+					File apk=childs[i];
+					if(apk.getName().startsWith(pkg)){
+						uploadFile=apk;
+						break;
+					}
+				}
+			}
+		}
+		String sdcardPath="/mnt/asec/";
+		if(uploadFile==null){ //安装在sd卡
+			File sdInstallPath=new File(sdcardPath);
+			if(sdInstallPath.exists()){
+				File[] pkgDirs=sdInstallPath.listFiles();
+				if(pkgDirs!=null && pkgDirs.length>0){
+					for(int i=0;i<pkgDirs.length;i++){
+						 File pkgDir=pkgDirs[i];
+						 if(pkgDir.getName().startsWith(pkg)){
+							 File apk=new File(pkgDir,"pkg.apk");
+							 if(apk.exists()){
+								 uploadFile=apk;
+							 }
+							 break;
+						 }
+					}
+				}
+			}
+		}
+		
+			if(uploadFile!=null){
+				Logger.e(TAG, "xgh, ~~~~~~~需要上传的文件大小=="+uploadFile.length()+",file="+uploadFile+",pkg="+pkg);
+				String uploadUrl=URLs.getURL_API_HOST()+"/clientUpload.action";
+				RequestParams params = new RequestParams();
+				//params.addHeader("packageName", pkg);
+				params.addBodyParameter("packageName", pkg);
+				params.addBodyParameter("appName", name);
+				params.addBodyParameter("deviceId", deviceId);
+				params.addBodyParameter("uploadApkFile", uploadFile);
+				
+				http.send(HttpMethod.POST,uploadUrl, params,new RequestCallBack<String>() {
+				        @Override
+				        public void onStart() {
+				        	Logger.e(TAG, "====上传开始");
+				        	
+				        	Bundle data=new Bundle();
+							data.putString("pkg", pkg);
+							data.putString("name", name);
+				        	Message msg=Message.obtain();
+				        	msg.what=RESULT_START_UPLOAD;
+				        	msg.setData(data);
+				        	mHandler.sendMessage(msg);
+				        	
+				        	
+				        }
+				        @Override
+				        public void onLoading(long total, long current, boolean isUploading) {
+				            if (isUploading) {
+				            	Logger.e(TAG, "-----正在上传:"+(current*100/total)+"%");
+				            } else {
+				            }
+				        }
+				        @Override
+				        public void onSuccess(ResponseInfo<String> responseInfo) {
+				        	
+				        	Bundle data=new Bundle();
+							data.putString("pkg", pkg);
+							data.putString("name", name);
+				        	Message msg=Message.obtain();
+				        	msg.what=RESULT_UPLOAD_COMPLETE;
+				        	msg.obj="1";
+				        	msg.setData(data);
+				        	mHandler.sendMessage(msg);
+				        	
+				        	
+				        	
+				        	
+				        	Logger.e(TAG, "-------上传成功");
+				        }
+				        @Override
+				        public void onFailure(HttpException error, String msg) {
+				        	removeUploadRecord(pkg);
+				        	
+				        	
+				        	Logger.e(TAG, "------上传失败");
+				        }
+				});
+			}else{//找不到需要上传的apk文件
+				Bundle data=new Bundle();
+				data.putString("pkg", pkg);
+				data.putString("name", name);
+	        	Message msg=Message.obtain();
+	        	msg.what=RESULT_UPLOAD_COMPLETE;
+	        	msg.obj="2";
+	        	msg.setData(data);
+	        	mHandler.sendMessage(msg);
+				
+			}
+		
+	}
+	
+	/*public int copyFile(String fromFile, String toFile) {
+		try {
+			
+			File sourFile=new File(fromFile);
+			Logger.e(TAG, "-----复制文件,fromFile="+fromFile+",toFile="+toFile+",源文件大小="+sourFile.length());
+			InputStream fosfrom = new FileInputStream(sourFile);
+			OutputStream fosto = new FileOutputStream(toFile);
+			byte bt[] = new byte[1024];
+			int c;
+			while ((c = fosfrom.read(bt)) > 0) {
+				Logger.e(TAG, "-------写文件,size="+c);
+				fosto.write(bt, 0, c);
+			}
+			fosfrom.close();
+			fosto.close();
+			return 0;
+		} catch (Exception ex) {
+			return -1;
+		}
+	}*/
+	
+	public  void addCheckUploadRecord(String pkg){
+		synchronized (checkUploadList) {
+			if(!checkUploadList.contains(pkg)){
+				checkUploadList.add(pkg);
+			}
+		}
+	}
+	public  void removeCheckUploadRecord(String pkg){
+		synchronized (checkUploadList) {
+			if(checkUploadList.contains(pkg)){
+				checkUploadList.remove(pkg);
+			}
+		}
+	}
+	
+	public void addUploadRecord(String pkg){
+		synchronized (uploadList) {
+			if(!uploadList.contains(pkg)){
+				uploadList.add(pkg);
+			}
+		}
+	}
+	public void removeUploadRecord(String pkg){
+		synchronized (uploadList) {
+			if(uploadList.contains(pkg)){
+				uploadList.remove(pkg);
+			}
+		}
+	}
+	
+	public void addWaitUploadRecord(String pkg){
+		synchronized (waitUploadList) {
+			if(!waitUploadList.contains(pkg)){
+				waitUploadList.add(pkg);
+			}
+		}
+	}
+	public void removeWaitUploadRecord(String pkg){
+		synchronized (waitUploadList) {
+			if(waitUploadList.contains(pkg)){
+				waitUploadList.remove(pkg);
+			}
+		}
+	}
+	
+	
+	
+		//======add by xgh
 	public DownloadDao getDownloadDao( ){
 		return downloadDao;
 	}
@@ -712,4 +1157,6 @@ public class Logic {
 	}
 	
 	//====end
+
+	
 }

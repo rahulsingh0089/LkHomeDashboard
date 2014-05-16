@@ -157,7 +157,7 @@ public class SystemInfoActivity extends Activity {
 		if(availsize > low){
 			availsize=availsize-low;
 		}else{
-			availsize =low -availsize;
+			availsize =0;
 		}
 	   
 		return Formatter.formatFileSize(this, availsize);

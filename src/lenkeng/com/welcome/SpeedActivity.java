@@ -31,6 +31,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.PackageStats;
+import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.os.Debug.MemoryInfo;
 import android.os.Handler;
@@ -61,14 +62,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 public class SpeedActivity extends Activity implements OnItemClickListener,
 		OnCheckedChangeListener, OnClickListener {
 	private String TAG = "SpeedActivity";
 	private static final int GET_CACHE_COMPLETE = 0;
-	//private static final int KILL_TASK_COMPLETE = 1;
-	private static final long TOTAL_SIZE = 1024 * 1024 *900;
-	//private long killCacheSize = 0;
+	// private static final int KILL_TASK_COMPLETE = 1;
+	private static final long TOTAL_SIZE = 1024 * 1024 * 900;
+	// private long killCacheSize = 0;
 	private ListView lv_task;
 	private MyAdapter adapter;
 	private LayoutInflater inflater;
@@ -98,21 +98,18 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 				rl_mycheck.setVisibility(View.GONE);
 				lv_task.setVisibility(View.GONE);
 				tv_speed_succedd.setVisibility(View.VISIBLE);
-				
 
-				
 				tv_speed_succedd.setText(SpeedActivity.this
 						.getString(R.string.text_speed_success_start)
-						+ Formatter.formatFileSize(SpeedActivity.this,
-								ram)
+						+ Formatter.formatFileSize(SpeedActivity.this, ram)
 						+ SpeedActivity.this
 								.getString(R.string.text_speed_success_middle)
 						+ LKHomeUtil.formatPercent(ram, TOTAL_SIZE)
 						+ SpeedActivity.this
 								.getString(R.string.text_speed_success_end));
-				ram=0;
+				ram = 0;
 				break;
-			
+
 			default:
 				break;
 			}
@@ -229,6 +226,9 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 				if (isSystemTask(ai) && !"system".equals(packageName)
 						&& !"lenkeng.com.welcome".equals(packageName)
 						|| "com.android.music".equals(packageName)) {
+					if( isInputMethodApp(SpeedActivity.this, packageName)){
+						continue;
+					}
 					ti = new TaskInfo();
 					ti.setTaskname(ai.loadLabel(pManager).toString());
 					ti.setTaskicon(ai.loadIcon(pManager));
@@ -237,7 +237,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 					MemoryInfo[] memoryInfos = manager
 							.getProcessMemoryInfo(new int[] { rap.pid });
 					int memorysize = memoryInfos[0].getTotalPrivateDirty();
-					ti.setMemorysize(memorysize*1024);
+					ti.setMemorysize(memorysize * 1024);
 					infos.add(ti);
 				} else {
 
@@ -268,7 +268,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	}
 
 	public static boolean isSystemTask(ApplicationInfo info) {
-		
+
 		if ((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
 			return true;
 		} else if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -353,7 +353,8 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		this.finish();
 	}
 
-	int ram=0;
+	int ram = 0;
+
 	public void speed(View v) {
 		/*
 		 * for(int i=0;i<temp;i++){ TaskInfo info=infos.get(i);
@@ -364,43 +365,51 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		if (selectedInfos.size() != 0) {
 			pb.setVisibility(View.VISIBLE);
 		} else {
-			LKHomeUtil.showToast(getApplicationContext(), R.string.text_can_noreleast);
+			LKHomeUtil.showToast(getApplicationContext(),
+					R.string.text_can_noreleast);
 			return;
 		}
-		int infoSize=infos.size();
+		int infoSize = infos.size();
 		for (int i = 0; i < selectedInfos.size(); i++) {
 
 			TaskInfo info = selectedInfos.get(i);
 			forceStopPackage(info.getPackname());
 			aManager.killBackgroundProcesses(info.getPackname());
 			infos.remove(info);
-			ram+=info.getMemorysize();
-			Logger.e("kao", "----packagename--"+info.getPackname()+"--pid---  "+info.getPid()+"----mem--  "+info.getMemorysize());
-			//int size=getAvailMemory(info.getPid());
+			ram += info.getMemorysize();
+			Logger.e(
+					"kao",
+					"----packagename--" + info.getPackname() + "--pid---  "
+							+ info.getPid() + "----mem--  "
+							+ info.getMemorysize());
+			// int size=getAvailMemory(info.getPid());
 		}
 		adapter.notifyDataSetChanged();
 		// killBackgroundProcess() ;
 		// queryToatalCache();
-		if(cb_choiceAll.isChecked() || selectedInfos.size()==infoSize){
+		if (cb_choiceAll.isChecked() || selectedInfos.size() == infoSize) {
 			Message msg = Message.obtain();
 			msg.what = GET_CACHE_COMPLETE;
 			handler.sendMessage(msg);
-		}else{
+		} else {
 			pb.setVisibility(View.GONE);
-			Toast.makeText(this, SpeedActivity.this
-						.getString(R.string.text_speed_success_start)
-						+ Formatter.formatFileSize(SpeedActivity.this,
-								ram)
-						+ SpeedActivity.this
-								.getString(R.string.text_speed_success_middle)
-						+ LKHomeUtil.formatPercent(ram, TOTAL_SIZE)
-						+ SpeedActivity.this
-								.getString(R.string.text_speed_success_end), 0).show();
-			//LKHomeUtil.showToast(getApplicationContext(), R.string.text_speed_success_start);
-			ram=0;
+			Toast.makeText(
+					this,
+					SpeedActivity.this
+							.getString(R.string.text_speed_success_start)
+							+ Formatter.formatFileSize(SpeedActivity.this, ram)
+							+ SpeedActivity.this
+									.getString(R.string.text_speed_success_middle)
+							+ LKHomeUtil.formatPercent(ram, TOTAL_SIZE)
+							+ SpeedActivity.this
+									.getString(R.string.text_speed_success_end),
+					0).show();
+			// LKHomeUtil.showToast(getApplicationContext(),
+			// R.string.text_speed_success_start);
+			ram = 0;
 		}
 		selectedInfos.clear();
-		
+
 	}
 
 	@SuppressLint("NewApi")
@@ -462,7 +471,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 						 * }
 						 */
 						// killCacheSize+=total;
-					
+
 						if (packageInfos.size() == tempCounter) {
 							tempCounter = 0;
 							Message msg = Message.obtain();
@@ -478,27 +487,32 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	public int getAvailMemory(int pid) {// 获取android当前可用内存大小
 
 		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		int[] pids=new int[]{pid};
-		MemoryInfo[] info=am.getProcessMemoryInfo(pids);
-		int size=info[0].getTotalPss();
-		int totalPri=info[0].getTotalPrivateDirty();
-		int totalSha=info[0].getTotalSharedDirty();
-		int naPri=info[0].nativePrivateDirty;
-		int naP=info[0].nativePss;
-		int naSha=info[0].nativeSharedDirty;
-		int dalPri=info[0].dalvikPrivateDirty;
-		int dalP=info[0].dalvikPss;
-		int dalSha=info[0].dalvikSharedDirty;
-		int oPri=info[0].otherPrivateDirty;
-		int oP=info[0].otherPss;
-		int oSha=info[0].otherSharedDirty;
-		Logger.e("kao", "---TotalPss---"+size+"---totalPri--  "+totalPri+"---totalSha--- "+totalSha);
-		Logger.e("kao", "---naPri---"+naPri+"---naP--  "+naP+"---naSha--- "+naSha);
-		Logger.e("kao", "---dalPri---"+dalPri+"---dalP--  "+dalP+"---dalSha--- "+dalSha);
-		Logger.e("kao", "---oPri---"+oPri+"---oP--  "+oP+"---oSha--- "+oSha);
-		Logger.e("kao", "---info[].length---   "+info.length);
-		//android.app.ActivityManager.MemoryInfo mi = new android.app.ActivityManager.MemoryInfo();
-		//am.getMemoryInfo(mi);
+		int[] pids = new int[] { pid };
+		MemoryInfo[] info = am.getProcessMemoryInfo(pids);
+		int size = info[0].getTotalPss();
+		int totalPri = info[0].getTotalPrivateDirty();
+		int totalSha = info[0].getTotalSharedDirty();
+		int naPri = info[0].nativePrivateDirty;
+		int naP = info[0].nativePss;
+		int naSha = info[0].nativeSharedDirty;
+		int dalPri = info[0].dalvikPrivateDirty;
+		int dalP = info[0].dalvikPss;
+		int dalSha = info[0].dalvikSharedDirty;
+		int oPri = info[0].otherPrivateDirty;
+		int oP = info[0].otherPss;
+		int oSha = info[0].otherSharedDirty;
+		Logger.e("kao", "---TotalPss---" + size + "---totalPri--  " + totalPri
+				+ "---totalSha--- " + totalSha);
+		Logger.e("kao", "---naPri---" + naPri + "---naP--  " + naP
+				+ "---naSha--- " + naSha);
+		Logger.e("kao", "---dalPri---" + dalPri + "---dalP--  " + dalP
+				+ "---dalSha--- " + dalSha);
+		Logger.e("kao", "---oPri---" + oPri + "---oP--  " + oP + "---oSha--- "
+				+ oSha);
+		Logger.e("kao", "---info[].length---   " + info.length);
+		// android.app.ActivityManager.MemoryInfo mi = new
+		// android.app.ActivityManager.MemoryInfo();
+		// am.getMemoryInfo(mi);
 
 		return size;
 	}
@@ -590,44 +604,45 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 				List<RunningAppProcessInfo> rapInfos = manager
 						.getRunningAppProcesses();
 				pause();
-				for (RunningAppProcessInfo rap : rapInfos) {
-					ApplicationInfo ai = null;
 
+				for (int i = 0; i < rapInfos.size(); i++) {
 					try {
+						ApplicationInfo ai = null;
+						RunningAppProcessInfo rap = rapInfos.get(i);
 						ai = pManager.getPackageInfo(rap.processName, 0).applicationInfo;
 						String packageName = rap.processName;
-						Logger.e("kao", "-----speed----packagename---"
-								+ packageName);
-						if (isSystemTask(ai)
-								&& !"system".equals(packageName)
-								|| LKHomeUtil.appStyles
-										.containsKey(packageName)) {
+						
+						if (isSystemTask(ai)|| LKHomeUtil.appStyles.containsKey(packageName)) {
+							if ("system".equals(packageName)|| isInputMethodApp(context, packageName)) {
+								continue;
+							}
 							manager.forceStopPackage(packageName);
 							manager.killBackgroundProcesses(packageName);
+							Logger.e("kao", "-----speed----packagename---"
+									+ packageName);
 						}
-						
-						
 					} catch (NameNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+
 				// pause();
 			} else {
 				// start();
-				
-				
-				
+
 			}
 
 		}
 
 	}
+
 	private KeyEvent simulateKeyEvent(int action, int keyCode) {
 		KeyEvent event = new KeyEvent(action, keyCode);
 		return event;
 
 	}
+
 	private long getRunMemory() {
 		return Runtime.getRuntime().totalMemory();
 	}
@@ -635,7 +650,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	private void pause() {
 		Intent i = new Intent("com.android.music.musicservicecommand");
 		i.putExtra("command", "pause");
-		
+
 		LKHomeApp.getAppContext().sendBroadcast(i);
 	}
 
@@ -644,4 +659,32 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		i.putExtra("command", "play");
 		LKHomeApp.getAppContext().sendBroadcast(i);
 	}
+
+	public static boolean isInputMethodApp(Context context, String packageName) {
+		PackageManager pm = context.getPackageManager();
+		boolean isInputMethodApp = false;
+		try {
+			PackageInfo pkgInfo = pm.getPackageInfo(packageName,
+					PackageManager.GET_SERVICES);
+			ServiceInfo[] sInfo = pkgInfo.services;
+			if (sInfo != null) {
+				for (int i = 0; i < sInfo.length; i++) {
+					ServiceInfo serviceInfo = sInfo[i];
+					if (serviceInfo.permission != null
+							&& serviceInfo.permission
+									.equals("android.permission.BIND_INPUT_METHOD")) {
+						isInputMethodApp = true;
+						break;
+					}
+				}
+			}
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return isInputMethodApp;
+	}
+
 }
