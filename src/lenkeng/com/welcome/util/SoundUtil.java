@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 
 public class SoundUtil {
 
@@ -226,7 +227,7 @@ public class SoundUtil {
 	}
 
 	boolean needRemove = false;
-
+	int volum=100;
 	private void changeModel(boolean add,int flag) {
 
 		try {
@@ -250,6 +251,10 @@ public class SoundUtil {
 							needRemove = true;
 							Logger.e("gw", "----- canageModel  2  --");
 						}
+						volum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+						//audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 100, 0);
+
 					} else {
 						
 						if (needRemove) {
@@ -257,6 +262,9 @@ public class SoundUtil {
 							needRemove = false;
 							Logger.e("gw", "----- canageModel  3  --");
 						};
+						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
+						//audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
+						
 					}
 					setAudioMode(modes,flag);
 				}
@@ -288,14 +296,28 @@ public class SoundUtil {
 			//e1.printStackTrace();
 		}
 		try {
-			OFFPlayer = MediaPlayer.create(context, R.raw.off);
+			
+			try {
+	            AssetFileDescriptor afd = context.getResources().openRawResourceFd(R.raw.off);
+	            OFFPlayer = new MediaPlayer();
+	            OFFPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+	            OFFPlayer.setVolume(100.0f, 100.0f);
+	            OFFPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+	            afd.close();
+	            OFFPlayer.prepare();
+	        } catch (IOException ex) {
+	            // fall through
+	        } catch (IllegalArgumentException ex) {
+	           // fall through
+	        } catch (SecurityException ex) {
+	            // fall through
+	        }
 			OFFPlayer.setOnCompletionListener(completionListener);
 			OFFPlayer.setOnPreparedListener(new OnPreparedListener() {
 
 				@Override
 				public void onPrepared(MediaPlayer mp) {
 					// TODO Auto-generated method stub
-					
 				}
 			});
 			OFFPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
@@ -327,6 +349,8 @@ public class SoundUtil {
 						if(OFFPlayer !=null){
 							Logger.e("gw", "--playerOFF  changeModel(true,1)");
 							changeModel(true,1);
+							//audioManager.setMode(AudioManager.MODE_RINGTONE);
+							
 							OFFPlayer.start();
 							isOFFPlay = true;
 							//SystemProperties.set("sys.audio.iis", "true");
@@ -362,14 +386,28 @@ public class SoundUtil {
 			//e1.printStackTrace();
 		}
 		try {
-			ONPlayer = MediaPlayer.create(context, R.raw.on);
+			//ONPlayer = MediaPlayer.create(context, R.raw.on);
+			try {
+	            AssetFileDescriptor afd = context.getResources().openRawResourceFd(R.raw.on);
+	            ONPlayer = new MediaPlayer();
+	            ONPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+	            ONPlayer.setVolume(100.0f, 100.0f);
+	            ONPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+	            afd.close();
+	            ONPlayer.prepare();
+	        } catch (IOException ex) {
+	            // fall through
+	        } catch (IllegalArgumentException ex) {
+	           // fall through
+	        } catch (SecurityException ex) {
+	            // fall through
+	        }
 			ONPlayer.setOnCompletionListener(completionListener);
 			ONPlayer.setOnPreparedListener(new OnPreparedListener() {
 
 				@Override
 				public void onPrepared(MediaPlayer mp) {
 					// TODO Auto-generated method stub
-					
 				}
 			});
 			
@@ -440,7 +478,21 @@ public class SoundUtil {
 			//e1.printStackTrace();
 		}
 		try {
-			videoPlayer = MediaPlayer.create(context, R.raw.videomsg);
+			try {
+	            AssetFileDescriptor afd = context.getResources().openRawResourceFd(R.raw.videomsg);
+	            videoPlayer = new MediaPlayer();
+	            videoPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+	            videoPlayer.setVolume(100.0f, 100.0f);
+	            videoPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+	            afd.close();
+	            videoPlayer.prepare();
+	        } catch (IOException ex) {
+	            // fall through
+	        } catch (IllegalArgumentException ex) {
+	           // fall through
+	        } catch (SecurityException ex) {
+	            // fall through
+	        }
 			videoPlayer.setOnCompletionListener(completionListener);
 			videoPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
 
@@ -509,7 +561,9 @@ public class SoundUtil {
 				
 				Logger.e("gw", "----isVideoPlay---"+isVideoPlay+"  isONPlay  =  "+isONPlay +"  isOFFPlay  =  "+isOFFPlay);
 			}
-			mp.release();
+			if(mp !=null){
+				mp.release();
+			}
 
 			/*
 			 * try {

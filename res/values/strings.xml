@@ -191,7 +191,7 @@
     
     <string name="connet_server_for_check">connecting server and checking, please wait</string>
     <string name="wait_upload">wait uploading</string>
-    <string name="uploading">uploding...</string>
+    <string name="uploading">uploding %s...</string>
     <string name="apk_exist">apk has existed. thanks for your participation</string>
     <string name="server_error">Server is busy, please try again later</string>
     <string name="start_upload">Start uploading</string>

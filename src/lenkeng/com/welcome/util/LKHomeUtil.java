@@ -122,6 +122,10 @@ import com.lenkeng.tools.Util;
 public class LKHomeUtil {
 	
     public static boolean DEBUG=true;
+    public static String PROPERTY_FILE;
+    public static final String PROPERTY_FILE_A20="/mnt/extsd/debug.properties";
+	public static final String PROPERTY_FILE_RK="/mnt/external_sd/debug.properties";
+	
     private static String preInstallUrl="/data/preinstallres/";
 	private static final String TAG = "LKHomeUtil";
 	private static LkecDevice lk_device = new LkecDevice();
@@ -130,8 +134,7 @@ public class LKHomeUtil {
 	public static Map<String, String> appStyles;
 	private static Map<String, String> packageMapRes;
 	private static AppDataDao appDao;
-	private static ConnectionConfiguration config = new ConnectionConfiguration(
-			URLs.getXmppHost(), Constant.SERVER_PORT);
+	private static ConnectionConfiguration config;
 	public static XMPPConnection conn = null;
 	private SharedPreferences sp;
 	public static Time time;
@@ -146,10 +149,7 @@ public class LKHomeUtil {
 	public static final String DISPLAY_PERCENT_HORIZONTAL = "display_percent_horizontal";// 水平百分比
 	public static final String DISPLAY_PERCENT_VERTICAL = "display_percent_vertical"; // 垂直百分比
 	
-	public static final String PROPERTY_FILE_A20="/mnt/extsd/debug.properties";
-	public static final String PROPERTY_FILE_RK="/mnt/external_sd/debug.properties";
 	
-	public static String PROPERTY_FILE;
 	
 	
 	static {
@@ -269,15 +269,18 @@ public class LKHomeUtil {
 		
 		////rk: [ro.hardware]: [rk30board],/mnt/external_sd
 		//a20:[ro.hardware]: [sun7i],/mnt/extsd
+		
+		
+	}
+
+	private static void getDebugFileDir() {
 		String platform = SystemProperties.get("ro.hardware");
 		if(platform.startsWith("rk")){ //rk
 			PROPERTY_FILE=PROPERTY_FILE_RK;
 			
 		}else if(platform.startsWith("sun")){ //a20
 			PROPERTY_FILE=PROPERTY_FILE_A20;
-					
 		}
-		
 	}
 
 	public static String getPreApkIcon(String packagename) {
@@ -527,17 +530,19 @@ public class LKHomeUtil {
 
 	//
 	public static XMPPConnection getConnection() {
-		config.setRosterLoadedAtLogin(false);
-		config.setReconnectionAllowed(true);
-		config.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
-		config.setSASLAuthenticationEnabled(true);
-		config.setTruststorePath("/system/etc/security/cacerts/cacerts.bks");
-		config.setTruststoreType("bks");
+		
 
 		if (conn != null && conn.isConnected() && conn.isAuthenticated()) {
 			return conn;
 		} else {
 			try {
+				config = new ConnectionConfiguration(URLs.getXmppHost(), Constant.SERVER_PORT);
+				config.setRosterLoadedAtLogin(false);
+				config.setReconnectionAllowed(true);
+				config.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
+				config.setSASLAuthenticationEnabled(true);
+				config.setTruststorePath("/system/etc/security/cacerts/cacerts.bks");
+				config.setTruststoreType("bks");
 				conn = new XMPPConnection(config);
 				conn.connect();
 			} catch (Exception e) {
@@ -1434,7 +1439,11 @@ public class LKHomeUtil {
 		String s = Build.FIRMWARE+"_"+lk_device.getDeviceId();
 		return s;
 	}
+	public static String getUserID() {
 
+		String s = lk_device.getDeviceId();
+		return s;
+	}
 	/*
 	 * public static String getUserName(){ String s=lk_device.getDeviceId();
 	 * if(null ==s){ return "0"; }else{ s=s.substring(4); } //byte[]
@@ -1595,7 +1604,8 @@ public class LKHomeUtil {
 	        return result;
 	}
 	
-	public static String readData(String key) {   
+	public static String readData(String key) {  
+		getDebugFileDir();
 	    Properties props = new Properties();   
 	    try {   
 	    	File debugFile=new File(PROPERTY_FILE);

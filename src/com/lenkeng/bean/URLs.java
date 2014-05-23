@@ -81,6 +81,7 @@ public class URLs implements Serializable {
 		}else{
 			if(isZhVertion()){
 				host=getContext().getString(R.string.xmpp_host_zh);
+		
 			}else{
 				host=getContext().getString(R.string.xmpp_host_en);
 			}

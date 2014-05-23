@@ -108,7 +108,7 @@ public class SystemInfoActivity extends Activity {
 		return "0.0.0.0";
 	}
 	private String getSystemVersion(){
-		String s=LKHomeUtil.getUserName();
+		String s=LKHomeUtil.getUserID();
 		if(null == s){
 			s="";
 		}

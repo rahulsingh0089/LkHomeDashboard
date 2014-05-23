@@ -99,6 +99,11 @@ public class Logic {
 	 */
 	private static final List<String> uploadList = new ArrayList<String>();
 	
+	/**
+	 * 存放上传进度的集合
+	 */
+	private static final Map<String, Integer> percentMap=new HashMap<String, Integer>();
+	
 	private static final String TAG = "Logic";
 
 	private static Logic instance;
@@ -812,7 +817,7 @@ public class Logic {
 			return;
 		}
 		if(uploadList.contains(pkg)){
-			LKHomeUtil.showToast(context,  "\""+name+"\""+context.getString(R.string.uploading));
+			LKHomeUtil.showToast(context,  "\""+name+"\""+String.format(context.getString(R.string.uploading),percentMap.get(pkg)+"%"));
 			return;
 		}
 		
@@ -1012,6 +1017,7 @@ public class Logic {
 				        @Override
 				        public void onStart() {
 				        	Logger.e(TAG, "====上传开始");
+				        	percentMap.put(pkg, 0);
 				        	
 				        	Bundle data=new Bundle();
 							data.putString("pkg", pkg);
@@ -1026,12 +1032,15 @@ public class Logic {
 				        @Override
 				        public void onLoading(long total, long current, boolean isUploading) {
 				            if (isUploading) {
+				            	percentMap.put(pkg, (int) (current*100/total));
 				            	Logger.e(TAG, "-----正在上传:"+(current*100/total)+"%");
 				            } else {
 				            }
 				        }
 				        @Override
 				        public void onSuccess(ResponseInfo<String> responseInfo) {
+				        	
+				        	percentMap.remove(pkg);
 				        	
 				        	Bundle data=new Bundle();
 							data.putString("pkg", pkg);
@@ -1051,7 +1060,7 @@ public class Logic {
 				        public void onFailure(HttpException error, String msg) {
 				        	removeUploadRecord(pkg);
 				        	
-				        	
+				        	percentMap.put(pkg, 0);
 				        	Logger.e(TAG, "------上传失败");
 				        }
 				});

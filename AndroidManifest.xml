@@ -86,7 +86,14 @@
                 
             </intent-filter>
         </receiver>
-       
+       <receiver android:name="lenkeng.com.welcome.server.PowerListener">
+           <intent-filter >
+                <action android:name="android.intent.action.MEDIA_MOUNTED"/>
+                <action android:name="android.intent.action.MEDIA_EJECT" />
+                <data android:scheme="file"/>
+                
+            </intent-filter>
+       </receiver>
         
         <activity android:name=".MessageActivity"  
             android:configChanges="locale|keyboard|keyboardHidden">
