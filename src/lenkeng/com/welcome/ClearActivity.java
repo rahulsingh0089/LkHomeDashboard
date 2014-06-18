@@ -6,6 +6,7 @@ import java.util.List;
 
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.content.pm.PackageStats;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.text.format.Formatter;
 import android.view.Menu;
@@ -100,7 +102,7 @@ public class ClearActivity extends Activity {
 		Method[] ms = PackageManager.class.getMethods();
 		for (int i = 0; i < ms.length; i++) {
 
-			if ("deleteApplicationCacheFiles".equals(ms[i].getName())) {
+			if (!"org.xbmc.xbmc".equals(packageName) && "deleteApplicationCacheFiles".equals(ms[i].getName()) ) {
 				try {
 					ms[i].invoke(pManager, new Object[] { packageName,dataObserver });
 				} catch (Exception e) {
@@ -170,16 +172,19 @@ public class ClearActivity extends Activity {
 			// TODO Auto-generated method stub
 			PackageManager manager = context.getPackageManager();
 			List<PackageInfo> packageInfos= manager.getInstalledPackages(0);
-			for (PackageInfo packInfo : packageInfos) {
-				String pName = packInfo.packageName;
-				try {
-					manager.deleteApplicationCacheFiles(pName, null);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					
+				for (PackageInfo packInfo : packageInfos) {
+					String pName = packInfo.packageName;
+					try {
+						if(!"org.xbmc.xbmc".equals(pName)){
+							manager.deleteApplicationCacheFiles(pName, null);
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						
+					}
 				}
-			}
+			
 		}
 	}
 }

@@ -60,11 +60,13 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
@@ -408,7 +410,8 @@ public class LKService extends Service implements OnClickListener,
 		btn_like.setOnFocusChangeListener(this);
 		btn_hate.setOnClickListener(this);
 		btn_hate.setOnFocusChangeListener(this);
-
+		//btn_like.setOnKeyListener(keyListener);
+		//btn_hate.setOnKeyListener(keyListener);
 		mLayoutParams = new LayoutParams();
 		mLayoutParams.type = LayoutParams.TYPE_SYSTEM_ALERT;
 		mLayoutParams.format = PixelFormat.RGBA_8888;
@@ -438,7 +441,17 @@ public class LKService extends Service implements OnClickListener,
 		}*/
 		lkUtil.startTimer();
 	}
-
+	private OnKeyListener keyListener=new OnKeyListener() {
+		
+		@Override
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			// TODO Auto-generated method stub
+			if(keyCode ==KeyEvent.KEYCODE_BACK){
+				
+			}
+			return false;
+		}
+	};
 	private void setNotificationsEnabled(boolean enabled,String packageName) {
         INotificationManager nm = INotificationManager.Stub.asInterface(
                 ServiceManager.getService(Context.NOTIFICATION_SERVICE));
@@ -1035,7 +1048,7 @@ public class LKService extends Service implements OnClickListener,
 			mdtd.setUrl(appinfo.getRecommImage());
 			mdtd.setAction(Constant.ACTION_IMG_DOWNLOAD_COMPLETE);
 			mdtd.setHandler(MainHomeActivity.instance.handler);
-			mdtd.setRecIndex(appinfo.getRecomm_index());
+			mdtd.setRecIndex(appinfo);
 			mdtd.setHandlerWhat(Constant.HANDLER_DOWNLOAD_RECOMMEND_APP);
 			mdtd.startDownload();
 		}

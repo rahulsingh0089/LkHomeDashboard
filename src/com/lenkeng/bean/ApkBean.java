@@ -3,6 +3,7 @@ package com.lenkeng.bean;
 import java.io.Serializable;
 
 import lenkeng.com.welcome.bean.AppInfo;
+import lenkeng.com.welcome.db.DownloadBean;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,6 +17,7 @@ public class ApkBean  implements Parcelable{
 	public static final int STATE_PROGRESS=4;
 	public static final int STATE_QUEUE_ENOUNGH=5;
 	public static final int STATE_ERR_NO_SPACE=6;
+	public static final int STATE_PAUSED=7;
 	
 	
 	
@@ -37,6 +39,7 @@ public class ApkBean  implements Parcelable{
 	private String hdIcon;
 	//private String style;
 	private String category;
+	private long current;
 	
 	public String getMd5() {
 		return md5;
@@ -84,11 +87,23 @@ public class ApkBean  implements Parcelable{
 	}
 
 
+	public long getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(long current) {
+		this.current = current;
+	}
+
 	public ApkBean(){
 		
 	}
 	
-	
+  /* public ApkBean(DownloadBean dbean){
+		this.packageName=dbean.getPackageName();
+		this.md5=dbean.getMd5();
+		dbean.get
+	}*/
 
 
 
@@ -122,6 +137,7 @@ public class ApkBean  implements Parcelable{
 		size=source.readLong();
 		hdIcon=source.readString();
 		category=source.readString();
+		current=source.readLong();
 		
 		
 	}
@@ -186,6 +202,7 @@ public class ApkBean  implements Parcelable{
 		dest.writeLong(size);
 		dest.writeString(hdIcon);
 		dest.writeString(category);
+		dest.writeLong(current);
 		
 	}
 	public void readFromParcel(Parcel _reply) {
@@ -212,12 +229,16 @@ public class ApkBean  implements Parcelable{
 		return info;
 	}
 
+	
+	
+	
+	
 	@Override
 	public String toString() {
 		return "ApkBean [url=" + url + ", savePath=" + savePath + ", status="
 				+ status + ", name=" + name + ", packageName=" + packageName
 				+ ", progress=" + progress + ", md5=" + md5 + ", size=" + size
-				+ ", hdIcon=" + hdIcon + ", category=" + category + "]";
+				+ ", hdIcon=" + hdIcon + ", category=" + category +",current="+current+ "]";
 	}
 	
 	

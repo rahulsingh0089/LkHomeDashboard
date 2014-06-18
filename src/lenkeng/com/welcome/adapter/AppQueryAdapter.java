@@ -225,7 +225,7 @@ public class AppQueryAdapter extends BaseAdapter {
 					holder.ll_itemBack.setBackground(d);
 				} else {
 					//int resId=LKHomeUtil.getPreApkIcon(info.getPackage_name());
-					if("com.lenkeng.video".equals(info.getPackage_name())){
+					/*if("com.lenkeng.video".equals(info.getPackage_name())){
 						holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.video_icon);
 						holder.ll_itemBack.setBackgroundResource(R.drawable.video_icon);
@@ -241,6 +241,11 @@ public class AppQueryAdapter extends BaseAdapter {
 						holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.browser);
 						holder.ll_itemBack.setBackgroundResource(R.drawable.browser);
+					}*/
+					if(LKHomeUtil.mapDrawable.containsKey(info.getPackage_name())){
+						holder.ico.setVisibility(View.INVISIBLE);
+						holder.ico.setBackgroundResource(LKHomeUtil.mapDrawable.get(info.getPackage_name()));
+						holder.ll_itemBack.setBackgroundResource(LKHomeUtil.mapDrawable.get(info.getPackage_name()));
 					}
 					 else{
 						holder.ico.setVisibility(View.VISIBLE);

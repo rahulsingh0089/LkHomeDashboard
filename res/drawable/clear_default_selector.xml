@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@drawable/clear_default_click"></item>
+    <item android:state_hovered="true" android:drawable="@drawable/clear_default_click"></item>
+    <item android:drawable="@drawable/clear_defalut_def"></item>
+</selector>

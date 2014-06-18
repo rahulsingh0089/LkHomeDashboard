@@ -12,6 +12,7 @@ import com.lenkeng.bean.ApkBean;
 import com.lenkeng.bean.ImplInter;
 import com.lenkeng.bean.InterfaceStub;
 import com.lenkeng.logic.Logic;
+import com.lenkeng.tools.Constants;
 
 public class MarketService extends Service {
 	
@@ -46,7 +47,13 @@ public class MarketService extends Service {
 		@Override
 		public void downLoad(ApkBean apkBean) throws RemoteException {
 			System.out.println("321 md5="+apkBean.getMd5()+",下载bean="+apkBean);
-			mLogic.downLoadApk(apkBean,implInterface);
+			if(Constants.isDuandianDownlaod){
+				mLogic.downLoadApkByDuandian(apkBean,implInterface); //断点下载apk
+				
+			}else{
+				
+				mLogic.downLoadApk(apkBean, implInterface);//非断点下载apk
+			}
 			
 		}
 

@@ -4,7 +4,6 @@
     android:layout_height="fill_parent"
     >
 
-<!-- $Id: movie.xml 115 2014-02-20 05:44:09Z xgh $ -->
 
 
       <GridView
@@ -14,7 +13,6 @@
         android:horizontalSpacing="10dp"
         android:listSelector="#00000000"
         android:numColumns="5"
-        android:nextFocusDown="@+id/radio1"
         android:gravity="center"
         android:descendantFocusability="blocksDescendants"
         android:verticalSpacing="20dp"

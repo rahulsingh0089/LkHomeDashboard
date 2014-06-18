@@ -150,16 +150,18 @@ public class SystemInfoActivity extends Activity {
          long availsize   = blockSize * availBlocks;
 		
 		//long size=stat.getBlockSize() *stat.getAvailableBlocks();
-		Logger.d("kao", "---value----"+value);
 		long total=stat.getBlockSize()*stat.getBlockCount();
 		
 		long low=total*value/100;
-		if(availsize > low){
+		//if(availsize > low){
 			availsize=availsize-low;
-		}else{
-			availsize =0;
-		}
-	   
+		//}else{
+			//availsize =0;
+		//}
+			Logger.d("awk", "---value----"+Formatter.formatFileSize(this, 20*1024*1024));
+	   if(availsize < 20*1024*1024){
+		   return "<20M";
+	   }
 		return Formatter.formatFileSize(this, availsize);
 	}
 	
@@ -169,6 +171,9 @@ public class SystemInfoActivity extends Activity {
          long blockSize   = statfs.getBlockSize();
          long availBlocks = statfs.getAvailableBlocks();
          long availsize   = blockSize * availBlocks;
+         if(availsize < 20 *1024*1024){
+        	 return "<20M";
+         }
 		return Formatter.formatFileSize(this, availsize);
 	}
 	

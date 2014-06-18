@@ -133,6 +133,7 @@ public class LKHomeUtil {
 	private Timer mTimer;
 	public static Map<String, String> appStyles;
 	private static Map<String, String> packageMapRes;
+	public static Map<String,Integer> mapDrawable;
 	private static AppDataDao appDao;
 	private static ConnectionConfiguration config;
 	public static XMPPConnection conn = null;
@@ -157,15 +158,18 @@ public class LKHomeUtil {
 		Logger.i("gww", "add app--++-");
 		appStyles = new HashMap<String, String>();
 		packageMapRes = new HashMap<String, String>();
-		appStyles.put("com.android.gallery3d", Constant.CLASSIFY_USER);
+		mapDrawable=new HashMap<String, Integer>();
+		
 		//packageMapRes.put("com.android.browser", R.drawable.browser);
-		appStyles.put("com.softwinner.TvdFileManager", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.settings", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.soundrecorder", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.music", Constant.CLASSIFY_USER);
 		appStyles.put("com.softwinner.update", Constant.CLASSIFY_USER);
-		appStyles.put("android.rk.RockVideoPlayer", Constant.CLASSIFY_USER);
+		appStyles.put("com.android.vending", Constant.CLASSIFY_USER);
+		appStyles.put("com.android.settings", Constant.CLASSIFY_USER);
+		/*appStyles.put("com.softwinner.TvdFileManager", Constant.CLASSIFY_USER);
+		appStyles.put("com.android.music", Constant.CLASSIFY_USER);
+		appStyles.put("com.android.soundrecorder", Constant.CLASSIFY_USER);
 		appStyles.put("com.android.rockchip", Constant.CLASSIFY_USER);
+		appStyles.put("android.rk.RockVideoPlayer", Constant.CLASSIFY_USER);
+		appStyles.put("com.android.gallery3d", Constant.CLASSIFY_USER);*/
 		
 		
 		
@@ -262,11 +266,28 @@ public class LKHomeUtil {
 			//e.printStackTrace();
 		}
 		appStyles.put("com.android.email", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.android.email", R.drawable.email);
 		appStyles.put("com.lenkeng.video", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.lenkeng.video", R.drawable.video_icon);
 		appStyles.put("com.android.browser", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.android.browser", R.drawable.browser);
 		appStyles.put("com.lenkeng.filebrowser", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.lenkeng.filebrowser", R.drawable.icon_filebrowser);
 	 
+		appStyles.put("com.softwinner.TvdFileManager", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.softwinner.TvdFileManager", R.drawable.file_manager);
+		appStyles.put("com.android.music", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.android.music", R.drawable.music);
+		appStyles.put("com.android.soundrecorder", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.android.soundrecorder", R.drawable.recoder);
+		appStyles.put("com.android.rockchip", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.android.rockchip", R.drawable.file_manager);
+		//appStyles.put("android.rk.RockVideoPlayer", Constant.CLASSIFY_APPLICATION);
+		appStyles.put("com.android.gallery3d", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.android.gallery3d", R.drawable.video_player);
 		
+		appStyles.put("com.adobe.flashplayer", Constant.CLASSIFY_APPLICATION);
+		mapDrawable.put("com.adobe.flashplayer", R.drawable.flashplayer);
 		////rk: [ro.hardware]: [rk30board],/mnt/external_sd
 		//a20:[ro.hardware]: [sun7i],/mnt/extsd
 		
@@ -1490,6 +1511,8 @@ public class LKHomeUtil {
 			// compare with sha hash code
 			String md5FromFile = hexString.toString();
 
+			Logger.e(TAG, "~~~~~~~~~~~~~~ md5校验, FileSha="+FileSha+",真实md5="+md5FromFile);
+			
 			if (FileSha != null && FileSha.equalsIgnoreCase(md5FromFile)) {
 				return true;
 			} else {

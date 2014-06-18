@@ -94,6 +94,8 @@ public class Logic {
 	 */
 	private static final List<String> waitUploadList = new ArrayList<String>();
 	
+
+	
 	/**
 	 * 正在上传的集合,存放包名
 	 */
@@ -119,7 +121,7 @@ public class Logic {
 		this.context = con;
 		//=====edit by xgh
 		downloadDao=new DownloadDao(con);
-        client = new ApiClient(downloadDao);
+        client = new ApiClient(this,downloadDao);
 		//====end
 		
 		LKHomeCache.initCache();
@@ -312,7 +314,7 @@ public class Logic {
 
 	private void add2DownLoadList(String key) {
 		
-		if (!isContainUrl(key)) {
+		if (!isDownloading(key)) {
 			addDownloadUrl(key);
 		}
 	}
@@ -402,12 +404,17 @@ public class Logic {
 		return flag;
 	}
 
-	public void downLoadApk(final ApkBean bean, ImplInter inter) {
+	/**
+	 * 非断点下载apk
+	 * @param bean
+	 * @param inter
+	 */
+public void downLoadApk(final ApkBean bean, ImplInter inter) {
 		
 		final String tUrl = bean.getUrl().substring(bean.getUrl().lastIndexOf("/") + 1, bean.getUrl().length());
 
 		//Log.e(TAG, "===========下载请求: url="+tUrl+",下载任务数="+downloadMaps+",线程="+Thread.currentThread().getName()+",id="+Thread.currentThread().getId());
-		if (isContainUrl(tUrl)) { //url 已经在下载
+		if (isDownloading(tUrl)) { //url 已经在下载
 			bean.setStatus(ApkBean.STATE_DOWNLOADING);
 			try {
 				inter.downloadStatus(bean);
@@ -489,6 +496,10 @@ public class Logic {
 							apk = client.getHttpResponseAsFile(xUrl, mListener,
 									mApkBean);
 						}
+						
+						
+						 removeFromDownLoadList(tUrl);
+						  
 						if (apk != null) {
 							File parent = apk.getParentFile();
 							if (parent == null || !parent.exists()) {
@@ -501,9 +512,6 @@ public class Logic {
 							downloadDao.updateDownloadBeanState(mApkBean.getPackageName(), Constant.APK_STATE_DOWNLOAD_COMPLETE);
 							//====end
 							
-							/*//记录到应用数据库,安装完成后要读取style
-							AppInfo mApp=mApkBean.buidAppInfo();
-							mAppStoreDao.addAppToStore(mApp, Constant.APPSTORE_MODE_STANDARD);*/
 							
 							try {
 								mListener.downloadStatus(mApkBean);
@@ -511,7 +519,6 @@ public class Logic {
 								e.printStackTrace();
 							}
 						} else {
-							//removeFromDownLoadList(tUrl);
 							try {
 								mApkBean.setStatus(ApkBean.STATE_ERR);// error
 								mListener.downloadStatus(mApkBean);
@@ -520,11 +527,170 @@ public class Logic {
 							}
 						}
 					}
-			     removeFromDownLoadList(tUrl);
+			   
 			  }
 			});
 		}
 	}
+	
+	
+	
+	/**
+	 * 断点下载apk
+	 * @param apkBean
+	 * @param inter
+	 */
+	public void downLoadApkByDuandian(final ApkBean apkBean, ImplInter inter) {
+		
+		final String tUrl = apkBean.getUrl().substring(apkBean.getUrl().lastIndexOf("/") + 1, apkBean.getUrl().length());
+
+		Log.e(TAG, "===========下载请求: url="+tUrl+",下载任务数="+downloadMaps+",线程="+Thread.currentThread().getName()+",id="+Thread.currentThread().getId());
+	
+		if (getDownloadSize() >= DownLoadSize) { //下载任务达到5个
+			apkBean.setStatus(ApkBean.STATE_QUEUE_ENOUNGH);
+			try {
+				inter.downloadStatus(apkBean);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return;
+		} 
+		
+		
+		//开始下载
+		
+		if (! isDownloading(tUrl)) {
+		   add2DownLoadList(tUrl);
+		}
+		
+		 ThreadPoolUtil.execute(new ParamRunnable(apkBean, inter) {
+
+				@Override
+		 public void run() {
+					
+			String apkName=tUrl.substring(tUrl.lastIndexOf("=")+1,tUrl.length())+".apk";
+			File localFile = new File(Constants.APK_DIR + File.separator + apkName);
+			
+			
+			Log.e(TAG, "======= 下载apk ,localFile="+localFile+",验证结果="+LKHomeUtil.checkDownloadFileSuccessed(apkBean.getMd5(), localFile));
+			if (localFile.exists() && LKHomeUtil.checkDownloadFileSuccessed(apkBean.getMd5(), localFile)) {//该url对应的文件存在且md5码相同,不用重新下载
+				
+				apkBean.setStatus(ApkBean.STATE_COMPLETE);
+				apkBean.setSavePath(localFile.getAbsolutePath());
+				
+				//===add by xgh====
+				if(downloadDao.findDownloadBeanByPackageName(apkBean.getPackageName())==null){
+					downloadDao.addRecord(new DownloadBean(apkBean));
+				}
+				downloadDao.updateDownloadBeanState(apkBean.getPackageName(), Constant.APK_STATE_DOWNLOAD_COMPLETE);
+				//=====end
+				
+				try {
+					mListener.downloadStatus(apkBean);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			 } else { //本地不存在完整的apk文件,需要下载
+
+
+						 //Log.e(TAG, "下载apk线程名="+Thread.currentThread().getName()+",id="+Thread.currentThread().getId());
+					
+						if(!hasEnoughSizeByDuandian(mApkBean.getSize()-mApkBean.getCurrent())){
+							
+							try {
+								mApkBean.setStatus(ApkBean.STATE_ERR_NO_SPACE);// 不够空间
+								mListener.downloadStatus(mApkBean);
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+							 removeFromDownLoadList(tUrl);
+							return;
+						}
+						
+						//记录到应用数据库,安装完成后要读取style
+						
+						AppInfo mApp=mApkBean.buidAppInfo();
+						LKService.DOWNLOAD_APPS.put(mApp.getPackage_name(), mApp);
+						mAppStoreDao.addAppToStore(mApp, Constant.APPSTORE_MODE_STANDARD);
+						
+						
+						
+						//根据包名读取下载数据库记录
+						DownloadBean dbean=downloadDao.findDownloadBeanByPackageName(apkBean.getPackageName());
+						if(dbean!=null){ //有该包名对应的下载记录
+							String filePath=dbean.getSavePath();
+							
+							File tempFile = new File(filePath+".tmp");
+							if(tempFile!=null &&  tempFile.exists()){ //临时文件存在,使用记录的进度
+								apkBean.setCurrent(dbean.getCurrent());
+								
+							}else{//临时文件不存在,进度清0
+								dbean.setCurrent(0);
+							}
+							
+							
+						}else{ //无下载记录
+							
+							 dbean=new DownloadBean(mApkBean);
+							dbean.setSavePath(localFile.getAbsolutePath());
+							downloadDao.addRecord(dbean);
+							
+						}
+						
+						
+						//====add by xgh
+						/*if(downloadDao.findDownloadBeanByPackageName(bean.getPackageName())==null){
+							
+							
+						}else{
+							downloadDao.u0pdateDownloadPosition(bean.getPackageName(), bean.getCurrent());
+						}*/
+						//=====end
+						
+						
+						File apk = null;
+						if (client != null) {
+							String xUrl = URLs.getBASE() + mApkBean.getUrl();
+							apk = client.getHttpResponseAsFileByDuandian(xUrl, mListener,
+									mApkBean);
+						}
+						
+						removeFromDownLoadList(tUrl); //下载完成才删除下载记录
+						
+						if (apk != null) { // 文件下载完成
+							
+							File parent = apk.getParentFile();
+							if (parent == null || !parent.exists()) {
+								Util.initExternalDir();
+							}
+							mApkBean.setStatus(ApkBean.STATE_COMPLETE);// complete
+							mApkBean.setSavePath(apk.getAbsolutePath());
+							
+							//====add by xgh 记录到下载数据库
+							downloadDao.updateDownloadBeanState(mApkBean.getPackageName(), Constant.APK_STATE_DOWNLOAD_COMPLETE);
+							//====end
+							
+							try {
+								mListener.downloadStatus(mApkBean);
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						} else { // 文件下载未完成
+							
+							try {
+								mApkBean.setStatus(ApkBean.STATE_PAUSED);// error
+								mListener.downloadStatus(mApkBean);
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+			    // removeFromDownLoadList(tUrl);
+			  }
+			});
+		}
 
 	public void asView(String url, ImageView imageView, final Handler mhandler) {
 		//Logger.e("gww", "---url---"+url);
@@ -755,7 +921,6 @@ public class Logic {
 		
 	}
 	
-
 	public boolean hasEnoughSize(long size) { //size的单位是k
 		
 		
@@ -766,7 +931,7 @@ public class Logic {
        
         Logger.e(TAG, "====== 可用内存="+availsize+", apk大小="+size*1024);
         
-        if(size*1024 * 1.1 >=availsize ){
+        if(size*1024 >=availsize ){
         	
         	return false;
         }else{
@@ -774,7 +939,26 @@ public class Logic {
         }
 	}
 	
-	public boolean isContainUrl(String url){
+
+	public boolean hasEnoughSizeByDuandian(long size) { //size的单位是byte
+		
+		
+		StatFs statfs = new StatFs("/mnt/sdcard");
+        long blockSize   = statfs.getBlockSize();
+        long availBlocks = statfs.getAvailableBlocks();
+        long availsize   = blockSize * availBlocks;
+       
+        Logger.e(TAG, "====== 可用内存="+availsize+", apk大小="+size);
+        
+        if(size >=availsize ){
+        	
+        	return false;
+        }else{
+        	return true;
+        }
+	}
+	
+	public boolean isDownloading(String url){
 		synchronized (downloadLock) {
 			return downloadMaps.contains(url);
 			
@@ -1144,6 +1328,13 @@ public class Logic {
 		}
 	}
 	
+	public void addDownloadPausedRecord(String pkg){
+		client.addDownloadPausedRecord(pkg);
+	}
+	public void removeDownloadPausedRecord(String pkg){
+		client.removeDownloadPausedRecord(pkg);
+	}
+	
 	
 	
 		//======add by xgh
@@ -1163,6 +1354,17 @@ public class Logic {
 		}
 		
 		
+	}
+
+
+	public boolean isDownloadPaused(String pkg) {
+		return client.isDownloadPaused(pkg);
+	}
+
+
+	public ApkBean buildDownloadApkBean(String packageName) {
+		DownloadBean dbean=downloadDao.findDownloadBeanByPackageName(packageName);
+		return null;
 	}
 	
 	//====end

@@ -199,7 +199,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			case Constant.HANDLER_DOWNLOAD_RECOMMEND_APP:
 				// Logger.i("gww",
 				// "-------------------the recommend download complete----------");
-				int recIndex = msg.arg1;
+				AppInfo recIndex = (AppInfo) msg.obj;
 				initImageButton(recIndex);
 				break;
 			case Constant.HANADLER_NOTICE_MSG:
@@ -446,7 +446,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		registerReceiver(speedReceiver , screenfilter);
 		registerReceiver(clearReceiver, screenfilter);
 		registerReceiver(videoMsg, screenfilter);
-
+		
 		/*
 		 * IntentFilter local = new IntentFilter();
 		 * local.addAction(Intent.ACTION_LOCALE_CHANGED);
@@ -895,34 +895,36 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	int times2 = 0;
 
 	@SuppressWarnings("deprecation")
-	private void initImageButton(int recIndex) {
+	private void initImageButton(AppInfo info) {
 		try {
 			/*
 			 * imgButton[i - 1].setImageBitmap(LKHomeUtil
 			 * .getLoacalBitmap("/sdcard/appinfo/recommend" + i));
 			 */
-			recInfos = iser.getAppInfos();
-			times++;
-			Logger.e("gww2", "------initImageButton----recIndex-----"
+			
+			/*recInfos = iser.getAppInfos();
+			Logger.e("gww2", "------recInfos.size----"+recInfos.size()+"  recIndex  =  "
 					+ recIndex);
-			AppInfo info = recInfos.get(recIndex - 1);
+			AppInfo info = recInfos.get(recIndex - 1);*/
+			//Logger.e("gww2", "    info  "+info);
+			
 			String recPath;
 			String localPath;
 			recPath = info.getRecommImage();
 			localPath = "/sdcard/appinfo/"
 					+ recPath.substring(recPath.lastIndexOf("/") + 1,
-							recPath.lastIndexOf(".")) + recIndex;
+							recPath.lastIndexOf(".")) + info.getRecomm_index();
 			Logger.e("gww2", "------initImageButton----localPath-----"
 					+ localPath);
 			BitmapDrawable bd;
 			Drawable d = LKHomeUtil.getLocalDrawableRec(localPath);
 			Logger.e("gww2", "------initImageButton----d-----" + d);
 			if (d != null) {
-				imgButton[recIndex - 1].setBackground(d);
+				imgButton[info.getRecomm_index() - 1].setBackground(d);
 				Logger.e("gww2", "------initImageButton----info.package-----"
 						+ info.getPackage_name());
 			}
-			imgButton[recIndex - 1].setTag(info);
+			imgButton[info.getRecomm_index() - 1].setTag(info);
 			/*
 			 * if (recIndex == 1) { bd = new
 			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
@@ -1647,13 +1649,16 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			iser = (IService) service;
 			// initImageButton();
 			recInfos = iser.getAppInfos();
-			if (recInfos != null) {
+			/*if (recInfos != null) {
 				for (int i = 1; i <= recInfos.size(); i++) {
 					Message msg = Message.obtain();
 					msg.what = Constant.HANDLER_DOWNLOAD_RECOMMEND_APP;
 					msg.arg1 = i;
 					handler.sendMessage(msg);
 				}
+			}*/
+			for(AppInfo info:recInfos){
+				initImageButton(info);
 			}
 			initViewPager();
 			long aft=java.lang.System.currentTimeMillis();
@@ -2082,7 +2087,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			indexTime = Math.abs(rightDownTime - upDownTime);
 			Logger.e("ez2", "$$$---onKeyDown---" + keyCode + "----indexTime---"
 					+ indexTime);
-		}*/
+		}*/	
 		if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_TAB
 				|| keyCode == KeyEvent.KEYCODE_SHIFT_LEFT
 				|| keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT) {

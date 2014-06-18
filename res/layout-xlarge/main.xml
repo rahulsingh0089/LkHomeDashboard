@@ -4,9 +4,10 @@
     android:layout_height="fill_parent"
     android:background="@drawable/appmarket_bg"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:id="@+id/root"
+    >
 
-<!-- $Id: main.xml 68 2014-02-07 02:13:15Z xgh $ -->
 
     
     <!--

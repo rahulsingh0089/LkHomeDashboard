@@ -327,6 +327,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			return;
 		}else if(LKHomeUtil.isNetConnected() && appInfo==null){
 			LKHomeUtil.showToast(context, R.string.text_trying);
+			return;
 		}
 		if (null != appInfo) {
 			openUserApp(style_flag, appInfo);
@@ -354,7 +355,6 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			}else if(v.getId()==R.id.btn_upload){
 				Logic.getInstance(context).uploadApk(appInfo.getPackage_name(),appInfo.getName());
 			}
-			
 		}
 	};
 	public void openUserApp(String style_flag, AppInfo appInfo) {

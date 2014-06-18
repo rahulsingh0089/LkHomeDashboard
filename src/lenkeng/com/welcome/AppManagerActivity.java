@@ -655,5 +655,13 @@ public class AppManagerActivity extends Activity implements
 			}
 		}
 	}
-
+	public void clearDefault(View v){
+		PackageManager manager=getPackageManager();
+		List<PackageInfo> infos=manager.getInstalledPackages(0);
+		for(PackageInfo info:infos){
+			manager.clearPackagePreferredActivities(info.packageName);
+			//Logger.d("awk", "-----  clearPackagePreferredActivities  "+info.packageName );
+		}
+		Toast.makeText(this, getString(R.string.clearCompleted), 0).show();
+	}
 }

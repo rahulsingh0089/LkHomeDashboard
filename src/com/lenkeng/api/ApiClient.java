@@ -1,12 +1,14 @@
 package com.lenkeng.api;
 
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
@@ -17,10 +19,13 @@ import java.util.Set;
 
 import lenkeng.com.welcome.bean.AppInfo;
 import lenkeng.com.welcome.db.DownloadDao;
+import lenkeng.com.welcome.upload.FileDownloadHandler;
 import lenkeng.com.welcome.upload.GZipDecompressingEntity;
 import lenkeng.com.welcome.upload.HttpException;
 import lenkeng.com.welcome.upload.HttpUtils;
 import lenkeng.com.welcome.upload.IOUtils;
+import lenkeng.com.welcome.upload.OtherUtils;
+import lenkeng.com.welcome.upload.RequestCallBackHandler;
 import lenkeng.com.welcome.upload.ResponseInfo;
 import lenkeng.com.welcome.upload.RetryHandler;
 import lenkeng.com.welcome.upload.SimpleSSLSocketFactory;
@@ -35,11 +40,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -71,11 +78,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.RemoteException;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.lenkeng.bean.ApkBean;
 import com.lenkeng.bean.DataEntity;
 import com.lenkeng.bean.ImplInter;
+import com.lenkeng.logic.Logic;
 import com.lenkeng.tools.Constants;
 
 public class ApiClient {
@@ -90,12 +99,17 @@ public class ApiClient {
 	private static final String TAG = "ApiClient";
    //=====add by xgh
 	private DownloadDao dao;
+	private Logic mLogic;
 	
+	/**
+	 * 暂停下载的集合,存放包名
+	 */
+	private static final List<String> downloadPausedList = new ArrayList<String>();
+	private final FileDownloadHandler mFileDownloadHandler = new FileDownloadHandler();
 	
-	
-	public ApiClient(DownloadDao dao) {
-		super();
+	public ApiClient(Logic logic,DownloadDao dao) {
 		this.dao = dao;
+		mLogic=logic;
 	}
 	//====end
 	
@@ -320,6 +334,7 @@ public class ApiClient {
 		return f;
 	}*/
 	
+	
 	/**
 	 * 从指定url下载apk文件
 	 * @param url
@@ -399,13 +414,6 @@ public class ApiClient {
 							if(bean.getProgress()>tempProgres){
 								if(bean.getProgress()>0 && bean.getProgress()<=100){
 									
-							   //=====add by xgh==
-								if(bean.getProgress()%2==0){
-								 dao.updateDownloadPosition(bean.getPackageName(), load/1024); //TODO...用于断点下载的记录
-									}
-								
-								//=====end====
-								
 								mListener.setProgress(bean);
 								tempProgres=(int) bean.getProgress();
 								}
@@ -458,6 +466,180 @@ public class ApiClient {
 				}
 			}
 		} while (time < RETRY_TIME);
+		
+		// toDownload();
+
+		return f;
+	}
+	
+	
+	
+	/**
+	 * 从指定url下载apk文件
+	 * @param url
+	 * @param mListener
+	 * @param bean
+	 * @return
+	 */
+	public File getHttpResponseAsFileByDuandian(String url, ImplInter mListener,
+			ApkBean bean) {
+		String tmp = ".tmp";
+		String fileName = "";
+		String md5=bean.getMd5();
+		int tempProgres=0; //记录临时的进度
+		Logger.e(TAG, "======ApiClient...收到下载请求. url="+url);
+		//String x = url.substring(url.lastIndexOf("/") + 1, url.length());
+
+		fileName = url.substring(url.lastIndexOf("=") + 1, url.length())
+				+ ".apk";
+		HttpClient httpClient = null;
+		HttpGet httpGet = null;
+		InputStream stream = null;
+		//FileOutputStream fos = null;
+		File f = null;
+		RandomAccessFile raf=null;
+		
+		File dir = new File(Constants.APK_DIR);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		File file = new File(Constants.APK_DIR,  fileName+tmp);
+		try {
+		 raf=new RandomAccessFile(file,"rw");
+			raf.setLength(bean.getSize());
+			raf.seek(bean.getCurrent());
+			Logger.e(TAG, "~~~~~~~~~!!!创建随机存储文件,length="+bean.getSize()+",current="+bean.getCurrent());
+			
+			//raf.close();
+		} catch (IOException e3) {
+			e3.printStackTrace();
+		}
+		
+		
+		bean.setUrl(fileName);
+		//long length = 0;
+	/*	try {
+			fos = new FileOutputStream(file);
+		} catch (FileNotFoundException e2) {
+			e2.printStackTrace();
+		}*/
+		byte[] buffer = new byte[4096];
+		int len = -1;
+		int time = 0;
+		bean.setStatus(ApkBean.STATE_START);
+		try {
+			mListener.downloadStatus(bean);
+		} catch (RemoteException e1) {
+			e1.printStackTrace();
+		}
+		bean.setStatus(ApkBean.STATE_PROGRESS);
+		//do {
+			try {
+				httpClient = getHttpClient();
+				
+				Logger.e(TAG, "-------得到的httpClient="+httpClient);
+				HttpPost post = new HttpPost(url);
+				post.setHeader("Range", "bytes=" + bean.getCurrent() + "-" );
+				
+				HttpResponse response = httpClient.execute(post);
+				
+				if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+					return null;
+				} else {
+
+
+					stream = response.getEntity().getContent();
+					
+					
+					long available = response.getEntity().getContentLength();
+					Logger.e(TAG, "============avaliale="+available);
+					
+				/*	if(length==-1){
+						return null;
+					}*/
+					long load = bean.getCurrent();
+					while ((len = stream.read(buffer)) > 0 ) {
+						
+						if(isDownloadPaused(bean.getPackageName())){ //当前下载url已经paused
+							bean.setStatus(ApkBean.STATE_PAUSED);
+							mListener.downloadStatus(bean);
+							break;
+						}
+						
+						
+						//Logger.e(TAG, "^^^^^^^^^^当前文件指针="+raf.getFilePointer());
+						raf.write(buffer, 0, len);
+						//Logger.e(TAG, "&&&&&&&&&之后文件指针="+raf.getFilePointer());
+						//Logger.e(TAG, "+++++len++++ "+len);
+						
+						load += len;
+						bean.setProgress(load * 100 / bean.getSize());
+						
+						try {
+							if(bean.getProgress()>tempProgres){
+								if(bean.getProgress()>0 && bean.getProgress()<=100){
+									
+							   //=====add by xgh==
+								//if(bean.getProgress()%2==0){
+								 dao.updateDownloadPosition(bean.getPackageName(), load); //TODO...用于断点下载的记录
+									//}
+								
+								//=====end====
+								
+								mListener.setProgress(bean);
+								tempProgres=(int) bean.getProgress();
+								}
+							}
+						} catch (RemoteException e) {
+							e.printStackTrace();
+						}
+					}
+
+					
+					//long fileSize = file.length();
+					//Log.e(TAG, "下载完成 数量:" + load + ",length=" + length
+					//		+ ",fileSize=" + fileSize);
+					/*if (length == fileSize) {
+						f = new File(Constants.APK_DIR, fileName);
+						file.renameTo(f);
+						break;
+					}*/
+					
+					
+					if (LKHomeUtil.checkDownloadFileSuccessed(md5, file)) {
+						f = new File(Constants.APK_DIR, fileName);
+						file.renameTo(f);
+						//break;
+					}
+				}
+			} catch (Exception e) { //捕获网络异常
+				e.printStackTrace();
+				time++;
+				if (time < RETRY_TIME) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+					}
+
+					//continue;
+				}
+			} finally {
+				httpClient.getConnectionManager().shutdown();
+				try {
+					if (stream != null) {
+						stream.close();
+					}
+					if (raf!=null) {
+						raf.close();
+					}
+					//boolean deleted = file.delete();
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		//} while (time < RETRY_TIME);
 		
 		// toDownload();
 
@@ -787,5 +969,102 @@ public class ApiClient {
 		return responseBody;
 
 	}*/
+	
+/*	public File handleEntity(HttpEntity entity,
+			RequestCallBackHandler callBackHandler, String target,
+			boolean isResume, String responseFileName) throws IOException {
+		if (entity == null || TextUtils.isEmpty(target)) {
+			return null;
+		}
+
+		File targetFile = new File(target);
+
+		if (!targetFile.exists()) {
+			File dir = targetFile.getParentFile();
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			targetFile.createNewFile();
+		}
+
+		long current = 0;
+		InputStream inputStream = null;
+		FileOutputStream fileOutputStream = null;
+
+		try {
+
+			if (isResume) {
+				current = targetFile.length();
+				fileOutputStream = new FileOutputStream(target, true);
+			} else {
+				fileOutputStream = new FileOutputStream(target);
+			}
+
+			long total = entity.getContentLength() + current;
+
+			if (callBackHandler != null
+					&& !callBackHandler.updateProgress(total, current, true)) {
+				return targetFile;
+			}
+
+			inputStream = entity.getContent();
+			BufferedInputStream bis = new BufferedInputStream(inputStream);
+
+			byte[] tmp = new byte[4096];
+			int len;
+			while ((len = bis.read(tmp)) != -1) {
+				fileOutputStream.write(tmp, 0, len);
+				current += len;
+				if (callBackHandler != null) {
+					if (!callBackHandler.updateProgress(total, current, false)) {
+						return targetFile;
+					}
+				}
+			}
+			fileOutputStream.flush();
+			if (callBackHandler != null) {
+				callBackHandler.updateProgress(total, current, true);
+			}
+		} finally {
+			IOUtils.closeQuietly(inputStream);
+			IOUtils.closeQuietly(fileOutputStream);
+		}
+
+		if (targetFile.exists() && !TextUtils.isEmpty(responseFileName)) {
+			File newFile = new File(targetFile.getParent(), responseFileName);
+			while (newFile.exists()) {
+				newFile = new File(targetFile.getParent(),
+						System.currentTimeMillis() + responseFileName);
+			}
+			return targetFile.renameTo(newFile) ? newFile : targetFile;
+		} else {
+			return targetFile;
+		}
+	}*/
+	
+	
+	
+	
+	public void addDownloadPausedRecord(String pkg){
+		synchronized (downloadPausedList) {
+			
+			Logger.e(TAG, "========添加断点下载暂停记录.... pkg="+pkg+",集合="+downloadPausedList);
+			if(!downloadPausedList.contains(pkg)){
+				downloadPausedList.add(pkg);
+			}
+		}
+	}
+	public void removeDownloadPausedRecord(String pkg){
+		synchronized (downloadPausedList) {
+			if(downloadPausedList.contains(pkg)){
+				downloadPausedList.remove(pkg);
+			}
+		}
+	}
+	
+	public boolean isDownloadPaused(String pkg){
+		return downloadPausedList.contains(pkg);
+	}
+	
 	
 }

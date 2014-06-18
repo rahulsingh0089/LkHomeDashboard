@@ -73,11 +73,12 @@ import com.lenkeng.tools.ThreadPoolUtil;
 public class DetailActivity extends Activity implements OnClickListener,
 		 SilentInstallListener {
 	private static final String TAG = "DetailActivity";
-	public static String ACTION_PROGRESS="com.lenkeng.progress";
-	public static String ACTION_DOWNLOAD_ERR="com.lenkeng.downloaderr";
-	public static String ACTION_DOWNLOAD_COMPLETE="com.lenkeng.download.complete";
+	public static final String ACTION_PROGRESS="com.lenkeng.progress";
+	public static final String ACTION_DOWNLOAD_ERR="com.lenkeng.downloaderr";
+	public static final String ACTION_DOWNLOAD_COMPLETE="com.lenkeng.download.complete";
 	private static final String ACTION_INSTALLING = "com.lenkeng.installing";
 	private static final String ACTION_INSTALL_ERR = "com.lenkeng.install.err";
+	public static final String ACTION_DOWNLOAD_PAUSED="com.lenkeng.download.paused";
 
 	public static boolean isInstall=false;
 	
@@ -131,7 +132,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 				
 			case ApkBean.STATE_DOWNLOADING: //正在下载
 				
-				msgStr=bean.getName() + getString(R.string.text_downloading);
+				msgStr=formatApkName(bean.getName()) + getString(R.string.text_downloading);
 				LKHomeUtil.showToast(mContext, msgStr);
 				break;
 				
@@ -141,7 +142,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 				mCurrentMap.remove(tKey);
 				
 				//====edit by xgh
-				msgStr=bean.getName() + getString(R.string.text_download_complete);
+				msgStr=formatApkName(bean.getName()) + getString(R.string.text_download_complete);
 				LKHomeUtil.showToast(mContext, msgStr);
 				systemInstall();
 				//====end
@@ -152,7 +153,12 @@ public class DetailActivity extends Activity implements OnClickListener,
 			
 				mCurrentMap.remove(tKey);
 				
-				msgStr=bean.getName()+ getString(R.string.text_download_error);
+				msgStr=formatApkName(bean.getName())+ getString(R.string.text_download_error);
+				LKHomeUtil.showToast(mContext, msgStr);
+				break;
+			case ApkBean.STATE_PAUSED: //下载暂停
+			
+				msgStr=formatApkName(bean.getName())+getString(R.string.text_download_pausing);
 				LKHomeUtil.showToast(mContext, msgStr);
 				break;
 				
@@ -227,7 +233,21 @@ public class DetailActivity extends Activity implements OnClickListener,
 	
 	@Override
 	protected void onResume() {
-		
+		if(Constants.isDuandianDownlaod){
+			
+			duandianOnresume();
+		}else{
+			
+			normalOnresume();
+		}
+		super.onResume();
+	}
+
+	
+	/**
+	 * 普通下载的onresume前处理
+	 */
+	private void normalOnresume() {
 		if(getIntent().getExtras()!=null){
 			mApp = (AppInfo) getIntent().getExtras().get("appinfo");
 		}
@@ -300,7 +320,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 			
 			checkApkState();
 			
-			if(mLogic.isContainUrl(currentUrl)  && mCurrentMap.containsKey(currentProgressKey) ){ //当前apk正在下载
+			if(mLogic.isDownloading(currentUrl)  && mCurrentMap.containsKey(currentProgressKey) ){ //当前apk正在下载
 				
 				Long progress=mCurrentMap.get(currentProgressKey);
 				String s = String.format(getString(R.string.text_degree),progress);
@@ -328,10 +348,137 @@ public class DetailActivity extends Activity implements OnClickListener,
 			}
 			
 		}
-
 		
-		super.onResume();
 	}
+
+
+
+	/**
+	 * 断点下载调用的onResume前处理
+	 */
+	private void duandianOnresume() {
+		if(getIntent().getExtras()!=null){
+			mApp = (AppInfo) getIntent().getExtras().get("appinfo");
+		}
+		
+		
+		if (mApp != null) {
+		currentUrl=mApp.getUrl().substring(mApp.getUrl().lastIndexOf("/") + 1);
+		currentProgressKey=currentUrl.substring(currentUrl.lastIndexOf("=") + 1, currentUrl.length())+ ".apk";
+		
+
+			tv_title.setText(mApp.getName());
+			tv_summary.setText(mApp.getSummary());
+			int operateType=mApp.getOperateType();
+			if(operateType==AppInfo.OPERATE_TYPE_ALL){
+				
+				tv_operateType.setText(getString(R.string.operate_type)+getString(R.string.operate_type_all));
+			}else if(operateType==AppInfo.OPERATE_TYPE_IR){
+				tv_operateType.setText(getString(R.string.operate_type)+getString(R.string.operate_type_ir));
+				
+			}else if(operateType==AppInfo.OPERATE_TYPE_MOUSE){
+				tv_operateType.setText(getString(R.string.operate_type)+getString(R.string.operate_type_mouse));
+				
+			}else if(operateType==AppInfo.OPERATE_TYPE_GAME_HANDLE){
+				tv_operateType.setText(getString(R.string.operate_type)+getString(R.string.operate_type_game_handle));
+				
+			}
+			
+			
+			
+			long size = mApp.getSize();
+			DecimalFormat df = new DecimalFormat("0.00");
+			tv_size.setText(getString(R.string.text_size)
+					+ df.format((float) size / 1024 /1024) + getString(R.string.m));
+			
+			String hdUrl = mApp.getHDIcon();
+
+			if (hdUrl != null && hdUrl.contains("http")) {
+				mApp.setHDIcon("/icon/"
+						+ hdUrl.substring(hdUrl.lastIndexOf("/") + 1,
+								hdUrl.length()));
+			}
+			
+			String apkUrl = mApp.getUrl();
+			if (apkUrl != null && apkUrl.contains("http")) {
+				mApp.setUrl("/android/"
+						+ apkUrl.substring(apkUrl.lastIndexOf("/") + 1,
+								apkUrl.length()));
+			}
+
+			String iconUrl = mApp.getIcon();
+			mLogic.asView(iconUrl, iv_icon, mhandler);
+			
+			mLogic.downLoadImg(mApp.getHDIcon());
+			
+			List<Screen> screens=mApp.getImgs();
+			if(screens.size()>=3){
+				
+				String imgUrl1=screens.get(0).getUrl();
+				mLogic.asView(imgUrl1, iv_thumb1, mhandler);
+				
+				String imgUrl2=screens.get(1).getUrl();
+				mLogic.asView(imgUrl2, iv_thumb2, mhandler);
+				
+				String imgUrl3=screens.get(2).getUrl();
+				mLogic.asView(imgUrl3, iv_thumb3, mhandler);
+				
+				
+			}
+			
+			
+			checkApkState();
+			
+			if(mLogic.isDownloading(currentUrl)  && mCurrentMap.containsKey(currentProgressKey) ){ //当前apk正在下载
+				
+				Long progress=mCurrentMap.get(currentProgressKey);
+				String s = String.format(getString(R.string.text_degree),progress);
+				
+				tv_progress.setText(s);
+				tv_progress.setVisibility(View.VISIBLE);
+				
+				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
+				btn_oneKey.setClickable(true);
+				
+				if(mLogic.isDownloadPaused(mApp.getPackage_name())){ //已经暂停,按钮显示"下载"
+					
+					btn_oneKey.setText(R.string.text_download);
+					//btn_oneKey.setTag(R.string.text_download_pause);
+					
+				}else{ //没有被暂停,按钮显示为"暂停"
+					
+					btn_oneKey.setText(R.string.text_download_pause);
+					//btn_oneKey.setTag(R.string.text_download);
+					
+				}
+				
+				
+				
+			}else if(currentInstallPkg.equals(mApp.getPackage_name())){//正在安装
+				
+				tv_progress.setText(R.string.installing);
+				tv_progress.setVisibility(View.VISIBLE);
+				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
+				btn_oneKey.setClickable(false);
+				
+			}else if( checkApkFileState(downloadBean)){ //等待安装,英文版需要手动安装,one_key可以点击
+				  
+				tv_progress.setVisibility(View.GONE);
+				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
+				btn_oneKey.setText(R.string.text_install);
+				btn_oneKey.setClickable(true);
+				
+				
+			}
+			
+		}
+		
+		
+	}
+
+
+
+
 
 	private boolean checkApkFileState(DownloadBean downloadBean) {
 		if(downloadBean==null ){
@@ -370,7 +517,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 					isInstalling=false;
 					Logger.e(TAG, "-----隐式安装apk完成.intent="+intent.getExtras()+",action="+intent.getAction());
 					
-					String msg=LKHomeUtil.getLabel(packageName)+mContext.getString(R.string.text_insall_ok);
+					String msg=formatApkName( LKHomeUtil.getLabel(packageName))+mContext.getString(R.string.text_insall_ok);
 					LKHomeUtil.showToast(mContext, msg);
 				}else if("uninstall".equals(flag)){
 					
@@ -420,7 +567,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		
 		IntentFilter tFilter2 = new IntentFilter();
 		tFilter2.addAction(ACTION_PROGRESS);
-		tFilter2.addAction(ACTION_DOWNLOAD_ERR);
+		tFilter2.addAction(ACTION_DOWNLOAD_PAUSED);
 		tFilter2.addAction(ACTION_DOWNLOAD_COMPLETE);
 		tFilter2.addAction(ACTION_INSTALLING);
 		tFilter2.addAction(ACTION_INSTALL_ERR);
@@ -446,10 +593,16 @@ public class DetailActivity extends Activity implements OnClickListener,
 					}
 				}else if(ACTION_DOWNLOAD_ERR.equals(action)){//下载错误,需要从广播才能更新UI
 					if(mApp.getPackage_name().equals(pkg)){
-						tv_progress.setVisibility(View.GONE);
 						
+						tv_progress.setVisibility(View.GONE);
 						btn_oneKey.setClickable(true);
-						//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
+					}
+				}else if(ACTION_DOWNLOAD_PAUSED.equals(action)){//下载暂停,需要从广播才能更新UI
+					if(mApp.getPackage_name().equals(pkg)){
+						
+						tv_progress.setVisibility(View.GONE);
+						btn_oneKey.setClickable(true);
+						btn_oneKey.setText(R.string.text_download);
 						
 					}
 					
@@ -510,17 +663,17 @@ public class DetailActivity extends Activity implements OnClickListener,
 		String package_name = mApp.getPackage_name();
 		boolean tExist =checkApkExist(this, package_name);
 		Log.e(TAG, "line 352 package_name="+package_name+",exit="+tExist);
-		if (tExist) {
+		if (tExist) { //该apk已经安装
+			
 			btn_oneKey.setVisibility(View.GONE);
 			btn_run.setVisibility(View.VISIBLE);
 			btn_run.requestFocus();
 			btn_del.setVisibility(View.VISIBLE);
 			tv_progress.setVisibility(View.GONE);
-		} else {
+		} else {//apk未安装
+			
 			btn_oneKey.setVisibility(View.VISIBLE);
 			btn_oneKey.setClickable(true);
-			//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
-			//ui_oneKey.requestFocus();
 			
 			btn_run.setVisibility(View.GONE);
 			btn_del.setVisibility(View.GONE);
@@ -532,18 +685,24 @@ public class DetailActivity extends Activity implements OnClickListener,
 	private void initWidget() {
 
 		btn_run = (Button) findViewById(R.id.btn_run);
+		btn_run.setOnClickListener(this);
+		
 		btn_del = (Button) findViewById(R.id.btn_del);
+		btn_del.setOnClickListener(this);
+		
 		btn_back = (Button) findViewById(R.id.btn_back);
+		btn_back.setOnClickListener(this);
+		
 		btn_oneKey = (Button) findViewById(R.id.btn_onekey);
+		btn_oneKey.setOnClickListener(this);
+		btn_oneKey.setTag(R.string.text_download);
+		
+		
 		iv_icon = (ImageView) findViewById(R.id.imageView2);
 		tv_title = (TextView) findViewById(R.id.textView1);
 		tv_size = (TextView) findViewById(R.id.size);
 		tv_progress = (TextView) findViewById(R.id.progress);
 		tv_summary = (TextView) findViewById(R.id.textView2);
-		btn_run.setOnClickListener(this);
-		btn_del.setOnClickListener(this);
-		btn_back.setOnClickListener(this);
-		btn_oneKey.setOnClickListener(this);
 		iv_thumb1=(ImageView) findViewById(R.id.iv_thumb1);
 		iv_thumb2=(ImageView) findViewById(R.id.iv_thumb2);
 		iv_thumb3=(ImageView) findViewById(R.id.iv_thumb3);
@@ -616,9 +775,11 @@ public class DetailActivity extends Activity implements OnClickListener,
 		public void downloadStatus(ApkBean bean) throws RemoteException { //需要发送广播才能更新UI
 			
 			
-		  if(bean.getStatus()==ApkBean.STATE_ERR){ //下载错误
+		  if(bean.getStatus()==ApkBean.STATE_PAUSED){ //下载暂停
 			  
-			  Intent it=new Intent(ACTION_DOWNLOAD_ERR);
+			  Logger.e(TAG, "^^^^^^^^^^^^^^^^ 收到下载状态,发送广播");
+			  mLogic.addDownloadPausedRecord( bean.getPackageName());
+			  Intent it=new Intent(ACTION_DOWNLOAD_PAUSED);
 			  it.putExtra("url", bean.getUrl());
 			  it.putExtra("packageName", bean.getPackageName());
 			 sendBroadcastAsUser(it, UserHandle.ALL);
@@ -708,42 +869,12 @@ public class DetailActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.btn_onekey:
 			// one key
-			int downloadsize=mLogic.getDownloadSize();
-			String tUrl = mApp.getUrl().substring(mApp.getUrl().lastIndexOf("/") + 1, mApp.getUrl().length());
-			Logger.e(TAG, "~~~~~~~~~下载中的任务数="+downloadsize);
-			
-			//btn_oneKey.setClickable(false);
-				try {
-			   if(((Button)view).getText().equals(getString(R.string.text_install))){//安装
-				   
-				  systemInstall();
-				  btn_back.setClickable(false);
-				  btn_oneKey.setClickable(false);
-			   }
-			   else if(currentInstallPkg.equals(mApp.getPackage_name())){ //正在安装
-					
-					LKHomeUtil.showToast(mContext, R.string.installing);
-				}else if(installList.contains(mApp.getPackage_name())){//等待安装
-					
-					LKHomeUtil.showToast(mContext, R.string.wait_install);
-					
-				}else if(mLogic.isContainUrl(tUrl)){//正在下载
-					String msgStr="\""+mApp.getName() +" \""+ getString(R.string.text_downloading);
-					//String msgStr=mApp.getName() + getString(R.string.text_downloading);
-					LKHomeUtil.showToast(mContext, msgStr);
-				}else if(downloadsize>= Logic.DownLoadSize){ //下载任务数达到了5个
-					
-					LKHomeUtil.showToast(mContext, R.string.text_download_full);
-					
-				}/*else if(!checkApkFile(parseApkFileNameFromUrl(mApp.getUrl()), mApp.getMd5()) && !hasEnoughSize()){ //存储空间不够,且需要下载
-				 
-					LKHomeUtil.showToast(mContext, R.string.download_no_size);
-				}*/else{
-					tv_progress.setVisibility(View.VISIBLE);
-					startDownLoad();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			if(Constants.isDuandianDownlaod){
+				
+		    	handleByDuandianDownload(view); //断点下载
+			}else{
+				handByNormalDownload(view); //普通下载
+				
 			}
 			break;
 
@@ -752,6 +883,124 @@ public class DetailActivity extends Activity implements OnClickListener,
 		}
 
 	}
+
+	private void handByNormalDownload(View view){
+		int downloadsize=mLogic.getDownloadSize();
+		String tUrl = mApp.getUrl().substring(mApp.getUrl().lastIndexOf("/") + 1, mApp.getUrl().length());
+		Logger.e(TAG, "~~~~~~~~~下载中的任务数="+downloadsize);
+		
+		//btn_oneKey.setClickable(false);
+			try {
+		   if(((Button)view).getText().equals(getString(R.string.text_install))){//安装
+			   
+			  systemInstall();
+			  btn_back.setClickable(false);
+			  btn_oneKey.setClickable(false);
+		   }
+		   else if(currentInstallPkg.equals(mApp.getPackage_name())){ //正在安装
+				
+				LKHomeUtil.showToast(mContext, R.string.installing);
+			}else if(installList.contains(mApp.getPackage_name())){//等待安装
+				
+				LKHomeUtil.showToast(mContext, R.string.wait_install);
+				
+			}else if(mLogic.isDownloading(tUrl)){//正在下载
+				String msgStr="\""+mApp.getName() +" \""+ getString(R.string.text_downloading);
+				//String msgStr=mApp.getName() + getString(R.string.text_downloading);
+				LKHomeUtil.showToast(mContext, msgStr);
+			}else if(downloadsize>= Logic.DownLoadSize){ //下载任务数达到了5个
+				
+				LKHomeUtil.showToast(mContext, R.string.text_download_full);
+				
+			}/*else if(!checkApkFile(parseApkFileNameFromUrl(mApp.getUrl()), mApp.getMd5()) && !hasEnoughSize()){ //存储空间不够,且需要下载
+			 
+				LKHomeUtil.showToast(mContext, R.string.download_no_size);
+			}*/else{
+				tv_progress.setVisibility(View.VISIBLE);
+				startDownLoad();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+
+	private void handleByDuandianDownload(View view) {
+		int downloadsize = mLogic.getDownloadSize();
+		String tUrl = mApp.getUrl().substring(
+				mApp.getUrl().lastIndexOf("/") + 1, mApp.getUrl().length());
+		Logger.e(TAG, "~~~~~~~~~下载中的任务数=" + downloadsize);
+
+		// btn_oneKey.setClickable(false);
+		/*
+		 * int resId=(Integer) view.getTag();
+		 * if(resId==R.string.text_download){//tag为"download",显示为"zanting"
+		 * 
+		 * }else if(resId==R.string.text_download_pause){ //tag为"pause",显示为"下载"
+		 * 
+		 * }
+		 */
+
+		try {
+			if (((Button) view).getText().equals(
+					getString(R.string.text_install))) {// 显示"安装"
+
+				systemInstall();
+				btn_back.setClickable(false);
+				btn_oneKey.setClickable(false);
+
+			} else if (((Button) view).getText().equals(
+					getString(R.string.text_setup))) {// 显示"一键安装",点击开始下载
+
+				if (downloadsize >= Logic.DownLoadSize) { // 下载任务数达到了5个,且不是正在下载的url
+
+					LKHomeUtil.showToast(mContext, R.string.text_download_full);
+					return;
+				}
+
+				tv_progress.setVisibility(View.VISIBLE);
+				btn_oneKey.setText(R.string.text_download_pause);
+
+				mLogic.removeDownloadPausedRecord(mApp.getPackage_name());
+				startDownLoad();
+
+			} else if (((Button) view).getText().equals(
+					getString(R.string.text_download_pause))) {// 显示"暂停",点击暂停下载,暂停后按钮禁用2秒,等待服务器异常处理
+				mLogic.addDownloadPausedRecord(mApp.getPackage_name());
+
+				btn_oneKey.setClickable(false);
+				/*
+				 * mhandler.postDelayed(new Runnable() {
+				 * 
+				 * @Override public void run() { btn_oneKey.setClickable(true);
+				 * btn_oneKey.setText(R.string.text_setup);
+				 * 
+				 * } }, 2000);
+				 */
+
+			} else if (currentInstallPkg.equals(mApp.getPackage_name())) { // 正在安装
+
+				LKHomeUtil.showToast(mContext, R.string.installing);
+			} else if (installList.contains(mApp.getPackage_name())) {// 等待安装
+
+				LKHomeUtil.showToast(mContext, R.string.wait_install);
+
+			}/*
+			 * else if(!checkApkFile(parseApkFileNameFromUrl(mApp.getUrl()),
+			 * mApp.getMd5()) && !hasEnoughSize()){ //存储空间不够,且需要下载
+			 * 
+			 * LKHomeUtil.showToast(mContext, R.string.download_no_size); }
+			 */
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+
 
 
 /*	private boolean hasEnoughSize() {g
@@ -777,19 +1026,19 @@ public class DetailActivity extends Activity implements OnClickListener,
 	
 	
 	
-	/*public   void systemInstallApk(final Context context, final String fileName) {
+	public   void systemInstallApk(final Context context, final String fileName) {
 		
 		new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
-				systemInstall(context, fileName);
+				systemInstall();
 				
 			}
 		}).start();
-	}*/
+	}
 	
-	public   void systemInstall( ){
+	public   void systemInstall(){
 		
 		ThreadPoolUtil.execute(new Runnable() {
 			
@@ -809,6 +1058,8 @@ public class DetailActivity extends Activity implements OnClickListener,
 		});
 	}
 
+	
+	
 	/**
 	 * 国内版寂寞安装
 	 */
@@ -833,7 +1084,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 				@Override
 				public void run() {
 					
-					String msgStr=bean.getName()+ getString(R.string.text_start_insall);
+					String msgStr=formatApkName(bean.getName())+ getString(R.string.text_start_insall);
 					LKHomeUtil.showToast(mContext, msgStr);
 					
 				}
@@ -900,10 +1151,10 @@ public class DetailActivity extends Activity implements OnClickListener,
 		mContext.sendBroadcast(it);
 		
 		if(returnCode == -4 || returnCode == -18){
-			String msg="\""+currentInstallName+"\" "+mContext.getString(R.string.text_insall_err);
+			String msg=formatApkName(currentInstallName)+mContext.getString(R.string.text_insall_err);
 			LKHomeUtil.showToast(mContext, msg);
 		}else{
-			String msg="\""+currentInstallName+"\" "+mContext.getString(R.string.install_fail);
+			String msg=formatApkName(currentInstallName)+mContext.getString(R.string.install_fail);
 			LKHomeUtil.showToast(mContext, msg);
 		}
 		
@@ -946,6 +1197,8 @@ public class DetailActivity extends Activity implements OnClickListener,
 	     }
 	  }*/
 
-	
+	private String formatApkName(String name){
+		return "\""+name+"\"  ";
+	}
 	
 }

@@ -23,8 +23,9 @@
     <string name="text_month" >Month</string>
     -->
     <!-- <string name="text_setup">One key install</string> -->
-    <string name="text_setup">Install</string>
+    <string name="text_setup">Auto Install</string>
     <string name="text_download">Download</string>
+     <string name="text_download_pause">Pause</string>
     <string name="text_install">Install</string>
     <string name="text_speed_success_start">speed succed,Total Release  </string>
     <string name="text_speed_success_middle">  memory,Performance</string>
@@ -38,6 +39,7 @@
     <string name="text_degree">Download progress：%1$d  %%</string>
     <string name="text_insall_ok">Installation completed </string>
     <string name="text_download_start">Download started</string>
+     <string name="text_download_pausing">Download Paused</string>
     <string name="text_start_insall">Installation started</string>
     <string name="text_trying">Download data from network....</string>
     <string name="text_download_error">Network is not stable, please download again</string>
@@ -197,5 +199,6 @@
     <string name="start_upload">Start uploading</string>
     <string name="upload_success">Upload success. Thanks for your support</string>
     <string name="upload_error_no_file">Upload fail. No matched APK file can be found</string>
-    
+    <string name="clearDefault">Clear defaults</string>
+    <string name="clearCompleted">Clear completed</string>
 </resources>

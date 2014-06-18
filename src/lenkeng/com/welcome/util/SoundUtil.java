@@ -227,7 +227,7 @@ public class SoundUtil {
 	}
 
 	boolean needRemove = false;
-	int volum=100;
+	int volum=-1;
 	private void changeModel(boolean add,int flag) {
 
 		try {
@@ -245,13 +245,18 @@ public class SoundUtil {
 						Logger.e("gw", "----- canageModel  1  --");
 						return;
 					}*/
+					
 					if (add) {
 						if(!modes.contains("AUDIO_I2S")){
 							modes.add("AUDIO_I2S");
 							needRemove = true;
 							Logger.e("gw", "----- canageModel  2  --");
 						}
-						volum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+						//volum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+						if(volum == -1){
+							volum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+							Logger.d("gw", "---  add  volum  -- "+volum);
+						}
 						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
 						//audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 100, 0);
 
@@ -263,8 +268,9 @@ public class SoundUtil {
 							Logger.e("gw", "----- canageModel  3  --");
 						};
 						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
+						Logger.d("gw", "---  Remove  volum  -- "+volum);
+						volum=-1;
 						//audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
-						
 					}
 					setAudioMode(modes,flag);
 				}
@@ -564,7 +570,9 @@ public class SoundUtil {
 			if(mp !=null){
 				mp.release();
 			}
-
+			Intent intent=new Intent();
+			intent.setAction("com.android.lk.completion");
+			context.sendBroadcast(intent);
 			/*
 			 * try {
 			 * 

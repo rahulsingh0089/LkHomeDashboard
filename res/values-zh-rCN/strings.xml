@@ -27,6 +27,7 @@
      <string name="text_setup">一键安装</string>
      
      <string name="text_download">下载</string>
+     <string name="text_download_pause">暂停</string>
      <string name="text_install">安装</string>
      
      
@@ -42,6 +43,7 @@
 	<string name="AfterTomorrow">后天</string>
     <string name="text_insall_ok">安装完成</string>
     <string name="text_download_start">开始下载</string>
+     <string name="text_download_pausing">已暂停下载</string>
     <string name="text_start_insall">开始安装</string>
     <string name="text_insall_err">安装失败,请检查存储盘是否已满</string>
     <string name="install_fail">安装失败</string>
@@ -184,7 +186,7 @@
     
     <string name="camera_cover_on">摄像头挡板已打开</string>
     <string name="camera_cover_off">摄像头挡板已关闭</string>
-    <string name="memory">可用内存</string>
+    <string name="memory">可用内部存储空间</string>
     <string name="sdcard">可用SD卡</string>
     <string name="space">存储空间</string>
     <string name="space_value">4G</string>
@@ -214,5 +216,6 @@
     <string name="start_upload">开始上传</string>
     <string name="upload_success">上传成功,感谢您的支持</string>
     <string name="upload_error_no_file">未找到对应的APK文件,上传失败</string>
-    
+    <string name="clearDefault">清除默认设置</string>
+    <string name="clearCompleted">清除成功</string>
     </resources>
