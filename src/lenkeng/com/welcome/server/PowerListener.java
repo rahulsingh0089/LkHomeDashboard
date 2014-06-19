@@ -35,9 +35,10 @@ public class PowerListener extends BroadcastReceiver {
 					
 					
 				}
+				Write2File(file, "2");
 			}
 			//Settings.Global.putInt(context.getContentResolver(), Settings.Global.ADB_ENABLED, 0);
-			Write2File(file, "2");
+			
 		}else{
 			Write2File(file, "1");
 		}

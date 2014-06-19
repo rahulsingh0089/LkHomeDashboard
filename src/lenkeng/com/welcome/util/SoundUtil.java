@@ -253,11 +253,7 @@ public class SoundUtil {
 							Logger.e("gw", "----- canageModel  2  --");
 						}
 						//volum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-						if(volum == -1){
-							volum=audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-							Logger.d("gw", "---  add  volum  -- "+volum);
-						}
-						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+						openOrcloseBackMusic(0);
 						//audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 100, 0);
 
 					} else {
@@ -267,9 +263,10 @@ public class SoundUtil {
 							needRemove = false;
 							Logger.e("gw", "----- canageModel  3  --");
 						};
-						audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
+						/*audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
 						Logger.d("gw", "---  Remove  volum  -- "+volum);
-						volum=-1;
+						volum=-1;*/
+						openOrcloseBackMusic(1);
 						//audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
 					}
 					setAudioMode(modes,flag);
@@ -285,7 +282,26 @@ public class SoundUtil {
 			e.printStackTrace();
 		}
 	}
-
+	public void openOrcloseBackMusic(int openOrclose){
+		if(openOrclose == 1){
+			Log.d("awk", "  volum open 1= "+volum);
+			if(volum !=-1){
+				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
+				Log.d("awk", "  volum open 2= "+volum);
+				volum=-1;
+			}
+		}else{
+			Log.d("awk", "  volum  close  1=  "+volum);
+			if(volum ==-1){
+				int temp =audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+				volum=temp==0?-1:temp;
+				if(temp !=0){
+					audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+				}
+				Log.d("awk", "  volum  close  2=  "+volum);
+			}
+		}
+	}
 	public void playerOFF() {
 		try {
 			if(ONPlayer !=null){
