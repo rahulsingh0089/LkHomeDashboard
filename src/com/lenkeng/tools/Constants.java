@@ -12,7 +12,7 @@ public class Constants {
 	public static  		String		APK_DIR 			= EXTERNAL_DIR+File.separator+"apk";
 	public static  		String		IMG_DIR 			= EXTERNAL_DIR+File.separator+"imgs";
 	
-	public static boolean isDuandianDownlaod=false;
+	public static boolean isDuandianDownlaod=true;
 	
 	
 }

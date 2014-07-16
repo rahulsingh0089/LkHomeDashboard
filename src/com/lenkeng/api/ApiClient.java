@@ -507,9 +507,9 @@ public class ApiClient {
 		File file = new File(Constants.APK_DIR,  fileName+tmp);
 		try {
 		 raf=new RandomAccessFile(file,"rw");
-			raf.setLength(bean.getSize());
+			raf.setLength(bean.getRealSize());
 			raf.seek(bean.getCurrent());
-			Logger.e(TAG, "~~~~~~~~~!!!创建随机存储文件,length="+bean.getSize()+",current="+bean.getCurrent());
+			Logger.e(TAG, "~~~~~~~~~!!!创建随机存储文件,length="+bean.getRealSize()+",current="+bean.getCurrent());
 			
 			//raf.close();
 		} catch (IOException e3) {
@@ -574,16 +574,16 @@ public class ApiClient {
 						//Logger.e(TAG, "+++++len++++ "+len);
 						
 						load += len;
-						bean.setProgress(load * 100 / bean.getSize());
+						bean.setProgress(load * 100 / bean.getRealSize());
 						
 						try {
 							if(bean.getProgress()>tempProgres){
 								if(bean.getProgress()>0 && bean.getProgress()<=100){
 									
 							   //=====add by xgh==
-								//if(bean.getProgress()%2==0){
+								if(bean.getProgress()%2==0){
 								 dao.updateDownloadPosition(bean.getPackageName(), load); //TODO...用于断点下载的记录
-									//}
+									}
 								
 								//=====end====
 								
@@ -597,20 +597,12 @@ public class ApiClient {
 					}
 
 					
-					//long fileSize = file.length();
-					//Log.e(TAG, "下载完成 数量:" + load + ",length=" + length
-					//		+ ",fileSize=" + fileSize);
-					/*if (length == fileSize) {
-						f = new File(Constants.APK_DIR, fileName);
-						file.renameTo(f);
-						break;
-					}*/
-					
-					
-					if (LKHomeUtil.checkDownloadFileSuccessed(md5, file)) {
-						f = new File(Constants.APK_DIR, fileName);
-						file.renameTo(f);
-						//break;
+					if(load==bean.getRealSize()){ //内容字节数下载完成,判断md5是否相同
+						
+						if (LKHomeUtil.checkDownloadFileSuccessed(md5, file)) {
+							f = new File(Constants.APK_DIR, fileName);
+							file.renameTo(f);
+						}
 					}
 				}
 			} catch (Exception e) { //捕获网络异常

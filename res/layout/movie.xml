@@ -4,7 +4,6 @@
     android:layout_height="fill_parent"
     >
 
-<!-- $Id: movie.xml 115 2014-02-20 05:44:09Z xgh $ -->
 
 
       <GridView

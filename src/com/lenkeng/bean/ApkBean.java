@@ -40,6 +40,9 @@ public class ApkBean  implements Parcelable{
 	//private String style;
 	private String category;
 	private long current;
+	private long realSize;
+	
+	
 	
 	public String getMd5() {
 		return md5;
@@ -95,6 +98,16 @@ public class ApkBean  implements Parcelable{
 		this.current = current;
 	}
 
+	
+	
+	public long getRealSize() {
+		return realSize;
+	}
+
+	public void setRealSize(long realSize) {
+		this.realSize = realSize;
+	}
+
 	public ApkBean(){
 		
 	}
@@ -138,6 +151,7 @@ public class ApkBean  implements Parcelable{
 		hdIcon=source.readString();
 		category=source.readString();
 		current=source.readLong();
+		realSize=source.readLong();
 		
 		
 	}
@@ -203,6 +217,7 @@ public class ApkBean  implements Parcelable{
 		dest.writeString(hdIcon);
 		dest.writeString(category);
 		dest.writeLong(current);
+		dest.writeLong(realSize);
 		
 	}
 	public void readFromParcel(Parcel _reply) {
@@ -238,7 +253,7 @@ public class ApkBean  implements Parcelable{
 		return "ApkBean [url=" + url + ", savePath=" + savePath + ", status="
 				+ status + ", name=" + name + ", packageName=" + packageName
 				+ ", progress=" + progress + ", md5=" + md5 + ", size=" + size
-				+ ", hdIcon=" + hdIcon + ", category=" + category +",current="+current+ "]";
+				+ ", hdIcon=" + hdIcon + ", category=" + category +",current="+current+",realSize="+realSize+ "]";
 	}
 	
 	

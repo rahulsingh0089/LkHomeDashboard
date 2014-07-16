@@ -110,7 +110,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	private RelativeLayout progress_search;
 
 	// helper define
-	private int currentPage;
+	private int currentPage=-1;
 	private AppInfo currentApp;
 	// find the grid
 	private GridView grid_movie;
@@ -138,10 +138,14 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	private BroadcastReceiver mHideInstallReceiver;
 	// controller
 
-	private static int mSubIndex = -1;
+	private static int mVideoSubIndex = -1;
+	private static int mAppSubIndex = -1;
+	private static int mGameSubIndex = -1;
+	private static int mSearchSubIndex = -1;
 	private boolean isFirstRun = false;
 
 	private boolean isLoadding=false;
+	private boolean isSearching=false;
 	
 	// define hander
 	Handler handler_movie = new Handler() {
@@ -160,6 +164,10 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				progress_movie.setVisibility(View.GONE);
 				grid_movie.setVisibility(View.VISIBLE);
+				
+				mVideoSubIndex = entity_movie.getCurrentPage();
+				//rb_cate_movie.requestFocus();
+				
 				freshControllerLayout(entity_movie);
 
 				break;
@@ -190,6 +198,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				progress_app.setVisibility(View.GONE);
 				grid_app.setVisibility(View.VISIBLE);
+				mAppSubIndex = entity_app.getCurrentPage();
+				
+				//rb_cate_app.requestFocus();
 				freshControllerLayout(entity_app);
 				break;
 			case 1:
@@ -220,6 +231,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				progress_game.setVisibility(View.GONE);
 				grid_game.setVisibility(View.VISIBLE);
+				mGameSubIndex = entity_game.getCurrentPage();
+				
+				//rb_cate_game.requestFocus();
 				freshControllerLayout(entity_game);
 				break;
 			case 1:
@@ -237,11 +251,16 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		@Override
 		public void handleMessage(Message msg) {
 			
+			isSearching=false;
+			
 			if(currentPage==3){
 				isLoadding=false;
 			}
 			
 			progress_search.setVisibility(View.GONE);
+			
+			//rb_cate_search.requestFocus();
+			
 			btn_search.setClickable(true);
 			
 			switch (msg.what) {
@@ -252,6 +271,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 					tv_search_title.setText(flag ? R.string.text_search_result
 							: R.string.text_recommend);
 					grid_search.setVisibility(View.VISIBLE);
+					grid_search.setNextFocusDownId(R.id.radio4);
+					grid_search.setNextFocusRightId(R.id.radio4);
+					
 					tv_no_result.setVisibility(View.GONE);
 					
 					btn_search.setNextFocusDownId(R.id.gridView_search);
@@ -284,17 +306,47 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		
 		map_movie.clear();
 		map_game.clear();
 
 
 		isFirstRun = true;
-		currentPage = 0;
+		//currentPage = 0;
 		initWidget();
 		logic = Logic.getInstance(getApplicationContext());
 		initAdapter();
 		initApkHideInstallReceiver();
+		
+		//获取初始的显示页面
+		Intent tIni = getIntent();
+		int tFlag = currentPage;
+		int beginPage=0;
+		if (getIntent().getStringExtra("flag") != null) {
+			tFlag = Integer.parseInt(tIni.getStringExtra("flag"));
+			switch (tFlag) {
+			case 4:
+				beginPage = 0;
+				rb_cate_movie.requestFocus();
+				break;
+			case 3:
+				
+				beginPage = 1;
+				rb_cate_app.requestFocus();
+				break;
+				
+			case 2:
+				beginPage = 2;
+				rb_cate_game.requestFocus();
+				break;
+
+			default:
+				beginPage = 3;
+				rb_cate_search.requestFocus();
+				break;
+			}
+		}
+		
+		showThePage(beginPage);
 	}
 
 	/**
@@ -310,9 +362,10 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			public void onReceive(Context context, Intent intent) {
 				String flag=intent.getStringExtra("installFlag");
 				String packageName=intent.getStringExtra("packageName");
-				if("install".equals(flag)){
-					Logger.e(TAG, "-----隐式安装apk完成.intent="+intent.getExtras()+",action="+intent.getAction());
-				    switch (currentPage) {
+				//if("install".equals(flag)){
+					Logger.e(TAG, "-----隐式安装/卸载apk.intent="+intent.getExtras()+",action="+intent.getAction());
+				  //notifyAllGrid();
+					 switch (currentPage) {
 					case 0: 
 						adapter_movie.notifyDataSetChanged();
 						break;
@@ -323,10 +376,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 						adapter_game.notifyDataSetChanged();
 						break;
 
+					case 3:
+						adapter_search.notifyDataSetChanged();
+						break;
 					default:
 						break;
 					}
-				}
+				//}
 				
 			}
 		};
@@ -376,7 +432,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
 	private void showThePage(int curPage) {
 
-	
+		//Logger.e(TAG, "~~~~~~~~~调用了showThePage(),tempPage="+curPage+",currentPage="+currentPage);
+	if(curPage==currentPage){
+		return;
+	}
+		currentPage=curPage;
 		body.setCurrentItem(curPage, false);
 		
 		switch (curPage) {
@@ -403,7 +463,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	private void initSearchLayout() {
 		// ui_search_input.requestFocus();
 		if (isFirstRun) {
-			et_search_input.requestFocus();
+			//et_search_input.requestFocus();
 			isFirstRun = false;
 			progress_search.setVisibility(View.GONE);
 			logic.getRecommApps(handler_search);
@@ -411,8 +471,11 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		}else{
 			progress_search.setVisibility(View.GONE);
 			ll_controller.setVisibility(View.GONE);
+			
 		}
 		tv_no_result.setVisibility(View.GONE);
+		
+		adapter_search.notifyDataSetChanged();
 		// if (entity_search == null || entity_search.getData().size() < 0) {
 		
 		
@@ -423,7 +486,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	private void initGameLayout() {
 
 		DataEntity tGame = manager_map.get(currentPage).get(
-				mSubIndex != -1 ? mSubIndex : 1);
+				mGameSubIndex != -1 ? mGameSubIndex : 1);
 		if (tGame != null) {
 			handMessage(handler_game, tGame);
 
@@ -435,11 +498,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		if (entity_game != null) {
 			tv_currPage.setText(String.valueOf(entity_game.getCurrentPage()));
 		}
+		adapter_game.notifyDataSetChanged();
 	}
 
 	private void initAppLayout() {
 		DataEntity tApp = manager_map.get(currentPage).get(
-				mSubIndex != -1 ? mSubIndex : 1);
+				mAppSubIndex != -1 ? mAppSubIndex : 1);
 		if (tApp != null) {
 			handMessage(handler_app, tApp);
 
@@ -450,11 +514,12 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		if (entity_app != null) {
 			tv_currPage.setText(String.valueOf(entity_app.getCurrentPage()));
 		}
+		adapter_app.notifyDataSetChanged();
 	}
 
 	private void initMovieLayout() {
 		DataEntity tMovie = manager_map.get(currentPage).get(
-				mSubIndex != -1 ? mSubIndex : 1);
+				mVideoSubIndex != -1 ? mVideoSubIndex : 1);
 		if (tMovie != null) {
 			handMessage(handler_movie, tMovie);
 		} else if (entity_movie == null || entity_movie.getData().size() <= 0) {
@@ -464,6 +529,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		if (entity_movie != null) {
 			tv_currPage.setText(String.valueOf(entity_movie.getCurrentPage()));
 		}
+		
+		adapter_movie.notifyDataSetChanged();
 	}
 
 	private void initWidget() {
@@ -484,27 +551,43 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		rb_cate_movie.setOnFocusChangeListener(this);
 		rb_cate_movie.setOnClickListener(this);
 		rb_cate_movie.setOnCheckedChangeListener(this);
+		rb_cate_movie.setFocusableInTouchMode(true);//
 
 		rb_cate_app = (RadioButton) findViewById(R.id.radio2);
 		rb_cate_app.setOnFocusChangeListener(this);
 		rb_cate_app.setOnClickListener(this);
 		rb_cate_app.setOnCheckedChangeListener(this);
+		rb_cate_app.setFocusableInTouchMode(true);
 		
 		rb_cate_game = (RadioButton) findViewById(R.id.radio3);
 		rb_cate_game.setOnFocusChangeListener(this);
 		rb_cate_game.setOnClickListener(this);
 		rb_cate_game.setOnCheckedChangeListener(this);
+		rb_cate_game.setFocusableInTouchMode(true);
 		
 
 		rb_cate_search = (RadioButton) findViewById(R.id.radio4);
 		rb_cate_search.setOnFocusChangeListener(this);
 		rb_cate_search.setOnClickListener(this);
 		rb_cate_search.setOnCheckedChangeListener(this);
+		rb_cate_search.setFocusableInTouchMode(true);
 
 		// page controller
 		ll_controller = (LinearLayout) findViewById(R.id.page_control);
 		btn_up = (Button) findViewById(R.id.up);
 		btn_down = (Button) findViewById(R.id.down);
+		btn_down.setOnKeyListener(new OnKeyListener() {//拦截向下的方向键
+			
+			@Override
+			public boolean onKey(View arg0, int keyCode, KeyEvent event) {
+				if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN){
+					return true;
+				}else {
+					return false;
+				}
+			}
+		});
+		
 		tv_currPage = (TextView) ll_controller.findViewById(R.id.currPage);
 		btn_up.setOnClickListener(this);
 		btn_down.setOnClickListener(this);
@@ -572,6 +655,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	@SuppressLint("InlinedApi")
 	private OnKeyListener keyListener = new OnKeyListener() {
 
+	
+
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 
@@ -580,8 +665,10 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				switch (keyCode) {
 				case KeyEvent.KEYCODE_ENTER:
 				//case KeyEvent.KEYCODE_DPAD_CENTER:
-					
-					btn_search.performClick();
+					if(!isSearching){
+						isSearching=true;
+						btn_search.performClick();
+					}
 					
 					return true;
 					
@@ -597,41 +684,58 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Intent tIni = getIntent();
-		int tFlag = currentPage;
-		if (tIni.getStringExtra("flag") != null) {
-			tFlag = Integer.parseInt(tIni.getStringExtra("flag"));
-			switch (tFlag) {
-			case 4:
-				currentPage = 0;
-				break;
-			case 3:
-				
-				currentPage = 1;
-				break;
-				
-			case 2:
-				currentPage = 2;
-				break;
+		
 
-			default:
-				break;
-			}
-			((RadioButton) ui_radio_group.getChildAt(currentPage))
-					.performClick();
-			getIntent().removeExtra("flag");
-		}
-
-		showThePage(currentPage);
+		((RadioButton) ui_radio_group.getChildAt(currentPage)).performClick();
+		//updateRadioButtonState( currentPage);
+		//showThePage(currentPage);
 	}
 
-	private void notifyAllGrid() {
+	private void updateRadioButtonState(int selPage) {
+		//Logger.e(TAG, "~~~~~~~~~~~ 需要选中的item="+selPage);
+		switch (selPage) {
+		case 0:
+			rb_cate_movie.setChecked(true);
+			rb_cate_app.setChecked(false);
+			rb_cate_game.setChecked(false);
+			rb_cate_search.setChecked(false);
+			
+			
+			break;
+		case 1:
+			rb_cate_app.setChecked(true);
+			rb_cate_movie.setChecked(false);
+			rb_cate_game.setChecked(false);
+			rb_cate_search.setChecked(false);
+			
+			break;
+		case 2:
+			rb_cate_game.setChecked(true);
+			rb_cate_movie.setChecked(false);
+			rb_cate_app.setChecked(false);
+			rb_cate_search.setChecked(false);
+			
+			break;
+		case 3:
+			
+			rb_cate_search.setChecked(true);
+			rb_cate_movie.setChecked(false);
+			rb_cate_app.setChecked(false);
+			rb_cate_game.setChecked(false);
+			break;
+		default:
+			break;
+		}
+		
+	}
+
+/*	private void notifyAllGrid() {
 		adapter_app.notifyDataSetChanged();
 		adapter_game.notifyDataSetChanged();
 		adapter_movie.notifyDataSetChanged();
 		adapter_search.notifyDataSetChanged();
 
-	}
+	}*/
 
 	protected void onDestroy() {
 		unregisterReceiver(mHideInstallReceiver);
@@ -641,44 +745,33 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	@Override
 	public void onFocusChange(View v, boolean hasFocus) {
 		if (hasFocus) {
+			int tempPage=0;
 			switch (v.getId()) {
 			case R.id.radio1:
-				currentPage = 0;
-				/*View movie = grid_movie.getSelectedView();
-				if (movie != null && hasFocus) {
-					//movie.setBackgroundResource(R.drawable.market_item_def_bg);
-				}*/
+				
+				
+				tempPage = 0;
 				break;
 			case R.id.radio2:
-				currentPage = 1;
-				/*View app = grid_app.getSelectedView();
-				if (app != null && hasFocus) {
-					//app.setBackgroundResource(R.drawable.market_item_def_bg);
-				}*/
+				
+				tempPage = 1;
 				break;
 			case R.id.radio3:
-				currentPage = 2;
-				/*View game = grid_game.getSelectedView();
-				if (game != null && hasFocus) {
-					//game.setBackgroundResource(R.drawable.market_item_def_bg);
-				}*/
+				
+				tempPage = 2;
 				break;
 			case R.id.radio4:
-				currentPage = 3;
-				//View search = grid_search.getSelectedView();
-				//if (search != null && hasFocus) {
-					//search.setBackgroundResource(R.drawable.market_item_def_bg);
-				//}
+				
+				tempPage = 3;
 				break;
 			default:
 				break;
+				
 			}
-			// if (hasFocus) {
-			((RadioButton) ui_radio_group.getChildAt(currentPage))
-					.setChecked(true);
-			/*mSubIndex = 1;
-			showThePage(currentPage);*/
-			// }
+			updateRadioButtonState(tempPage);
+			
+			//不能调用v.performClick(), 要直接切换显示页面,否则会重复2次用户操作
+			showThePage(tempPage);
 		}
 	}
 	
@@ -764,15 +857,15 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		switch (currentPage) {
 		case 0:
 			tAppInfo = entity_movie.getData().get(arg2);
-			mSubIndex = entity_movie.getCurrentPage();
+			mVideoSubIndex = entity_movie.getCurrentPage();
 			break;
 		case 1:
 			tAppInfo = entity_app.getData().get(arg2);
-			mSubIndex = entity_app.getCurrentPage();
+			mAppSubIndex = entity_app.getCurrentPage();
 			break;
 		case 2:
 			tAppInfo = entity_game.getData().get(arg2);
-			mSubIndex = entity_game.getCurrentPage();
+			mGameSubIndex = entity_game.getCurrentPage();
 			break;
 		case 3:
 			tAppInfo = entity_search.getData().get(arg2);
@@ -791,38 +884,87 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	@Override
 	public void onClick(View arg0) {
 
+		int tempPage=0;
 		switch (arg0.getId()) {
 
 		case R.id.radio1:  //影视
-			currentPage = 0;
-			((RadioButton) ui_radio_group.getChildAt(currentPage))
-					.setChecked(true);
-			mSubIndex = 1;
-			showThePage(currentPage);
+			/*((RadioButton) ui_radio_group.getChildAt(currentPage))
+			.setChecked(true);*/
+			
+			tempPage=0;
+			updateRadioButtonState(tempPage);
+			Logger.e(TAG, "----------1111111 onClick(),点击了影视, temp="+tempPage+",currentPage="+currentPage);
+			
+			if(currentPage!=tempPage){
+				
+				//currentPage = tempPage;
+				//mSubIndex = 1;
+				showThePage(tempPage);
+			}
 			break;
 		case R.id.radio2:  //应用
-			mSubIndex = 1;
+			/*mSubIndex = 1;
 			currentPage = 1;
 			((RadioButton) ui_radio_group.getChildAt(currentPage))
 					.setChecked(true);
-			showThePage(currentPage);
+			showThePage(currentPage);*/
 
+			/*((RadioButton) ui_radio_group.getChildAt(currentPage))
+			.setChecked(true);*/
+			
+			tempPage=1;
+			updateRadioButtonState(tempPage);
+			Logger.e(TAG, "----------2222 onClick(),点击了应用, temp="+tempPage+",currentPage="+currentPage);
+			
+			if(currentPage!=tempPage){
+				
+				//currentPage = tempPage;
+				//mSubIndex = 1;
+				showThePage(tempPage);
+			}
+			
 			break; 
 		case R.id.radio3:  //游戏
-			currentPage = 2;
+		/*	currentPage = 2;
 			mSubIndex = 1;
 			((RadioButton) ui_radio_group.getChildAt(currentPage))
 					.setChecked(true);
-			showThePage(currentPage);
+			showThePage(currentPage);*/
+			/*((RadioButton) ui_radio_group.getChildAt(currentPage))
+			.setChecked(true);*/
 
+			tempPage=2;
+			updateRadioButtonState(tempPage);
+			Logger.e(TAG, "----------33333 onClick(),点击了游戏, temp="+tempPage+",currentPage="+currentPage);
+			
+			if(currentPage!=tempPage){
+				
+				//currentPage = tempPage;
+				//mSubIndex = 1;
+				showThePage(tempPage);
+			}
+			
 			break;
 		case R.id.radio4: //搜索
-			currentPage = 3;
+/*			currentPage = 3;
 			mSubIndex = 1;
 			((RadioButton) ui_radio_group.getChildAt(currentPage))
 					.setChecked(true);
-			showThePage(currentPage);
+			showThePage(currentPage);*/
+			/*((RadioButton) ui_radio_group.getChildAt(currentPage))
+			.setChecked(true);*/
 
+			tempPage=3;
+			updateRadioButtonState(tempPage);
+			Logger.e(TAG, "----------444444 onClick(),点击了搜素, temp="+tempPage+",currentPage="+currentPage);
+			
+			if(currentPage!=tempPage){
+				
+				//currentPage = tempPage;
+				//mSubIndex = 1;
+				showThePage(tempPage);
+			}
+			
 			break;
 
 		case R.id.up:
@@ -988,15 +1130,63 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		Logger.e(TAG, "=======dispatchKeyEvent, isLoading="+isLoadding);
+		//Logger.e(TAG, "=======dispatchKeyEvent, isLoading="+isLoadding);
 		if(event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN && event.getAction()==KeyEvent.ACTION_DOWN&& isLoadding){
      	    
          return true;
+     }else if(event.getKeyCode()==KeyEvent.KEYCODE_BACK && event.getAction()==KeyEvent.ACTION_DOWN){
+    	 if(!menuHasFocus()){
+    		 boolean flag=false;
+    		 switch (currentPage) {
+			case 0:
+				flag=rb_cate_movie.requestFocus();
+				break;
+			case 1:
+				flag=rb_cate_app.requestFocus();
+				
+				break;
+			case 2:
+				flag=rb_cate_game.requestFocus();
+				
+				break;
+			case 3:
+				flag=rb_cate_search.requestFocus();
+				
+				break;
+
+			default:
+				break;
+			}
+    		 Logger.e(TAG, "==========菜单没有了焦点,currentPage="+currentPage+",flag="+flag);
+    	 }else{
+    		 Logger.e(TAG, "~~~~~~ 菜单获取了焦点");
+    		 finish();
+    		 
+    	 }
+    	 
+    	 return true;
      }
      return super.dispatchKeyEvent(event);
 }
 		
 	
+private boolean menuHasFocus() {
+	if(rb_cate_movie.isFocused()){
+		return true;
+	}
+	if(rb_cate_app.isFocused()){
+		return true;
+	}
+	if(rb_cate_game.isFocused()){
+		return true;
+	}
+	if(rb_cate_search.isFocused()){
+		return true;
+	}
+		return false;
+	}
+
+
 /*	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN && isLoadding ){
@@ -1038,9 +1228,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
 
 	@Override
-	public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-		mSubIndex = 1;
-		showThePage(currentPage);
+	public void onCheckedChanged(CompoundButton view, boolean isFocus) {
+		/*if(isFocus){
+			
+		  mSubIndex = 1;
+		  showThePage(currentPage);
+			//view.performClick();
+		}*/
 		
 		
 	}

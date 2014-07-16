@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
+<!-- $Id: home_view_paper_item.xml 7 2013-12-17 06:32:47Z gww $ -->
 
   
     <GridView

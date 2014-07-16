@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_common"
+    >
+
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rl_apkCommen_list"
+        android:layout_marginBottom="30dp"
+        android:paddingRight="100dp"
+        >
+        <Button 
+            android:id="@+id/btn_edit_apkcommen"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/text_edit_apkcommen"
+            android:background="@drawable/btn_edit_commen_selector"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:gravity="center"
+            />
+        
+        <TextView 
+            android:id="@+id/tv_devId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_edit_apkcommen"
+            android:minWidth="100dp"
+            android:layout_marginRight="10dp"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            />
+        
+        <ImageView 
+            android:id="@+id/iv_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+              android:layout_toLeftOf="@+id/tv_devId"
+              android:src="@drawable/head"
+              android:layout_marginRight="10dp"
+            />
+        
+    </RelativeLayout>
+    
+    
+    <RelativeLayout 
+        android:id="@+id/rl_apkCommen_list"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_centerVertical="true"
+    android:paddingTop="30dp"
+    android:paddingBottom="30dp"
+    >
+     
+    <ListView 
+        android:id="@+id/lv_detailCommen"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:paddingLeft="300dp"
+        android:paddingRight="300dp"
+        android:layout_centerVertical="true"
+        android:divider="@drawable/transparent_background"
+        android:dividerHeight="20dp"
+        android:scrollbarStyle="insideInset"
+        />
+        
+
+
+   </RelativeLayout>
+    
+  
+    
+    
+
+</RelativeLayout>

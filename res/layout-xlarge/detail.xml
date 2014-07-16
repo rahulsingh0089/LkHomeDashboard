@@ -52,14 +52,28 @@
             android:textSize="25sp" 
             />
         
+        
+        <!-- 分隔线 -->
+            <View
+            android:id="@+id/splite_line"
+            android:layout_width="1dp"
+            android:layout_height="25dp"
+             android:layout_toRightOf="@+id/size"
+             android:layout_below="@+id/textView1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:background="#fff"
+            />
+        
         <TextView
             android:id="@+id/tv_operateType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/size"
+            android:layout_toRightOf="@+id/splite_line"
             android:layout_alignBottom="@+id/size"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="10dp"
             android:textSize="25sp" 
+            
             />
         
 
@@ -70,7 +84,44 @@
             android:layout_alignLeft="@id/textView1"
             android:layout_below="@id/size"
             android:lines="3"
-            android:textSize="25sp" />
+            android:textSize="25sp" 
+            />
+        
+        <!-- 评论 -->
+        <RelativeLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/tv_operateType"
+            android:layout_alignTop="@+id/textView1"
+            android:layout_marginLeft="240dp"
+            android:layout_marginRight="40dp"
+            android:layout_above="@+id/textView2"
+            >
+            <Button 
+                android:id="@+id/btn_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="37dp"
+                android:text="@string/text_comment"
+                android:layout_alignParentRight="true"
+                android:nextFocusDown="@+id/btn_back"
+                android:background="@drawable/btn_commen_selector"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                
+                />
+     <ListView
+        android:id="@+id/lv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:fadeScrollbars="true"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/btn_comment"
+        android:layout_alignParentRight="true"
+        /> 
+            
+        </RelativeLayout>
     </RelativeLayout>
 
     <HorizontalScrollView
@@ -81,6 +132,7 @@
         android:layout_marginTop="25dp"
         android:layout_gravity="center_horizontal"
         android:fadingEdge="none"
+        android:focusable="false"
         >
       <LinearLayout 
             android:layout_height="fill_parent"
@@ -112,16 +164,6 @@
     
         </LinearLayout> 
     </HorizontalScrollView> 
-    <Gallery
-        android:id="@+id/gallery1"
-        android:layout_width="1200dp"
-        android:layout_height="250dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:padding="0dp" 
-        android:visibility="gone"
-        />
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -146,6 +188,7 @@
                 android:textColor="#ffffffff"
                 android:textSize="26sp" 
                  android:gravity="center"
+                 android:nextFocusUp="@+id/btn_comment"
                 >
             </Button>
 
@@ -159,6 +202,7 @@
                 android:textColor="#ffffffff"
                 android:textSize="26sp" 
                 android:gravity="center"
+                  android:nextFocusUp="@+id/btn_comment"
                 />
 
             <Button
@@ -167,10 +211,10 @@
                 android:layout_height="55dp"
                 android:background="@drawable/detail_left_selector"
                 android:focusable="true"
-                 android:text="@string/text_download"
                 android:textColor="#ffffffff"
                 android:textSize="26sp" 
                  android:gravity="center"
+                   android:nextFocusUp="@+id/btn_comment"
                 />
         </RelativeLayout>
 
@@ -185,6 +229,7 @@
             android:textColor="#ffffffff"
             android:textSize="26sp" 
             android:gravity="center"
+              android:nextFocusUp="@+id/btn_comment"
             />
 
         <TextView

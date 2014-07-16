@@ -13,9 +13,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
-/*
- * $Id: MyDownloadThreadManager.java 101 2014-02-17 10:19:35Z gww $
- */
+
 
 public class MyDownloadThreadManager {
 	private static final int RECONN_TIMES = 3;

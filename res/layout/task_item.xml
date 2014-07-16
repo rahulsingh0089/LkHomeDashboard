@@ -5,6 +5,7 @@
     android:background="@drawable/app_manager_item_selector"
     android:gravity="center_vertical" >
 
+<!-- $Id: task_item.xml 4 2013-12-12 04:19:52Z kf $ -->
 
     
     <ImageView

@@ -260,7 +260,8 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_move = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_move.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			//AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity);
 			adapter.setStyleFlag(Constant.CLASSIFY_MOVIE);
 			// adapter.setItemsData(homeUtil.getAppList(i,Constant.CLASSIFY_MOVIE,
 			// allAppInfos), i);
@@ -304,7 +305,8 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_app = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_app.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			//AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity);
 			adapter.setStyleFlag(Constant.CLASSIFY_APPLICATION);
 			// adapter.setItemsData(homeUtil.getAppList(i,Constant.CLASSIFY_APPLICATION,
 			// allAppInfos), i);
@@ -345,7 +347,8 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_game = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_game.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			//AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity);
 			adapter.setStyleFlag(Constant.CLASSIFY_GAME);
 			gv_game.setScrollBarFadeDuration(Integer.MAX_VALUE);
 			// adapter.setItemsData(homeUtil.getAppList(i,
@@ -413,7 +416,8 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_user = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_user.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			//AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity);
 			adapter.setStyleFlag(Constant.CLASSIFY_USER);
 			gv_user.setScrollBarFadeDuration(Integer.MAX_VALUE);
 			// adapter.setItemsData(homeUtil.getAppList(i,
@@ -456,7 +460,8 @@ public class ViewPagerFactory {
 					R.layout.home_view_paper_item, null);
 			gv_setting = (GridView) mViewGroup.findViewById(R.id.home_app_list);
 			gv_setting.setOnKeyListener(keListener);
-			AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			//AppQueryAdapter adapter = new AppQueryAdapter(activity,mHandler);
+			AppQueryAdapter adapter = new AppQueryAdapter(activity);
 			gv_setting.setScrollBarFadeDuration(Integer.MAX_VALUE);
 			adapter.setStyleFlag(Constant.CLASSIFY_SETTING);
 			adapter.setItemsData(LKHomeApp.homeUtil.getAppList(i,

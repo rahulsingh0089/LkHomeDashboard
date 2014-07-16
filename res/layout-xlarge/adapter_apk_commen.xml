@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height=" 40dp"
+    >
+   <ImageView
+       android:id="@+id/iv_head"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/head" 
+        android:layout_centerVertical="true"
+        /> 
+     <TextView 
+        android:id="@+id/tv_devId"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="18sp"
+        android:layout_marginLeft="5dp"
+       android:includeFontPadding="false"
+        android:layout_toRightOf="@+id/iv_head"
+        android:layout_centerVertical="true"
+        />
+      
+     <RatingBar
+        android:id="@+id/rbar_level"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp" 
+        style="@style/myratingbar"
+        
+        android:layout_toRightOf="@+id/tv_devId"
+        android:layout_marginLeft="10dp"
+        android:isIndicator="true"
+        android:layout_centerVertical="true"
+        />
+     
+    
+    <TextView 
+        android:id="@+id/adapter_list_layout_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+         android:layout_gravity="center"
+         android:gravity="center_vertical"
+          android:layout_toRightOf="@+id/rbar_level"
+         android:layout_centerVertical="true"
+         android:singleLine="true"
+         android:ellipsize="end"
+        />
+
+ 
+
+</RelativeLayout>

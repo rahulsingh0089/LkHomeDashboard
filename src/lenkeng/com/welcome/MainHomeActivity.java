@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import android.util.Log;
+import lenkeng.com.welcome.adapter.AppQueryAdapter;
 import lenkeng.com.welcome.bean.AppInfo;
 import lenkeng.com.welcome.bean.WeatherInfo;
 import lenkeng.com.welcome.bean.XmppMessage;
@@ -94,6 +95,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lenkeng.bean.URLs;
+import com.lenkeng.logic.Logic;
 import com.lenkeng.tools.ThreadPoolUtil;
 
 
@@ -176,7 +178,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 
 	static boolean cycleFlag = true;
 	//private Map<View, Integer> BUTTONS_HOVERED = new HashMap<View, Integer>();
-	//private Map<View, AppInfo> recButtonMapApp = new HashMap<View, AppInfo>();
+	private Map<String,View> STYLE_VIEW = new HashMap<String, View>();
 
 	private ContentResolver cr;
 	private BroadcastReceiver mCameraStateReceiver,speedReceiver,clearReceiver;
@@ -332,6 +334,13 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 
 		long aft =System.currentTimeMillis();
 		Logger.e("kao", "-----Home onCreate------  "+(aft - bef));
+		
+		
+		//启动定时检查上传状态
+		Intent it=new Intent(getApplicationContext(),LKService.class);
+		it.putExtra("CMD", LKService.CMD_LOOP_CHECK_UPLOAD_STATE);
+		startService(it);
+		
 		/*
 		 * Logger.i("ez2",
 		 * "--------------------------------------------------------------------"
@@ -431,6 +440,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		// filter.addAction(Constant.ACTION_INSTALED);
 		filter.addAction("android.net.wifi.WIFI_AP_STATE_CHANGED");
 		filter.addAction("com.lenkeng.newdata");
+		filter.addAction(Logic.NEED_UPDATE_UPLOAD_BTN);
 		registerReceiver(wifiListener, filter);
 
 		IntentFilter screenfilter = new IntentFilter();
@@ -855,6 +865,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			buttons[i].setOnClickListener(this);
 			buttons[i].setOnFocusChangeListener(focusChangedListener);
 			buttons[i].setOnKeyListener(buttonsKeyListener);
+			STYLE_VIEW.put(Constant.CLASSIFIES[i], buttons[i]);
 			// buttons[i].setOnHoverListener(buttonHoverListener);
 			// BUTTONS_HOVERED.put(buttons[i], Constant.BUTTON_HOVERD[i]);
 		}
@@ -1733,6 +1744,29 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 					Logger.e("kao", "---- wifi ap is enabled ----  "+apState);
 					iv_wifiAp.setVisibility(View.VISIBLE);
 				}
+			}else if(Logic.NEED_UPDATE_UPLOAD_BTN.equals(action)){ //需要更新上传按钮的广播
+				//List<AppInfo> allAppInfos = iser.getPackageName(Constant.CLASSIFY_USER);
+				/*AppQueryAdapter adapter=new AppQueryAdapter(MainHomeActivity.this);
+				adapter.setItemsData(allAppInfos, 0);
+				adapter.setStyleFlag(Constant.CLASSIFY_USER);
+				adapter.notifyDataSetChanged();*/
+				//vpf.createViewPager(Constant.CLASSIFY_USER, allAppInfos);
+				//vpf.getCurrentViewPager(Constant.CLASSIFY_USER).setCurrentItem(
+				//		vpf.getCurrentPageNumber(Constant.CLASSIFY_USER));
+				GridView g =vpf.getCurrentAdapter(Constant.CLASSIFY_USER).getPrimaryItem();
+				if (g != null) {
+					AppQueryAdapter adapter =(AppQueryAdapter) g.getAdapter();
+					//adapter.setItemsData(allAppInfos, 0);
+					//adapter.setStyleFlag(Constant.CLASSIFY_USER);
+					adapter.notifyDataSetChanged();
+					/* int select=g.getSelectedItemPosition();
+					 g.setSelection(select);
+					if (g.getSelectedView() != null) {
+						g.getSelectedView().requestFocus();
+					}*/
+				}
+				
+				mpf.disMiss();
 			}
 		}
 	};
@@ -2088,6 +2122,10 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			Logger.e("ez2", "$$$---onKeyDown---" + keyCode + "----indexTime---"
 					+ indexTime);
 		}*/	
+		if(keyCode == KeyEvent.KEYCODE_BACK){
+			onClick(STYLE_VIEW.get(style_flag));
+			STYLE_VIEW.get(style_flag).requestFocus();
+		}
 		if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_TAB
 				|| keyCode == KeyEvent.KEYCODE_SHIFT_LEFT
 				|| keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT) {

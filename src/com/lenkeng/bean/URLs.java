@@ -43,6 +43,7 @@ public class URLs implements Serializable {
 		String host="";
 		if(LKHomeUtil.isFactoryMode()){
 			host="192.168.16.223:8080";
+			//host="192.168.16.241:8080";
 		}else{
 			
 			if(isZhVertion()){

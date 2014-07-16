@@ -155,6 +155,7 @@ public class LKHomeUtil {
 	
 	static {
 
+//------------英文版独有---------------
 		Logger.i("gww", "add app--++-");
 		appStyles = new HashMap<String, String>();
 		packageMapRes = new HashMap<String, String>();
@@ -171,7 +172,7 @@ public class LKHomeUtil {
 		appStyles.put("android.rk.RockVideoPlayer", Constant.CLASSIFY_USER);
 		appStyles.put("com.android.gallery3d", Constant.CLASSIFY_USER);*/
 		
-		
+//-----------------------------------		
 		
 		//packageMapRes.put("com.lenkeng.video", R.drawable.video_icon);
 		
@@ -265,6 +266,7 @@ public class LKHomeUtil {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
 		}
+		//-----------英文版独有------
 		appStyles.put("com.android.email", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.email", R.drawable.email);
 		appStyles.put("com.lenkeng.video", Constant.CLASSIFY_APPLICATION);
@@ -291,7 +293,7 @@ public class LKHomeUtil {
 		////rk: [ro.hardware]: [rk30board],/mnt/external_sd
 		//a20:[ro.hardware]: [sun7i],/mnt/extsd
 		
-		
+		//--------------------------
 	}
 
 	private static void getDebugFileDir() {
@@ -1661,6 +1663,12 @@ public class LKHomeUtil {
 			return true;
 		}
 		return false;
+		
+	}
+
+	public static String formatDate(Date date,String pattern) {
+		SimpleDateFormat sf=new SimpleDateFormat(pattern);
+		return sf.format(date);
 		
 	}
 	

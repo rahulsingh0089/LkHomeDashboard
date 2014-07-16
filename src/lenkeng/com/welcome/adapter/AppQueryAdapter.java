@@ -49,7 +49,7 @@ public class AppQueryAdapter extends BaseAdapter {
 	public ViewHolder holder;
 	private Activity context;
 	private List<AppInfo> mList;
-	private Handler mHandler;
+	//private Handler mHandler;
 	//private SharedPreferences sp;
 	//private AppStoreDao appStoreDao;
 	//private int page = 0;
@@ -57,11 +57,13 @@ public class AppQueryAdapter extends BaseAdapter {
 	private String style_flag;
 	//private MyPopupFactory mpf;
 	//private String Langue;
+	private Logic mLogic;
 	
 	
-	public AppQueryAdapter(Activity context,Handler handler) {
+	public AppQueryAdapter(Activity context) {
 		this.context = context;
-		this.mHandler=handler;
+		//this.mHandler=handler;
+		mLogic=Logic.getInstance(context);
 		//sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
 		//appStoreDao =AppStoreDao.getInstance(LKHomeApp.getAppContext());
 		//mpf=new MyPopupFactory(context);
@@ -108,7 +110,7 @@ public class AppQueryAdapter extends BaseAdapter {
 					AppInfo app=(AppInfo) v.getTag();
 					String pkg=app.getPackage_name();
 					String appName=app.getName();
-					Logic.getInstance(context).uploadApk(pkg,appName);
+					mLogic.uploadApk(pkg,appName);
 				}
 			});
 			// holder.ico.setFocusable(false);
@@ -136,6 +138,8 @@ public class AppQueryAdapter extends BaseAdapter {
 		holder.ico.setClickable(false);
 		holder.btn_upload.setTag(info);
 		convertView.setOnHoverListener(hoverListener);
+		
+		
 		return convertView;
 	}
 
@@ -186,8 +190,31 @@ public class AppQueryAdapter extends BaseAdapter {
 			}else{
 				holder.ico.setBackground(d);
 			}
-			if(!LKHomeUtil.appStyles.containsKey( info.getPackage_name())){
-				holder.btn_upload.setVisibility(View.VISIBLE);
+			if(!LKHomeUtil.appStyles.containsKey( info.getPackage_name())){//其他
+				//holder.btn_upload.setVisibility(View.VISIBLE);
+				
+				if(mLogic.getUploadState(info.getPackage_name())==Constant.UPLOAD_STATE_EXITED){ //apk已经存在,不显示图标
+					holder.btn_upload.setVisibility(View.GONE);
+				}else if(mLogic.getUploadState(info.getPackage_name())==Constant.UPLOAD_STATE_CANUPLOAD){//apk可以上传
+					holder.btn_upload.setVisibility(View.VISIBLE);
+					holder.btn_upload.setBackgroundResource(R.drawable.select_upload_button);
+					
+				}else if(mLogic.getUploadState(info.getPackage_name())==Constant.UPLOAD_STATE_WAITVERFY){//apk等待审核
+					holder.btn_upload.setVisibility(View.VISIBLE);
+					holder.btn_upload.setBackgroundResource(R.drawable.select_upload_waitverify);
+					
+				}else if(mLogic.getUploadState(info.getPackage_name())==Constant.UPLOAD_STATE_VERFY_PASS){//apk审核通过
+					holder.btn_upload.setVisibility(View.VISIBLE);
+					holder.btn_upload.setBackgroundResource(R.drawable.select_upload_verify_pass);
+					
+				}else if(mLogic.getUploadState(info.getPackage_name())==Constant.UPLOAD_STATE_VERFY_FAIL){//apk审核不通过
+					holder.btn_upload.setVisibility(View.VISIBLE);
+					holder.btn_upload.setBackgroundResource(R.drawable.select_upload_verify_fail);
+					
+				}
+				
+				
+				
 			}else{
 				holder.btn_upload.setVisibility(View.GONE);
 			}
@@ -195,10 +222,22 @@ public class AppQueryAdapter extends BaseAdapter {
 		} else {
 			holder.title.setVisibility(View.INVISIBLE);
 			if (info.getPackage_name().equals(Constant.MORE)) {
-				holder.ico.setVisibility(View.INVISIBLE);
-				holder.ico.setBackgroundResource(R.drawable.more);
-				holder.title.setText(context.getString(R.string.More));
-				holder.ll_itemBack.setBackgroundResource(R.drawable.more);
+				if(Constant.CLASSIFY_APPLICATION.equals(style_flag)){
+					holder.ico.setVisibility(View.INVISIBLE);
+					holder.ico.setBackgroundResource(R.drawable.app_store);
+					holder.title.setText(context.getString(R.string.More));
+					holder.ll_itemBack.setBackgroundResource(R.drawable.app_store);
+				}else if(Constant.CLASSIFY_GAME.equals(style_flag)){
+					holder.ico.setVisibility(View.INVISIBLE);
+					holder.ico.setBackgroundResource(R.drawable.game_store);
+					holder.title.setText(context.getString(R.string.More));
+					holder.ll_itemBack.setBackgroundResource(R.drawable.game_store);
+				}else if(Constant.CLASSIFY_MOVIE.equals(style_flag)){
+					holder.ico.setVisibility(View.INVISIBLE);
+					holder.ico.setBackgroundResource(R.drawable.tv_store);
+					holder.title.setText(context.getString(R.string.More));
+					holder.ll_itemBack.setBackgroundResource(R.drawable.tv_store);
+				}
 			} else {
 				holder.title.setText(info.getName());
 				
@@ -225,6 +264,7 @@ public class AppQueryAdapter extends BaseAdapter {
 					holder.ll_itemBack.setBackground(d);
 				} else {
 					//int resId=LKHomeUtil.getPreApkIcon(info.getPackage_name());
+					//---------------英文版独有------------------
 					/*if("com.lenkeng.video".equals(info.getPackage_name())){
 						holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.video_icon);
@@ -253,6 +293,7 @@ public class AppQueryAdapter extends BaseAdapter {
 						holder.ll_itemBack.setBackgroundResource(Constant.ITEM_BACKS[position
 												% Constant.ITEM_BACKS.length]);
 					}
+					//---------------------end---------------------
 				}
 			}
 		}

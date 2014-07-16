@@ -116,12 +116,15 @@ public class Constant {
 	 * R.string.AppManagerSetting, R.string.SystemUpdate, R.string.SystemInfo };
 	 */
 	public static final int[] SETTING_ICONS = new int[] {
+	//--------英文版独有-----------
+
 			R.drawable.kuandaibohao, R.drawable.wuxianlianjie,
 			R.drawable.huamianshezhi,R.drawable.xitongshengji,
 			R.drawable.yingyongguanli, 
 			R.drawable.xitongxinxi, R.drawable.setting_speed,
 			R.drawable.setting_clear,
 			R.drawable.language};
+//----------------------
 /*	public static final int[] SETTING_ICONS = new int[] {
 		R.drawable.kuandaibohao, R.drawable.wuxianlianjie,
 		R.drawable.huamianshezhi,R.drawable.xitongshengji,
@@ -132,10 +135,13 @@ public class Constant {
 */	
 	
 	public static final String[] SETTING_ACTION = new String[] {
+	//-------------英文版独有---------
 			"com.lenkeng.network", "com.lenkeng.hot", "com.lenkeng.screen",
 			"com.lenkeng.upgrade.gww",
 			"lenkeng.com.appManager","lenkeng.com.systemInfo",
-			"lenkeng.com.speed", "lenkeng.com.clear", "lenkeng.com.language"};
+			"lenkeng.com.speed", "lenkeng.com.clear", "lenkeng.com.language"
+	};
+  //-------------------
 	/*public static final String[] SETTING_ACTION = new String[] {
 		"com.lenkeng.network", "com.lenkeng.hot", "com.lenkeng.screen",
 		"com.lenkeng.upgrade.gww",
@@ -184,17 +190,27 @@ public class Constant {
 			"http://www.qq.com", "http://www.163.com",
 			"http://www.tiexue.net/", "http://www.ifeng.com/",
 			"http://www.pcauto.com.cn/" };*/
+			//------------英文版独有-------------
 	public static final String[] CLASSIFIES = new String[] { CLASSIFY_MOVIE,
 			CLASSIFY_APPLICATION, CLASSIFY_GAME, CLASSIFY_SCAN, CLASSIFY_USER,
 			CLASSIFY_SETTING };
 	
-	
+	//--------------------
 	
 	public static final String DOWNLOAD_DATABASE = "download.db";
 	public static final int DOWNLOAD_DBVERSION = 1;
 	
 	public static final int APK_STATE_DOWNLOADING=1;//APK正在下载
 	public static final int APK_STATE_DOWNLOAD_COMPLETE=2; //APK下载完成
+	
+	
+	public static final String UPLOAD_DATABASE = "upload.db";
+	public static final int UPLOAD_DBVERSION = 1;
+	public static final int UPLOAD_STATE_CANUPLOAD=1;//APK可以上传
+	public static final int UPLOAD_STATE_WAITVERFY=2;//APK等待审核
+	public static final int UPLOAD_STATE_VERFY_PASS=3;//APK审核通过
+	public static final int UPLOAD_STATE_VERFY_FAIL=4;//APK审核不通过
+	public static final int UPLOAD_STATE_EXITED = 5;//apk已经存在,不需要上传
 	
 	
 	

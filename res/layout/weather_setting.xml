@@ -6,6 +6,7 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
+<!-- $Id: weather_setting.xml 4 2013-12-12 04:19:52Z kf $ -->
 
     
     <ImageView

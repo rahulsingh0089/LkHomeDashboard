@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_common"
+    >
+
+    <!-- 底部头像和id -->
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:paddingRight="100dp"
+        android:layout_above="@+id/rl_apkCommen_list"
+        >
+        
+        <TextView 
+            android:id="@+id/tv_devId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            />
+        
+        <ImageView 
+            android:id="@+id/iv_head"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+              android:layout_toLeftOf="@+id/tv_devId"
+              android:src="@drawable/head"
+              android:layout_marginRight="10dp"
+            />
+        
+    </RelativeLayout>
+    
+    
+    <!-- 中间内容 -->
+    <RelativeLayout 
+        android:id="@+id/rl_apkCommen_list"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_centerVertical="true"
+    >
+     <LinearLayout 
+         android:layout_width="600dp"
+         android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:orientation="vertical"
+         
+         >
+         <!-- 评分等级 -->
+         <LinearLayout 
+             android:layout_width="wrap_content"
+             android:layout_height="30dp"
+             android:orientation="horizontal"
+             >
+             <TextView 
+                 android:id="@+id/tv_commen_level"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:minWidth="150dp"
+                 android:gravity="right|center_vertical"
+                 android:text="@string/text_my_commen_level"
+                 android:textSize="20sp"
+                 android:textColor="#fff"
+                 />
+             
+             <RatingBar
+                    android:id="@+id/rbar_common_level"
+                    style="@style/myratingbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="20dp"
+                    android:stepSize="1"
+                    android:layout_marginTop="5dp"
+                    android:rating="3"
+                    
+                    />
+             
+         </LinearLayout>
+         
+          <!-- 评论内容 -->
+         <RelativeLayout 
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="10dp"
+             >
+             <TextView 
+                 android:id="@+id/text_my_commen_content"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:minWidth="150dp"
+                 android:gravity="right"
+                 android:text="@string/text_my_commen_content"
+                   android:textSize="20sp"
+                 android:textColor="#fff"
+                 />
+             
+             <EditText 
+                 android:id="@+id/et_commen_content"
+                 android:layout_width="400dp"
+                 android:layout_height="168dp"
+                  android:layout_marginLeft="20dp"
+                 android:layout_toRightOf="@+id/text_my_commen_content"
+                 android:textSize="16sp"
+                 android:textColor="#fff"
+                 android:background="@drawable/bg_edittext_commen"
+                 android:maxLength="80"
+                 android:gravity="top"
+                 android:hint="@string/common_hint_level_3"
+                 
+                 />
+             
+         </RelativeLayout>
+         
+          <!-- 底部按钮 -->
+         <RelativeLayout 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="20dp"
+             >
+
+             <Button 
+            android:id="@+id/btn_commen_cancle"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:text="@string/text_edit_commen_cancle"
+            android:background="@drawable/btn_edit_commen_selector"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginRight="25dp"
+            />
+             
+             
+             <Button 
+            android:id="@+id/btn_commen_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="@string/text_edit_commen_submit"
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/btn_commen_cancle"
+            android:background="@drawable/btn_edit_commen_selector"
+            android:layout_marginRight="15dp"
+            />
+             
+             
+         </RelativeLayout>
+         
+         
+         
+     </LinearLayout>
+        
+
+         <ProgressBar
+            android:id="@+id/pb_submit_common"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" 
+                android:visibility="gone" 
+            />
+     
+
+   </RelativeLayout>
+    
+  
+    
+    
+
+</RelativeLayout>

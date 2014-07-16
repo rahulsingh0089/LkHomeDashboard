@@ -7,6 +7,7 @@
     android:gravity="left"
      >
      
+<!-- $Id: spinner_text.xml 4 2013-12-12 04:19:52Z kf $ -->
 
     
 </TextView>

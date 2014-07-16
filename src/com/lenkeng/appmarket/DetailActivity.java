@@ -2,20 +2,14 @@ package com.lenkeng.appmarket;
 
 import java.io.File;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lenkeng.com.welcome.R;
 import lenkeng.com.welcome.bean.AppInfo;
-import lenkeng.com.welcome.db.AppDataDao;
-import lenkeng.com.welcome.db.AppStoreDao;
 import lenkeng.com.welcome.db.DownloadBean;
 import lenkeng.com.welcome.db.DownloadDao;
 import lenkeng.com.welcome.util.Constant;
@@ -25,14 +19,12 @@ import lenkeng.com.welcome.util.SPUtil;
 import lenkeng.com.welcome.util.SilentInstall;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,29 +32,31 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.os.StatFs;
 import android.os.UserHandle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.view.View.OnGenericMotionListener;
+import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.Gallery;
-import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lenkeng.adapter.GalleryAdapter;
 import com.lenkeng.api.SilentInstallListener;
+import com.lenkeng.appmarket.comment.ApkCommentAdapter;
+import com.lenkeng.appmarket.comment.ApkCommentParam;
+import com.lenkeng.appmarket.comment.ApkCommonActivity;
 import com.lenkeng.bean.ApkBean;
 import com.lenkeng.bean.ImplInter;
 import com.lenkeng.bean.InterfaceStub;
 import com.lenkeng.bean.Screen;
-import com.lenkeng.bean.URLs;
 import com.lenkeng.logic.Logic;
 import com.lenkeng.service.MarketService;
 import com.lenkeng.tools.Constants;
@@ -90,8 +84,11 @@ public class DetailActivity extends Activity implements OnClickListener,
 	private ImageView iv_icon,iv_thumb1,iv_thumb2,iv_thumb3;
 	private TextView tv_title, tv_operateType,tv_summary,tv_size,tv_progress;
 	private HorizontalScrollView scroll;
-	
-	@SuppressWarnings("deprecation")
+   // private DirectionalViewPager mCommentPager;
+	 private ListView lv_comment;
+	private Button btn_comment;
+	 
+	 
 	private Logic mLogic;
 
 	boolean downloading;
@@ -103,7 +100,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 	private static String currentApkFile;
 	private static boolean isInstalling=false;
 
-	private BroadcastReceiver mHideInstallReceiver, mSystemInstallReceiver,mProRec;
+	private BroadcastReceiver mHideInstallReceiver, mSystemInstallReceiver,mProRec,mLoadApkCommentReceiver;
 	private Intent ini;
 	private long progress_degree=0;
     private  String currentUrl;
@@ -111,6 +108,28 @@ public class DetailActivity extends Activity implements OnClickListener,
     private String currentProgressKey;
 	private InterfaceStub mInterStub;
     private Context mContext;
+    
+    public static final int LIST_AUTO_SCROLL = 2000;
+    private ApkCommentAdapter mCommentAdapter;
+    private ArrayList<ApkCommentParam> commentList=new ArrayList<ApkCommentParam>();
+    
+    private Handler scrollHandler=new Handler(){
+    	public void handleMessage(Message msg) {
+    		
+    		switch (msg.what) {
+    		
+    		case LIST_AUTO_SCROLL:
+				handScrollListView();
+				
+				break;
+			default:
+				break;
+			}
+    		
+    		
+    	};
+    	
+    };
     
     
 	private Handler mhandler = new Handler() {
@@ -141,7 +160,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 				
 				mCurrentMap.remove(tKey);
 				
-				//====edit by xgh
+				//====英文版独有
 				msgStr=formatApkName(bean.getName()) + getString(R.string.text_download_complete);
 				LKHomeUtil.showToast(mContext, msgStr);
 				systemInstall();
@@ -178,6 +197,9 @@ public class DetailActivity extends Activity implements OnClickListener,
 				
 				
 				break;
+				
+				
+				
 			default:
 				break;
 			}
@@ -213,6 +235,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.detail);
 		
+		
 		mContext=this;
 		initWidget();
 		mLogic = Logic.getInstance(getApplicationContext());
@@ -223,14 +246,50 @@ public class DetailActivity extends Activity implements OnClickListener,
 		initApkHideInstallReceiver();
 		//initApkSystemInstallReceiver();
 		initDownLoadProgressReceiver();
+		initLoadApkCommentReceiver();
 		
 		mApp = (AppInfo) getIntent().getExtras().get("appinfo");
 		downloadBean=downloadDao.findDownloadBeanByPackageName(mApp.getPackage_name());
+		
+		
+		mLogic.loadApkComment(mApp.getPackage_name(), 0, 5);
 	}
 	
 	
 	
 	
+	private void initLoadApkCommentReceiver() {
+		IntentFilter tFilter = new IntentFilter();
+		tFilter.addAction(Logic.ACTION_NEED_REFRESH_COMMENT);
+		mLoadApkCommentReceiver = new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+			ArrayList<ApkCommentParam> comments=	intent.getParcelableArrayListExtra("comments");
+			
+			     if(comments!=null && comments.size()>5){ //如果得到的数据多余5条,只要前面5条
+			    	 commentList.clear();
+			    	 for(int i=0;i<5;i++){
+			    		 commentList.add(comments.get(i));
+			    	 }
+			     }else{
+			    	 
+			    	 commentList=comments;
+			     }
+			     
+			     mCommentAdapter.updateData(commentList);
+			     startAutoScroll();
+				 Logger.e(TAG, "-----收到加载完评论的广播...评论="+comments);
+			}
+		};
+		this.registerReceiver(mLoadApkCommentReceiver, tFilter);
+		
+	}
+
+
+
+
+
 	@Override
 	protected void onResume() {
 		if(Constants.isDuandianDownlaod){
@@ -240,6 +299,9 @@ public class DetailActivity extends Activity implements OnClickListener,
 			
 			normalOnresume();
 		}
+		
+		
+		 startAutoScroll();
 		super.onResume();
 	}
 
@@ -254,6 +316,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		
 		
 		if (mApp != null) {
+			
 		currentUrl=mApp.getUrl().substring(mApp.getUrl().lastIndexOf("/") + 1);
 		currentProgressKey=currentUrl.substring(currentUrl.lastIndexOf("=") + 1, currentUrl.length())+ ".apk";
 		
@@ -337,17 +400,19 @@ public class DetailActivity extends Activity implements OnClickListener,
 				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 				btn_oneKey.setClickable(false);
 				
+				//==========英文
 			}else if( checkApkFileState(downloadBean)){ //等待安装,英文版需要手动安装,one_key可以点击
 				  
 				tv_progress.setVisibility(View.GONE);
 				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
 				btn_oneKey.setText(R.string.text_install);
 				btn_oneKey.setClickable(true);
-				
+				//==========
 				
 			}
 			
 		}
+		
 		
 	}
 
@@ -386,7 +451,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 			
 			
 			
-			long size = mApp.getSize();
+			long size = mApp.getRealSize();
 			DecimalFormat df = new DecimalFormat("0.00");
 			tv_size.setText(getString(R.string.text_size)
 					+ df.format((float) size / 1024 /1024) + getString(R.string.m));
@@ -440,11 +505,12 @@ public class DetailActivity extends Activity implements OnClickListener,
 				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 				btn_oneKey.setClickable(true);
 				
+				//==========英文
 				if(mLogic.isDownloadPaused(mApp.getPackage_name())){ //已经暂停,按钮显示"下载"
 					
 					btn_oneKey.setText(R.string.text_download);
 					//btn_oneKey.setTag(R.string.text_download_pause);
-					
+				//======	
 				}else{ //没有被暂停,按钮显示为"暂停"
 					
 					btn_oneKey.setText(R.string.text_download_pause);
@@ -461,13 +527,14 @@ public class DetailActivity extends Activity implements OnClickListener,
 				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 				btn_oneKey.setClickable(false);
 				
+				//=============英文============
 			}else if( checkApkFileState(downloadBean)){ //等待安装,英文版需要手动安装,one_key可以点击
 				  
 				tv_progress.setVisibility(View.GONE);
 				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
 				btn_oneKey.setText(R.string.text_install);
 				btn_oneKey.setClickable(true);
-				
+				//====================
 				
 			}
 			
@@ -530,8 +597,11 @@ public class DetailActivity extends Activity implements OnClickListener,
 				}
 				
 				if(packageName.equals(mApp.getPackage_name())){
-					
+					Logger.e(TAG, "########  收到当前apk 安装或者卸载的广播,flag="+flag);
 					checkApkState();
+					if("uninstall".equals(flag)){
+						btn_oneKey.setText(R.string.text_download);
+					}
 				}
 				
 			}
@@ -645,15 +715,12 @@ public class DetailActivity extends Activity implements OnClickListener,
 		this.registerReceiver(mProRec, tFilter2);
 	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-	}
+	
 
 	@Override
 	protected void onPause() {
-		//Logger.e("kao", "11111111111 onPause()");
+		
+		scrollHandler.removeMessages(LIST_AUTO_SCROLL);
 		super.onPause();
 	}
 
@@ -694,6 +761,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		btn_back.setOnClickListener(this);
 		
 		btn_oneKey = (Button) findViewById(R.id.btn_onekey);
+		btn_oneKey.setText(R.string.text_download);
 		btn_oneKey.setOnClickListener(this);
 		btn_oneKey.setTag(R.string.text_download);
 		
@@ -711,7 +779,42 @@ public class DetailActivity extends Activity implements OnClickListener,
 		scroll.setHorizontalFadingEdgeEnabled(false);
 		
 		tv_operateType=(TextView)findViewById(R.id.tv_operateType);
+	
+		lv_comment=(ListView) findViewById(R.id.lv_comment);
 		
+		mCommentAdapter=new ApkCommentAdapter(mContext, commentList);
+		lv_comment.setAdapter(mCommentAdapter);
+		lv_comment.setDividerHeight(0);
+		lv_comment.setFocusable(false);
+		lv_comment.setFocusableInTouchMode(false);
+		lv_comment.setClickable(false);
+		lv_comment.setSelected(false);	
+		
+		lv_comment.setOnTouchListener(new OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				return true;
+			}
+		});
+		lv_comment.setOnKeyListener(new OnKeyListener() {
+			
+			@Override
+			public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
+				return true;
+			}
+		});
+		lv_comment.setOnGenericMotionListener(new OnGenericMotionListener() {
+			
+			@Override
+			public boolean onGenericMotion(View arg0, MotionEvent arg1) {
+				// TODO Auto-generated method stub
+				return true;
+			}
+		});
+		
+		btn_comment=(Button) findViewById(R.id.btn_comment);
+		btn_comment.setOnClickListener(this);
 	}
 
 	
@@ -726,7 +829,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		
 		if (mApp != null) {
 			
-			ApkBean apkBean = this.mApp.buildApkBean();
+			ApkBean apkBean = mApp.buildApkBean();
 			//Log.e(TAG, "line 354 apkBean="+apkBean +",-------mApp="+mApp);
 			
 			if(apkBean.getStatus()!=apkBean.STATE_QUEUE_ENOUNGH){
@@ -734,11 +837,15 @@ public class DetailActivity extends Activity implements OnClickListener,
 				String tUrl=apkBean.getUrl().substring(apkBean.getUrl().lastIndexOf("/") + 1);
 				String key=tUrl.substring(tUrl.lastIndexOf("=") + 1)+ ".apk";
 				
+				Long progress=0L;
 				if(mCurrentMap.get(key)==null && mLogic.getDownloadSize()<Logic.DownLoadSize){
 					mCurrentMap.put(key, 0L);
-					String s = String.format(getString(R.string.text_degree),0L);
-					tv_progress.setText(s); 
+				}else{
+					 progress=mCurrentMap.get(currentProgressKey);
 				}
+				
+				String s = String.format(getString(R.string.text_degree),progress);
+				tv_progress.setText(s);
 				mInterStub.downLoad(apkBean);
 				
 			}
@@ -777,7 +884,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 			
 		  if(bean.getStatus()==ApkBean.STATE_PAUSED){ //下载暂停
 			  
-			  Logger.e(TAG, "^^^^^^^^^^^^^^^^ 收到下载状态,发送广播");
+			  Logger.e(TAG, "^^^^^^^^^^^^^^^^ 收到下载暂停状态,发送广播");
 			  mLogic.addDownloadPausedRecord( bean.getPackageName());
 			  Intent it=new Intent(ACTION_DOWNLOAD_PAUSED);
 			  it.putExtra("url", bean.getUrl());
@@ -809,7 +916,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 			intent.putExtra("prorgess", bean.getProgress());
 			
 			//发送广播更新UI
-			sendBroadcast(intent);  
+			sendBroadcastAsUser(intent,UserHandle.ALL);  
 			
 			
 			//发送msg更新数据库记录
@@ -821,15 +928,30 @@ public class DetailActivity extends Activity implements OnClickListener,
 
 	}
 
+	@Override
+	protected void onStart() {
+	    
+		super.onStart();
+
+	}
+	
+	
+	@Override
+	protected void onStop() {
+		
+		super.onStop();
+	}
+	
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		
 		this.unregisterReceiver(mHideInstallReceiver);
-		//this.unregisterReceiver(mSystemInstallReceiver);
 		this.unregisterReceiver(mProRec);
 		this.unbindService(serviceConnection);
-		Logger.e("kao", "------onDestroy----"+this);
+		this.unregisterReceiver(mLoadApkCommentReceiver);
+		
 	}
 
 	public void uninstallAPK(String packageName) {
@@ -878,6 +1000,14 @@ public class DetailActivity extends Activity implements OnClickListener,
 			}
 			break;
 
+		case R.id.btn_comment:
+			
+			Intent it=new Intent(mContext,ApkCommonActivity.class);
+			it.putExtra("mApp", mApp);
+			mContext.startActivity(it);
+			break;	
+			
+			
 		default:
 			break;
 		}
@@ -889,6 +1019,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		String tUrl = mApp.getUrl().substring(mApp.getUrl().lastIndexOf("/") + 1, mApp.getUrl().length());
 		Logger.e(TAG, "~~~~~~~~~下载中的任务数="+downloadsize);
 		
+		//========英文=======
 		//btn_oneKey.setClickable(false);
 			try {
 		   if(((Button)view).getText().equals(getString(R.string.text_install))){//安装
@@ -906,7 +1037,8 @@ public class DetailActivity extends Activity implements OnClickListener,
 				
 			}else if(mLogic.isDownloading(tUrl)){//正在下载
 				String msgStr="\""+mApp.getName() +" \""+ getString(R.string.text_downloading);
-				//String msgStr=mApp.getName() + getString(R.string.text_downloading);
+			
+			//===============
 				LKHomeUtil.showToast(mContext, msgStr);
 			}else if(downloadsize>= Logic.DownLoadSize){ //下载任务数达到了5个
 				
@@ -934,15 +1066,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 				mApp.getUrl().lastIndexOf("/") + 1, mApp.getUrl().length());
 		Logger.e(TAG, "~~~~~~~~~下载中的任务数=" + downloadsize);
 
-		// btn_oneKey.setClickable(false);
-		/*
-		 * int resId=(Integer) view.getTag();
-		 * if(resId==R.string.text_download){//tag为"download",显示为"zanting"
-		 * 
-		 * }else if(resId==R.string.text_download_pause){ //tag为"pause",显示为"下载"
-		 * 
-		 * }
-		 */
 
 		try {
 			if (((Button) view).getText().equals(
@@ -953,7 +1076,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 				btn_oneKey.setClickable(false);
 
 			} else if (((Button) view).getText().equals(
-					getString(R.string.text_setup))) {// 显示"一键安装",点击开始下载
+					getString(R.string.text_download))) {// 显示"下载",点击开始下载
 
 				if (downloadsize >= Logic.DownLoadSize) { // 下载任务数达到了5个,且不是正在下载的url
 
@@ -961,6 +1084,9 @@ public class DetailActivity extends Activity implements OnClickListener,
 					return;
 				}
 
+				
+			
+				
 				tv_progress.setVisibility(View.VISIBLE);
 				btn_oneKey.setText(R.string.text_download_pause);
 
@@ -972,14 +1098,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 				mLogic.addDownloadPausedRecord(mApp.getPackage_name());
 
 				btn_oneKey.setClickable(false);
-				/*
-				 * mhandler.postDelayed(new Runnable() {
-				 * 
-				 * @Override public void run() { btn_oneKey.setClickable(true);
-				 * btn_oneKey.setText(R.string.text_setup);
-				 * 
-				 * } }, 2000);
-				 */
 
 			} else if (currentInstallPkg.equals(mApp.getPackage_name())) { // 正在安装
 
@@ -1121,7 +1239,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		
 	}
 
-	
+	//===========英文===========
 	@Override
 	public void onSilentInstallComplete(String packageName,String filePath) {//TODO...
 		
@@ -1137,7 +1255,9 @@ public class DetailActivity extends Activity implements OnClickListener,
 		isInstall=false;
 		currentInstallPkg="";
 		currentInstallName="";
+		
 		Logger.e(TAG, "=====line 537  收到静默安装成功>......packageName="+packageName+",安装列表="+installList);
+	//==========	
 	}
 	
 	@Override
@@ -1199,6 +1319,20 @@ public class DetailActivity extends Activity implements OnClickListener,
 
 	private String formatApkName(String name){
 		return "\""+name+"\"  ";
+	}
+	
+	
+	private void handScrollListView() {
+		Log.e(TAG, "-------收到需要滚动的消息");
+		lv_comment.smoothScrollBy(lv_comment.getHeight(), 1800); //滑动的距离为LiseView的高度,ListView的高度必须固定
+		scrollHandler.sendEmptyMessageDelayed(LIST_AUTO_SCROLL, 4000);
+		
+	};
+	
+	private void startAutoScroll() {
+		scrollHandler.removeMessages(LIST_AUTO_SCROLL);
+		scrollHandler.sendEmptyMessageDelayed(LIST_AUTO_SCROLL,4000);
+		
 	}
 	
 }

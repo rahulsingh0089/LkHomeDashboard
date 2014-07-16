@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
     
+<!-- $Id: message_item.xml 4 2013-12-12 04:19:52Z kf $ -->
 
     
     <TextView 

@@ -5,6 +5,7 @@
     android:layout_gravity="center_vertical"
     android:orientation="vertical" >
 	
+<!-- $Id: app_manager_popup.xml 4 2013-12-12 04:19:52Z kf $ -->
 
 	<LinearLayout 
 	    android:layout_width="300dp"

@@ -39,7 +39,7 @@ public class AppInfo implements Serializable {
     private int praise;
     private int reject;
     private int operateType;
-    
+    private long realSize;
     
     public String getMd5() {
 		return md5;
@@ -103,7 +103,7 @@ public class AppInfo implements Serializable {
 				+ rating + ", icon=" + icon + ", recommImage=" + recommImage
 				+ ", banner_big=" + banner_big + ", banner_small="
 				+ banner_small + ", size=" + size + ", praise=" + praise
-				+ ", reject=" + reject + ", md5=" + md5 + "]";
+				+ ", reject=" + reject + ", md5=" + md5  +",size="+size+",realSize="+realSize+"]";
 	}
 	public String getBanner_big() {
         return banner_big;
@@ -199,6 +199,15 @@ public class AppInfo implements Serializable {
     public void setStyle(String style) {
         this.style = style;
     }
+    
+    
+    
+	public long getRealSize() {
+		return realSize;
+	}
+	public void setRealSize(long realSize) {
+		this.realSize = realSize;
+	}
 	public ApkBean buildApkBean() {
 		ApkBean tApk=new ApkBean();
 		tApk.setName(this.getName());
@@ -208,6 +217,7 @@ public class AppInfo implements Serializable {
 		tApk.setSize(this.getSize());
 		tApk.setHdIcon(this.getHDIcon());
 		tApk.setCategory(this.getCategory());
+		tApk.setRealSize(this.getRealSize());
 		return tApk;
 	}
 }

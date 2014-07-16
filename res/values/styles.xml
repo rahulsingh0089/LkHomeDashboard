@@ -27,7 +27,10 @@
     </style>
     
     <style name="main_category_radio" parent="bar">
-        <item name="android:padding">0dip</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/market_menu_bg_selector</item>
+        <item name="android:layout_width">90dp</item>
+        <item name="android:layout_height">90dp</item>
     </style>
 
     <style name="ChooseDialog" parent="@android:style/Theme.Dialog">
@@ -46,7 +49,32 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
     
+    <style name="myratingbar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">	@drawable/my_rating_bar</item>
+        <item name="android:minHeight">18dip</item> 
+         <item name="android:maxHeight">18dip</item> 
+
+    </style>
+    
+    <style name="TransparentStyleBottom">
+
+       <!--  <item name="android:windowIsTranslucent">true</item>半透明            
+        <item name="android:windowNoTitle">true</item>无标题 
+        <item name="android:windowBackground">@android:color/transparent</item>背景透明          
+        <item name="android:backgroundDimEnabled">true</item>模糊  -->
+
+        <item name="android:windowBackground">@android:color/transparent</item>
+		<item name="android:windowIsTranslucent">true</item>
+		<!-- <item name="android:windowAnimationStyle">@+android:style/Animation.Translucent</item> -->
+		<item name="android:backgroundDimEnabled">true</item>
+		<item name="android:windowNoTitle">true</item>     
+		<item name="android:windowFullscreen">true</item>
+		<item name="android:colorForeground">#fff</item>
+
+
+    </style> 
+    
+    
 </resources>
 
-<!-- $Id: styles.xml 4 2013-12-12 04:19:52Z kf $ -->
 

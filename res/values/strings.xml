@@ -197,8 +197,27 @@
     <string name="apk_exist">apk has existed. thanks for your participation</string>
     <string name="server_error">Server is busy, please try again later</string>
     <string name="start_upload">Start uploading</string>
-    <string name="upload_success">Upload success. Thanks for your support</string>
     <string name="upload_error_no_file">Upload fail. No matched APK file can be found</string>
+   <string name="upload_success">Uploaded successfully, please wait for review</string>
+    <string name="upload_wait_verify">Reviewing...</string>
+    <string name="upload_verify_pass">Approved, please go to App store to check it.</string>
+    <string name="upload_verify_fail">Sorry, the %s has faild to pass the review</string>
     <string name="clearDefault">Clear defaults</string>
     <string name="clearCompleted">Clear completed</string>
+    
+     <string name="splite_line">|</string>
+     <string name="text_comment">Comment</string>
+     <string name="text_edit_apkcommen">Edit comment</string>
+     <string name="text_my_commen_level">My rating:</string>
+    <string name="text_my_commen_content">Brief comment:</string>
+    <string name="text_edit_commen_cancle">Cancel</string>
+    <string name="text_edit_commen_submit">Submit</string>
+    <string name="toast_submit_commen_success">Your comment submission succeeded. Thanks for your participation!</string>
+    <string name="toast_submit_commen_fail">Your comment submission failed, please try again later</string>
+    <string name="common_hint_level_1">Suggest not to try again, I don’t like it anyhow</string>
+    <string name="common_hint_level_2">It is boring to make me sleep.</string>
+    <string name="common_hint_level_3">It is so so; Can kill time when extremely bored</string>
+    <string name="common_hint_level_4">It is fine and worthy to spend time on it</string>
+    <string name="common_hint_level_5">It is excellent and strongly recommended </string>
+     
 </resources>

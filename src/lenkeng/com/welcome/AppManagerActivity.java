@@ -3,8 +3,6 @@ package lenkeng.com.welcome;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.util.StringUtils;
-
 import lenkeng.com.welcome.util.Constant;
 import lenkeng.com.welcome.util.LKHomeUtil;
 import lenkeng.com.welcome.util.Logger;
@@ -21,18 +19,16 @@ import android.content.pm.IPackageMoveObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnHoverListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -40,12 +36,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +49,7 @@ public class AppManagerActivity extends Activity implements
 	// private static final int MOVE_SUCCESSED=1;
 	// private static final int MOVE_FAILED=2;
 	private GridView gv_appList;
+	private Button clearDef;
 	private List<String> installApp;
 	private MyAdapter adapter;
 	// private ImageView iv_scoll_fade;
@@ -115,6 +111,10 @@ public class AppManagerActivity extends Activity implements
 		setContentView(R.layout.app_manager);
 
 		gv_appList = (GridView) this.findViewById(R.id.appList);
+		gv_appList.setOnFocusChangeListener(focusChangeListener);
+		clearDef=(Button) this.findViewById(R.id.clearDef);
+		clearDef.setFocusable(false);
+		clearDef.setOnFocusChangeListener(focusChangeListener);
 		gv_appList.setOnKeyListener(gridKeyListener);
 		installApp = getUserInstallApp();
 		adapter = new MyAdapter();
@@ -125,7 +125,30 @@ public class AppManagerActivity extends Activity implements
 		adapter.setSelect(0,true);
 		// getCacheSize("com.jingdong.app.tv");
 	}
-
+	private OnFocusChangeListener focusChangeListener=new OnFocusChangeListener() {
+		
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			// TODO Auto-generated method stub
+			if(v==clearDef){
+				if(hasFocus){
+					holder.rl_bg.setBackgroundResource(0);
+				}
+			}else if(v==gv_appList){
+				if(hasFocus){
+					//adapter.setSelect(holder.position, false);
+					View selV=gv_appList.getSelectedView();
+					if(selV!=null){
+						ViewHolder holder=(ViewHolder) selV.getTag();
+						holder.rl_bg
+						.setBackgroundResource(R.drawable.app_manager_selector);
+					}
+					
+					
+				}
+			}
+		}
+	};
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -353,7 +376,7 @@ public class AppManagerActivity extends Activity implements
 		 * if(holder !=null){ holder.ll_appManager_up.setBackgroundResource(0);
 		 * }
 		 */
-		Logger.e("fra", "---- app manager selection  "+position);
+		Logger.i("tag", "---- app manager selection  "+position);
 		holder = (ViewHolder) view.getTag();
 		// seleHolder=(ViewHolder) view.getTag();
 		adapter.setSelect(position,false);
@@ -566,6 +589,7 @@ public class AppManagerActivity extends Activity implements
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 			// TODO Auto-generated method stub
 			Logger.i("tag", "------------v------");
+			clearDef.setFocusable(false);
 			if (v.getId() == R.id.delete
 					&& event.getAction() == KeyEvent.ACTION_DOWN) {
 				if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN
@@ -597,6 +621,7 @@ public class AppManagerActivity extends Activity implements
 					MOVE_COUNTER = 1;
 				}
 			}
+			
 			Logger.i("tag", "----DELETE_COUNTER---" + DELETE_COUNTER
 					+ "------MOVE_COUNTER-----" + MOVE_COUNTER);
 			return false;
@@ -621,9 +646,13 @@ public class AppManagerActivity extends Activity implements
 				}
 				if (holder.ll_handle_item.getVisibility() == View.VISIBLE) {
 					holder.bt_moveTo.requestFocus();
+					clearDef.setFocusable(false);
 					return true;
 
 				} else {
+					clearDef.setFocusable(true);
+					holder.rl_bg
+					.setBackgroundResource(R.drawable.app_manager_selector);
 					return false;
 				}
 			} else {

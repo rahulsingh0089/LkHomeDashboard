@@ -1,6 +1,7 @@
 package lenkeng.com.welcome;
 
 import java.lang.reflect.InvocationTargetException;
+
 import java.lang.reflect.Method;
 
 import lenkeng.com.welcome.bean.AppInfo;
@@ -18,7 +19,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.IPackageMoveObserver;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.ColorDrawable;
@@ -69,10 +69,12 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 	private LKDialog dialog;
 	private Handler mHandler;
 	//private LKHomeUtil homeUtil;
+	private Logic mLogic;
 	
 	public MyPopupFactory(Activity context,Handler handler) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
+		mLogic=Logic.getInstance(context);
 		mHandler=handler;
 		//homeUtil=new LKHomeUtil(context);
 		//caDao = new ClientActionDao(context);
@@ -94,15 +96,52 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		mPopupWindow.setBackgroundDrawable(new ColorDrawable(0));
 		convertView = inflater.inflate(R.layout.popu_item, null);
 		rl_popu = (RelativeLayout) convertView.findViewById(R.id.popu_back);
-		btn_upload=(ImageView) convertView.findViewById(R.id.btn_upload);
-		btn_upload.setOnClickListener(clickListener);
 		popu_icon = (ImageView) rl_popu.findViewById(R.id.popu_app_ico);
 		mPopupWindow.setContentView(rl_popu);
 		popu_icon.setOnClickListener(this);
 
 	}
 
-	
+	private void updateButon(int visable, AppInfo info) {
+		btn_upload = (ImageView) rl_popu.findViewById(R.id.btn_upload);
+		btn_upload.setOnClickListener(clickListener);
+		btn_upload.setTag(info);
+		// int backResId=-1;
+		if (mLogic == null) {
+			mLogic = Logic.getInstance(context);
+		}
+		if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_EXITED) { // apk已经存在,不显示图标
+			btn_upload.setVisibility(View.GONE);
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_CANUPLOAD) {// apk可以上传
+			btn_upload.setVisibility(View.VISIBLE);
+			btn_upload.setBackgroundResource(R.drawable.select_upload_button);
+			// backResId=R.drawable.select_upload_can_upload;
+
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_WAITVERFY) {// apk等待审核
+			btn_upload.setVisibility(View.VISIBLE);
+			btn_upload
+					.setBackgroundResource(R.drawable.select_upload_waitverify);
+			// backResId=R.drawable.select_upload_waitverify;
+
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_VERFY_PASS) {// apk审核通过
+			btn_upload.setVisibility(View.VISIBLE);
+			btn_upload
+					.setBackgroundResource(R.drawable.select_upload_verify_pass);
+			// backResId=R.drawable.select_upload_verfy_pass;
+
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_VERFY_FAIL) {// apk审核不通过
+			btn_upload.setVisibility(View.VISIBLE);
+			btn_upload
+					.setBackgroundResource(R.drawable.select_upload_verify_fail);
+			// backResId=R.drawable.select_upload_verfy_fail;
+		}
+		if (visable == View.GONE) {
+			btn_upload.setVisibility(View.GONE);
+		} else {
+			btn_upload.setVisibility(View.VISIBLE);
+		}
+		// btn_upload.setTag(R.id.tag_send, backResId);
+	}
 	
 
 	
@@ -136,13 +175,14 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		if (Constant.CLASSIFY_USER.equals(style_flag)) {
 			popu_icon.setBackgroundResource(Constant.ITEM_BACKS[position
 			                  % Constant.ITEM_BACKS.length]);
-			if(v.findViewById(R.id.btn_upload).getVisibility()==View.GONE){
+			/*if(v.findViewById(R.id.btn_upload).getVisibility()==View.GONE){
 				btn_upload.setVisibility(View.GONE);
 			}else{
 				btn_upload.setVisibility(View.VISIBLE);
-			}
+			}*/
 			popu_icon.setImageDrawable(LKHomeUtil.zoomBitmap(icon
 					.getBackground().mutate(), 100));
+			updateButon(v.findViewById(R.id.btn_upload).getVisibility(), info);
 		} else if (!Constant.CLASSIFY_RECOMMEND.equals(style_flag)) {
 
 			popu_icon.setBackground(LKHomeUtil.zoomBitmap(icon

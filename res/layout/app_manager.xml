@@ -6,7 +6,6 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-<!-- $Id: app_manager.xml 126 2014-02-24 10:47:35Z gww $ -->
 
     
     <ImageView
@@ -32,5 +31,17 @@
          android:descendantFocusability="afterDescendants"
         >
     </GridView>
-
+	<Button 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:onClick="clearDefault"
+	    android:background="@drawable/clear_default_selector"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignRight="@+id/appList"
+	    android:layout_marginBottom="50dp"
+	    android:layout_marginRight="100dp"
+	    android:text="@string/clearDefault"
+	    android:textColor="@android:color/white"
+	    android:textSize="20sp"
+	    />
 </RelativeLayout>

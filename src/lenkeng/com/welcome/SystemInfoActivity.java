@@ -73,8 +73,9 @@ public class SystemInfoActivity extends Activity {
 	
 
 	private void getSystemInfo() {
-		
+		//----------英文版独有----------------
 		ez_ui.setText("en-version-"+LKHomeUtil.getVersionNmae(getPackageName()));
+		//-------------
 		local_model.setText(Build.MODEL);
 		local_id.setText(getSystemVersion());
 		system_version.setText(Build.FIRMWARE);

@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/appmarket_bg"
     android:gravity="center_horizontal"
     android:orientation="vertical" 
+    android:background="@drawable/appmarket_bg"
     android:id="@+id/root"
     >
 
@@ -22,7 +22,8 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="480dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginTop="160dp"
         android:gravity="center_horizontal" >
 
@@ -93,51 +94,44 @@
         android:id="@+id/radioGroup1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        android:layout_marginBottom="5dp">
 
         <RadioButton
             android:id="@+id/radio1"
             style="@style/main_category_radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/market_movie_selector"
             android:nextFocusUp="@+id/gridView_movie"
-            android:textSize="30dp" >
-        </RadioButton>
+            
+            android:drawableTop="@drawable/market_movie_selector"
+            />
 
 
         <RadioButton
             android:id="@+id/radio2"
             style="@style/main_category_radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/market_app_selector"
-            android:textSize="30sp" 
+            android:layout_marginLeft="5dp"
             android:nextFocusUp="@+id/gridView_app"
+            
+            android:drawableTop="@drawable/market_app_selector"
             />
 
         <RadioButton
             android:id="@+id/radio3"
             style="@style/main_category_radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/market_game_selector"
-            android:textSize="30sp"
+            android:layout_marginLeft="5dp"
             android:nextFocusUp="@+id/gridView_game"
+            
+            android:drawableTop="@drawable/market_game_selector"
              />
 
         <RadioButton
             android:id="@+id/radio4"
             style="@style/main_category_radio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/market_serch_selector"
+            android:layout_marginLeft="5dp"
             android:nextFocusRight="@+id/search_input"
-            android:textSize="30sp" 
             android:nextFocusUp="@+id/gridView_search"
+            
+            android:drawableTop="@drawable/market_serch_selector"
             />
     </RadioGroup>
 

@@ -158,6 +158,11 @@ public class LKService extends Service implements OnClickListener,
 	protected static final int ENABLE_HATE = 1002;
 	protected static final int OPERATE_LIKE = 1;
 	protected static final int OPERATE_HATE = 2;
+	
+	//循环间隔6小时检测上传apk的状态
+	public static final int CMD_LOOP_CHECK_UPLOAD_STATE = 1008;
+	public static final int CHECK_UPLOAD_STATE_TIME=1000*60*60*6; //间隔时间为6小时
+	public static final int TEST_CHECK_UPLOAD_STATE_TIME=1000*20; //测试间隔时间为20秒
 
 	class RemoveRun implements Runnable {
 
@@ -245,6 +250,9 @@ public class LKService extends Service implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onCreate();
 		long bef = System.currentTimeMillis();
+		//----英文版独有------
+		Settings.Global.putInt(getContentResolver(), Settings.Global.PACKAGE_VERIFIER_ENABLE, 0);
+		//----------
 		mLogic = Logic.getInstance(getApplicationContext());
 		mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		mWindowManager = (WindowManager) getApplicationContext()
@@ -384,6 +392,20 @@ public class LKService extends Service implements OnClickListener,
 
 				case ENABLE_HATE:
 					btn_hate.setEnabled(true);
+					break;
+					
+					
+				case CMD_LOOP_CHECK_UPLOAD_STATE:
+					mLogic.checkUploadApkBatch();
+					if(LKHomeUtil.isFactoryMode()){
+						msgHandler.sendEmptyMessageDelayed(CMD_LOOP_CHECK_UPLOAD_STATE, TEST_CHECK_UPLOAD_STATE_TIME);
+						Logger.e(TAG, "------isFactoryMode------发送延迟20秒钟的检测消息....");
+					}else{
+						Logger.e(TAG, "------------发送延迟6小时的检测消息....");
+						
+						msgHandler.sendEmptyMessageDelayed(CMD_LOOP_CHECK_UPLOAD_STATE, CHECK_UPLOAD_STATE_TIME);
+					}
+					
 					break;
 				default:
 					break;
@@ -589,9 +611,21 @@ public class LKService extends Service implements OnClickListener,
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
-		// bindRemoteService();
-		return super.onStartCommand(intent, flags, startId);
+		if(intent==null){
+			return START_STICKY;
+		}
+		int cmd=intent.getIntExtra("CMD", -1);
+		switch (cmd) {
+		case CMD_LOOP_CHECK_UPLOAD_STATE:
+			msgHandler.sendEmptyMessage(CMD_LOOP_CHECK_UPLOAD_STATE);
+			break;
+
+		default:
+			break;
+		}
+		
+		
+		return START_STICKY;
 	}
 
 	private class MyBind extends Binder implements IService {
@@ -602,15 +636,15 @@ public class LKService extends Service implements OnClickListener,
 			info.setPackage_name(Constant.MORE);
 			info.setName(Constant.MORE);
 			info.setHDIcon("more");
-			List<AppInfo> temp = classzMap.get(str);
-
-			if (null != temp && !Constant.CLASSIFY_USER.equals(str)) {
-				if (temp.size() == 0
-						|| !Constant.MORE.equals(temp.get(temp.size() - 1)
-								.getName())) {
-					temp.add(temp.size(), info);
-				}
+			//List<AppInfo> temp = classzMap.get(str);
+			List<AppInfo> temp=new ArrayList<AppInfo>();
+			if(!temp.contains(info)&&!Constant.CLASSIFY_USER.equals(str)){
+				temp.add(0, info);
 			}
+			if(classzMap.get(str)!=null){
+				temp.addAll(classzMap.get(str));
+			}
+
 			return temp;
 
 			// return appDao.getPackageName(str);

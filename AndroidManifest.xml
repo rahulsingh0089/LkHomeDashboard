@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="lenkeng.com.welcome"
     android:versionCode="9"
-    android:versionName="1.1.6" 
+    android:versionName="1.1.7" 
      android:sharedUserId="android.uid.system"
     >
 
@@ -65,6 +65,7 @@
             android:launchMode="singleTask" 
              android:configChanges="orientation|screenSize|smallestScreenSize|locale|keyboard|keyboardHidden"
             >
+<!--               android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -148,6 +149,7 @@
             android:launchMode="singleTask"
             android:configChanges="locale|keyboard|keyboardHidden"
             >
+<!--             android:theme="@android:style/Theme.Holo.Wallpaper.NoTitleBar" -->
         </activity>
         <activity android:name="lenkeng.com.welcome.LockActivity" 
             android:configChanges="locale|keyboard|keyboardHidden"
@@ -160,10 +162,10 @@
             </intent-filter>  -->
         </activity>
         <activity android:name="com.lenkeng.appmarket.DetailActivity"   
-            android:launchMode="singleTask"
             android:configChanges="locale|keyboard|keyboardHidden"
             >
         </activity>
+         <!--    android:launchMode="singleTask" -->
         
         
 		<activity android:name="lenkeng.com.welcome.ClearActivity"
@@ -182,9 +184,30 @@
 		        <category android:name="android.intent.category.DEFAULT"/>
 		    </intent-filter>
 		</activity>
-        <service android:name="com.lenkeng.service.MarketService"  >
+       
+		 <activity
+            android:name="com.lenkeng.appmarket.comment.ApkCommonActivity"
+            android:configChanges="locale|keyboard|keyboardHidden"
+            >
+<!--             android:theme="@style/TransparentStyleBottom" -->
+		
+		   </activity>
+		   
+		 <activity
+            android:name="com.lenkeng.appmarket.comment.EditCommonActivity"
+            android:configChanges="locale|keyboard|keyboardHidden"
+            android:theme="@style/TransparentStyleBottom"
+            >
+		
+		   </activity>
+		
+		
+		<service android:name="com.lenkeng.service.MarketService"  >
         </service>
 
+        
+        
+        
         <uses-library android:name="android.test.runner" />
     </application>
 

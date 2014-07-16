@@ -4,14 +4,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-/*
- * $Id: ThreadPoolUtil.java 4 2013-12-12 04:19:52Z kf $
- */
+
 public class ThreadPoolUtil {
 	private static  ExecutorService pool;
 	public static void execute(Runnable command) {
 	    if(pool==null){
-	    	pool=Executors.newFixedThreadPool(8);
+	    	pool=Executors.newFixedThreadPool(10);
 	    }
 		pool.execute(command);
 	}

@@ -81,8 +81,7 @@ public class DownloadDao {
 			SQLiteDatabase db = dbHelper.getWritableDatabase();
 			db.execSQL(sql, params);
 			closeDB(db, null);
-			// Logger.e(TAG,
-			// "----------更新下载进度: position="+position+",pkg="+packageName);
+			// Logger.e(TAG,"----------更新下载进度: position="+position+",pkg="+packageName);
 		}
 	}
 

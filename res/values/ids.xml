@@ -71,6 +71,8 @@
     <item name="as_app_list_pg_up" type="id" />
     <item name="as_app_list_pg_dn" type="id" />
     
+     <item name = "tag_first" type="id"  />
+    <item name = "tag_send" type="id"  />
+    
 </resources>
-<!-- $Id: ids.xml 4 2013-12-12 04:19:52Z kf $ -->
 

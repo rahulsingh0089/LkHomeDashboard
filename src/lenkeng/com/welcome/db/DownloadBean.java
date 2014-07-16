@@ -17,8 +17,8 @@ public class DownloadBean implements Serializable{
 		this.packageName=apk.getPackageName();
 		this.url=apk.getUrl();
 		this.savePath=apk.getSavePath();
-		this.size=apk.getSize();
-		this.current=this.size*apk.getProgress();
+		this.size=apk.getRealSize();
+		this.current=apk.getCurrent();
 		this.md5=apk.getMd5();
 	}
 	

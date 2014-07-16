@@ -214,8 +214,32 @@
     <string name="apk_exist">已经存在,感谢您的参与</string>
     <string name="server_error">服务器繁忙,请稍后再试</string>
     <string name="start_upload">开始上传</string>
-    <string name="upload_success">上传成功,感谢您的支持</string>
     <string name="upload_error_no_file">未找到对应的APK文件,上传失败</string>
+    <string name="upload_success">上传成功,等待工作人员审核...</string>
+    <string name="upload_wait_verify">审核进行中...</string>
+    <string name="upload_verify_pass">已通过审核,请前往应用商店查看.</string>
+    <string name="upload_verify_fail">很抱歉,您上传的 %s 未能通过审核...</string>
+    
+    
     <string name="clearDefault">清除默认设置</string>
     <string name="clearCompleted">清除成功</string>
+    
+    <string name="text_comment">评论</string>
+    <string name="text_edit_apkcommen">编辑评论</string>
+    <string name="text_my_commen_level">我的评分:</string>
+    <string name="text_my_commen_content">简短评论:</string>
+      <string name="text_edit_commen_cancle">取消</string>
+    <string name="text_edit_commen_submit">提交</string>
+    <string name="toast_submit_commen_success">您的评论提交成功!感谢您的参与!</string>
+    <string name="toast_submit_commen_fail">您的评论提交失败!请稍后再试</string>
+    
+    <string name="common_hint_level_1">建议别试了,反正我不喜欢</string>
+    <string name="common_hint_level_2">太乏味了,我都睡着了,这是跟投资者有仇吧</string>
+    <string name="common_hint_level_3">一般般吧,实在无聊了可以用来打发时间</string>
+    <string name="common_hint_level_4">没啥硬伤,值得为它花点时间</string>
+    <string name="common_hint_level_5">强烈推荐,这真不错 </string>
+    
+    
+    
+    
     </resources>

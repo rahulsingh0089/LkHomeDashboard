@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 import java.util.List;
 
+import lenkeng.com.welcome.util.Logger;
+
 
 import android.app.Activity;
 import android.app.Service;
@@ -38,6 +40,7 @@ public class ClearActivity extends Activity {
 	private ProgressBar pb;
 	private Button bt_clear;
 	List<PackageInfo> packageInfos ;
+	private int tempCounter=0;
 	private Handler handler=new Handler(){
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -64,12 +67,13 @@ public class ClearActivity extends Activity {
 		tv_memory = (TextView) this.findViewById(R.id.memory);
 		pb = (ProgressBar) this.findViewById(R.id.loading_process);
 		pb.setVisibility(View.GONE);
-		try {
+		/*try {
 			getAllAppCache(this.getClass().getMethod("getCacheSize", String.class));
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		getCacheSize();
 		tv_worn =(TextView) this.findViewById(R.id.worn);
 		tv_clear_complete=(TextView) this.findViewById(R.id.clear_complete);
 		
@@ -83,23 +87,41 @@ public class ClearActivity extends Activity {
 		bt_clear=(Button) v;
 		bt_clear.setEnabled(false);
 		pb.setVisibility(View.VISIBLE);
-		try {
+		/*try {
 			getAllAppCache(this.getClass().getMethod("clearCache", String.class));
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		clear();
 	}
 
 	public void back(View v) {
 		this.finish();
 	}
-
-	public void clearCache(String packageName) {
+	private void clear(){
+		PackageManager pManager = getPackageManager();
+		packageInfos= pManager.getInstalledPackages(0);
+		for (PackageInfo packInfo : packageInfos) {
+			String pName = packInfo.packageName;
+			if (!"org.xbmc.xbmc".equals(pName)) {
+				pManager.deleteApplicationCacheFiles(pName,dataObserver );
+			}
+		}
+	}
+	/*public void clearCache(String packageName) {
 		PackageManager pManager = getPackageManager();
 		// pManager.deleteApplicationCacheFiles(packageName, null);
 	
-		Method[] ms = PackageManager.class.getMethods();
+		//Method[] ms = PackageManager.class.getMethods();
+	//	try {
+			if (!"org.xbmc.xbmc".equals(packageName)) {
+				pManager.deleteApplicationCacheFiles(packageName,dataObserver );
+			}
+	//	} catch (NoSuchMethodException e1) {
+			// TODO Auto-generated catch block
+	//		e1.printStackTrace();
+	//	}
 		for (int i = 0; i < ms.length; i++) {
 
 			if (!"org.xbmc.xbmc".equals(packageName) && "deleteApplicationCacheFiles".equals(ms[i].getName()) ) {
@@ -112,8 +134,8 @@ public class ClearActivity extends Activity {
 			}
 		}
 	}
-
-	int tempCounter=0;
+*/
+	
 	IPackageDataObserver dataObserver=new IPackageDataObserver.Stub() {
 		
 		@Override
@@ -127,7 +149,29 @@ public class ClearActivity extends Activity {
 			}
 		}
 	};
-	public void getCacheSize(final String packageName) {
+	
+	IPackageStatsObserver statsObserver=new IPackageStatsObserver.Stub() {
+		
+		@Override
+		public void onGetStatsCompleted(PackageStats pStats, boolean succeeded)
+				throws RemoteException {
+			// TODO Auto-generated method stub
+			long size = pStats.cacheSize;
+			long data = pStats.dataSize;
+			long code = pStats.codeSize;
+			
+			TOTAL_CACHE+=size;
+			handler.sendEmptyMessage(GET_CACHE_COMPLETE);
+		}
+	};
+	private void getCacheSize(){
+		PackageManager pManager = getPackageManager();
+		List<PackageInfo> infos=pManager.getInstalledPackages(0);
+		for(PackageInfo info:infos){
+			pManager.getPackageSizeInfo(info.packageName,statsObserver);
+		}
+	}
+	/*public void getCacheSize() {
 		PackageManager pManager = getPackageManager();
 		pManager.getPackageSizeInfo(packageName,
 				new IPackageStatsObserver.Stub() {
@@ -144,9 +188,9 @@ public class ClearActivity extends Activity {
 						handler.sendEmptyMessage(GET_CACHE_COMPLETE);
 					}
 				});
-	}
+	}*/
 
-	private void getAllAppCache(Method m) {
+	/*private void getAllAppCache(Method m) {
 		PackageManager manager = getPackageManager();
 		packageInfos= manager.getInstalledPackages(0);
 		
@@ -164,15 +208,15 @@ public class ClearActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 	public static class ScreenReceiver extends BroadcastReceiver{
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			PackageManager manager = context.getPackageManager();
-			List<PackageInfo> packageInfos= manager.getInstalledPackages(0);
-				for (PackageInfo packInfo : packageInfos) {
+			List<PackageInfo> Infos= manager.getInstalledPackages(0);
+				for (PackageInfo packInfo : Infos) {
 					String pName = packInfo.packageName;
 					try {
 						if(!"org.xbmc.xbmc".equals(pName)){

@@ -146,6 +146,8 @@ public class PackageListener extends BroadcastReceiver {
 			            flushHome.putExtra("packageName", packageName);
 			            flushHome.putExtra("apkStyle", flag);
 			            context.sendBroadcast(flushHome);
+			            
+			            Logic.getInstance(context).removeUploadBeanByPkg(packageName);
 				}
 			});
             
