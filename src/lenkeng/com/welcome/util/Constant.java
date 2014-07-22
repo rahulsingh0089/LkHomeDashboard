@@ -116,15 +116,17 @@ public class Constant {
 	 * R.string.AppManagerSetting, R.string.SystemUpdate, R.string.SystemInfo };
 	 */
 	public static final int[] SETTING_ICONS = new int[] {
-	//--------英文版独有-----------
 
-			R.drawable.kuandaibohao, R.drawable.wuxianlianjie,
-			R.drawable.huamianshezhi,R.drawable.xitongshengji,
+			R.drawable.kuandaibohao, 
+			R.drawable.wuxianlianjie,
+			R.drawable.huamianshezhi,
 			R.drawable.yingyongguanli, 
-			R.drawable.xitongxinxi, R.drawable.setting_speed,
+			 R.drawable.setting_speed,
 			R.drawable.setting_clear,
-			R.drawable.language};
-//----------------------
+			R.drawable.language,
+			R.drawable.xitongshengji,
+			R.drawable.xitongxinxi
+	};
 /*	public static final int[] SETTING_ICONS = new int[] {
 		R.drawable.kuandaibohao, R.drawable.wuxianlianjie,
 		R.drawable.huamianshezhi,R.drawable.xitongshengji,
@@ -135,13 +137,16 @@ public class Constant {
 */	
 	
 	public static final String[] SETTING_ACTION = new String[] {
-	//-------------英文版独有---------
-			"com.lenkeng.network", "com.lenkeng.hot", "com.lenkeng.screen",
+			"com.lenkeng.network", 
+			"com.lenkeng.hot", 
+			"com.lenkeng.screen",
+			"lenkeng.com.appManager",
+			"lenkeng.com.speed", 
+			"lenkeng.com.clear", 
+			"lenkeng.com.language",
 			"com.lenkeng.upgrade.gww",
-			"lenkeng.com.appManager","lenkeng.com.systemInfo",
-			"lenkeng.com.speed", "lenkeng.com.clear", "lenkeng.com.language"
+			"lenkeng.com.systemInfo"
 	};
-  //-------------------
 	/*public static final String[] SETTING_ACTION = new String[] {
 		"com.lenkeng.network", "com.lenkeng.hot", "com.lenkeng.screen",
 		"com.lenkeng.upgrade.gww",
@@ -190,12 +195,14 @@ public class Constant {
 			"http://www.qq.com", "http://www.163.com",
 			"http://www.tiexue.net/", "http://www.ifeng.com/",
 			"http://www.pcauto.com.cn/" };*/
-			//------------英文版独有-------------
-	public static final String[] CLASSIFIES = new String[] { CLASSIFY_MOVIE,
-			CLASSIFY_APPLICATION, CLASSIFY_GAME, CLASSIFY_SCAN, CLASSIFY_USER,
-			CLASSIFY_SETTING };
-	
-	//--------------------
+	public static final String[] CLASSIFIES = new String[] { 
+								CLASSIFY_RECOMMEND,
+		                        CLASSIFY_MOVIE,
+		                        CLASSIFY_APPLICATION, 
+		                        CLASSIFY_GAME, 
+		                        CLASSIFY_USER,
+		                        CLASSIFY_SETTING 
+    };
 	
 	public static final String DOWNLOAD_DATABASE = "download.db";
 	public static final int DOWNLOAD_DBVERSION = 1;

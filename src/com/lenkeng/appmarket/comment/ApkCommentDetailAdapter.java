@@ -75,7 +75,6 @@ public class ApkCommentDetailAdapter extends BaseAdapter {
 			viewHolder.tv_date.setText(LKHomeUtil.formatDate(new Date(commen.getCreateTime()),"yyy-MM-dd"));
 			
 		}
-		Logger.e(TAG, "~~~~~~~ getView()...postition="+postition+",count="+mData.size()+"view="+convertView);
 		return convertView;
 	}
 	

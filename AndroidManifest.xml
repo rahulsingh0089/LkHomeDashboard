@@ -188,8 +188,8 @@
 		 <activity
             android:name="com.lenkeng.appmarket.comment.ApkCommonActivity"
             android:configChanges="locale|keyboard|keyboardHidden"
+           android:theme="@style/TransparentStyleBottom" 
             >
-<!--             android:theme="@style/TransparentStyleBottom" -->
 		
 		   </activity>
 		   

@@ -108,6 +108,8 @@ public class DetailActivity extends Activity implements OnClickListener,
     private String currentProgressKey;
 	private InterfaceStub mInterStub;
     private Context mContext;
+    private boolean needScroll=false;
+    
     
     public static final int LIST_AUTO_SCROLL = 2000;
     private ApkCommentAdapter mCommentAdapter;
@@ -119,6 +121,7 @@ public class DetailActivity extends Activity implements OnClickListener,
     		switch (msg.what) {
     		
     		case LIST_AUTO_SCROLL:
+    			
 				handScrollListView();
 				
 				break;
@@ -212,6 +215,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 	};
 	
 	
+	
 	private void startInstall(final ApkBean bean) {
 		
 		new Thread(new Runnable() {
@@ -278,7 +282,11 @@ public class DetailActivity extends Activity implements OnClickListener,
 			     }
 			     
 			     mCommentAdapter.updateData(commentList);
-			     startAutoScroll();
+			   
+			     if(needScroll){
+			    	 startAutoScroll();
+			    	 
+			     }
 				 Logger.e(TAG, "-----收到加载完评论的广播...评论="+comments);
 			}
 		};
@@ -300,7 +308,11 @@ public class DetailActivity extends Activity implements OnClickListener,
 			normalOnresume();
 		}
 		
+		Logger.e(TAG, "~~~~~~~~~onResume().......");
+		mCommentAdapter.updateData(commentList);
+		needScroll=true;
 		
+		lv_comment.setSelection(0);
 		 startAutoScroll();
 		super.onResume();
 	}
@@ -719,7 +731,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 
 	@Override
 	protected void onPause() {
-		
+		needScroll=false;
 		scrollHandler.removeMessages(LIST_AUTO_SCROLL);
 		super.onPause();
 	}

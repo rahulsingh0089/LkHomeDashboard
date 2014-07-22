@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class ApkCommonActivity extends Activity implements OnClickListener {
@@ -35,12 +36,15 @@ public class ApkCommonActivity extends Activity implements OnClickListener {
 	private ListView lv_detailCommen;
     
 	private Button btn_edit_commen;
+	private ProgressBar pb_load_commen;
+	private TextView tv_empty_commen;
+	
 	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		   //getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND,WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-           getWindow().setDimAmount(0.8f);
+           //getWindow().setDimAmount(0.8f);
 		
         setContentView(R.layout.apk_commen);
 		mApp=(AppInfo) getIntent().getSerializableExtra("mApp");
@@ -51,6 +55,8 @@ public class ApkCommonActivity extends Activity implements OnClickListener {
 	
 		initLoadApkCommentReceiver();
 		mLogic.loadApkComment(mApp.getPackage_name(), 0, 20);
+		
+		pb_load_commen.setVisibility(View.VISIBLE);
 	}
 
 
@@ -67,6 +73,10 @@ public class ApkCommonActivity extends Activity implements OnClickListener {
 		lv_detailCommen=(ListView) findViewById(R.id.lv_detailCommen);
 		lv_detailCommen.setAdapter(mCommentDetailAdapter);
 		lv_detailCommen.setSelector(R.drawable.bg_commen_select);
+		
+		pb_load_commen=(ProgressBar) findViewById(R.id.pb_load_commen);
+		
+		tv_empty_commen=(TextView) findViewById(R.id.tv_empty_commen);
 	}
 
 
@@ -83,10 +93,18 @@ public class ApkCommonActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				pb_load_commen.setVisibility(View.GONE);
+				
 			ArrayList<ApkCommentParam> comments=	intent.getParcelableArrayListExtra("comments");
 			
 			     commentList=comments;
-			     mCommentDetailAdapter.updateData(commentList);
+			     if(commentList==null || commentList.size()==0){
+			    	 tv_empty_commen.setVisibility(View.VISIBLE);
+			     }else{
+			    	 
+			    	 tv_empty_commen.setVisibility(View.GONE);
+			    	 mCommentDetailAdapter.updateData(commentList);
+			     }
 				 Logger.e(TAG, "-----收到加载完评论的广播...评论="+comments);
 			}
 		};

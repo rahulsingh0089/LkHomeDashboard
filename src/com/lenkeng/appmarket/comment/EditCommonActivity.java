@@ -43,7 +43,7 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 			switch (msg.what) {
 			case Logic.RESULT_SUBMIT_COMMENT://如果提交成功,弹出toast提示,关闭界面
 				
-				pb_comit_common.setVisibility(View.GONE);
+				
 				String result=(String) msg.obj;
 				Logger.e(TAG, "~~~~~~~~~~handler中收到result="+result);
 				
@@ -57,6 +57,7 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 						
 						@Override
 						public void run() {
+							showProgress(false);
 							finish();
 							
 						}
@@ -82,7 +83,7 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		  getWindow().setDimAmount(0.8f);
+		  //getWindow().setDimAmount(0.8f);
 		
         setContentView(R.layout.edit_commen);
 		
@@ -190,7 +191,8 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 
 
 	private void submitApkCommon(ApkCommentParam param) {
-		pb_comit_common.setVisibility(View.VISIBLE);
+	
+		showProgress(true);
 		
 		//异步提交评论,提交结果会通知Handler
 		mLogic.submitApkComment(param,mHandler);
@@ -198,4 +200,16 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 		
 	}
 	
+	
+	private void showProgress(boolean needShow){
+		if(needShow){
+			pb_comit_common.setVisibility(View.VISIBLE);
+			btn_commen_submit.setEnabled(false);
+		}else{
+			pb_comit_common.setVisibility(View.GONE);
+			btn_commen_submit.setEnabled(true);
+			
+		}
+		
+	}
 }

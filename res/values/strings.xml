@@ -174,7 +174,7 @@
     <string name="space_value">4G</string>
     <string name=":">:</string>
     <string name="ticket_error">no connection, do not work</string>
-    <string name="ticket_unsuport">the App does not work </string>
+    <string name="ticket_unsuport">It\'s not available for this App </string>
     <string name="language_title_inputmethod">Input Method Setting</string>
     <string name="language_title_language">Language Setting</string>
     <string name="download_no_size">Memory is not enough, please use SD card or upload other applications</string>
@@ -219,5 +219,7 @@
     <string name="common_hint_level_3">It is so so; Can kill time when extremely bored</string>
     <string name="common_hint_level_4">It is fine and worthy to spend time on it</string>
     <string name="common_hint_level_5">It is excellent and strongly recommended </string>
+    
+    <string name="text_empty_common">No comments</string>
      
 </resources>
