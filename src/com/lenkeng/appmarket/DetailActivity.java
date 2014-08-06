@@ -198,7 +198,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 				LKHomeUtil.showToast(mContext, R.string.download_no_size);
 				tv_progress.setVisibility(View.GONE);
 				
-				
 				break;
 				
 				
@@ -514,7 +513,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 				tv_progress.setText(s);
 				tv_progress.setVisibility(View.VISIBLE);
 				
-				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 				btn_oneKey.setClickable(true);
 				
 				//==========英文
@@ -536,18 +534,18 @@ public class DetailActivity extends Activity implements OnClickListener,
 				
 				tv_progress.setText(R.string.installing);
 				tv_progress.setVisibility(View.VISIBLE);
-				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 				btn_oneKey.setClickable(false);
 				
 				//=============英文============
 			}else if( checkApkFileState(downloadBean)){ //等待安装,英文版需要手动安装,one_key可以点击
 				  
 				tv_progress.setVisibility(View.GONE);
-				//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
 				btn_oneKey.setText(R.string.text_install);
 				btn_oneKey.setClickable(true);
 				//====================
 				
+			}else if(mLogic.isDownloadPaused(mApp.getPackage_name())){ //已经暂停,按钮显示"继续"
+				btn_oneKey.setText(R.string.text_continue);
 			}
 			
 		}
@@ -670,7 +668,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 						tv_progress.setText(s); 
 						
 						btn_oneKey.setClickable(true);
-						//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 						
 					}
 				}else if(ACTION_DOWNLOAD_ERR.equals(action)){//下载错误,需要从广播才能更新UI
@@ -684,7 +681,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 						
 						tv_progress.setVisibility(View.GONE);
 						btn_oneKey.setClickable(true);
-						btn_oneKey.setText(R.string.text_download);
+						btn_oneKey.setText(R.string.text_continue);
 						
 					}
 					
@@ -698,7 +695,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 						tv_progress.setVisibility(View.GONE);
 						btn_oneKey.setClickable(true);
 						btn_oneKey.setText(R.string.text_install);
-						//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
 						
 					}
 				}else if(ACTION_INSTALLING.equals(action)){ //正在安装
@@ -706,7 +702,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 						tv_progress.setVisibility(View.VISIBLE);
 						btn_oneKey.setClickable(false);
 						tv_progress.setText(R.string.installing);
-						//btn_oneKey.setBackgroundResource(R.drawable.detail_left_enable);
 					}
 					
 				}else if(ACTION_INSTALL_ERR.equals(action)){ //安装失败
@@ -715,7 +710,6 @@ public class DetailActivity extends Activity implements OnClickListener,
 						
 						tv_progress.setVisibility(View.GONE);
 						btn_oneKey.setClickable(true);
-						//btn_oneKey.setBackgroundResource(R.drawable.detail_left_selector);
 					}
 					
 					
@@ -894,7 +888,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 		public void downloadStatus(ApkBean bean) throws RemoteException { //需要发送广播才能更新UI
 			
 			
-		  if(bean.getStatus()==ApkBean.STATE_PAUSED){ //下载暂停
+		  if(bean.getStatus()==ApkBean.STATE_PAUSED ||bean.getStatus()==ApkBean.STATE_ERR_NO_SPACE ){ //下载暂停/空间不够
 			  
 			  Logger.e(TAG, "^^^^^^^^^^^^^^^^ 收到下载暂停状态,发送广播");
 			  mLogic.addDownloadPausedRecord( bean.getPackageName());
@@ -1077,18 +1071,17 @@ public class DetailActivity extends Activity implements OnClickListener,
 		String tUrl = mApp.getUrl().substring(
 				mApp.getUrl().lastIndexOf("/") + 1, mApp.getUrl().length());
 		Logger.e(TAG, "~~~~~~~~~下载中的任务数=" + downloadsize);
-
+      
+		String resId=((Button) view).getText().toString();
 
 		try {
-			if (((Button) view).getText().equals(
-					getString(R.string.text_install))) {// 显示"安装"
+			if (resId.equals(getString(R.string.text_install))) {// 显示"安装"
 
 				systemInstall();
 				btn_back.setClickable(false);
 				btn_oneKey.setClickable(false);
 
-			} else if (((Button) view).getText().equals(
-					getString(R.string.text_download))) {// 显示"下载",点击开始下载
+			} else if (resId.equals(getString(R.string.text_download))  || resId.equals(getString(R.string.text_continue))) {// 显示"下载","继续",点击开始下载
 
 				if (downloadsize >= Logic.DownLoadSize) { // 下载任务数达到了5个,且不是正在下载的url
 
@@ -1105,8 +1098,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 				mLogic.removeDownloadPausedRecord(mApp.getPackage_name());
 				startDownLoad();
 
-			} else if (((Button) view).getText().equals(
-					getString(R.string.text_download_pause))) {// 显示"暂停",点击暂停下载,暂停后按钮禁用2秒,等待服务器异常处理
+			} else if (resId.equals(getString(R.string.text_download_pause))) {// 显示"暂停",点击暂停下载,暂停后按钮禁用2秒,等待服务器异常处理
 				mLogic.addDownloadPausedRecord(mApp.getPackage_name());
 
 				btn_oneKey.setClickable(false);

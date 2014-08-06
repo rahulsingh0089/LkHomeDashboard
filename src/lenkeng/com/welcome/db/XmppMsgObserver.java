@@ -3,14 +3,12 @@ package lenkeng.com.welcome.db;
 
 import lenkeng.com.welcome.util.Constant;
 import lenkeng.com.welcome.util.Logger;
-import lenkeng.com.welcome.util.SoundUtil;
 import android.content.Context;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.os.Handler;
 
-/*
- * $Id: XmppMsgObserver.java 72 2014-02-09 03:28:03Z gww $
- */
+
 
 //监听推送消息，当有新的推送消息收到时通知消息界面进行更新
 public class XmppMsgObserver extends ContentObserver {
@@ -27,7 +25,9 @@ public class XmppMsgObserver extends ContentObserver {
 		super.onChange(selfChange);
 		Logger.i("gww", "a new message was send succefully");
 		
-		
+		Intent intent=new Intent();
+		intent.setAction("com.lenkeng.action.newmsg");
+		context.sendBroadcast(intent);
 		//notice home activity chanage message icon
 		handler.sendEmptyMessage(Constant.HANADLER_NOTICE_MSG);
 	}

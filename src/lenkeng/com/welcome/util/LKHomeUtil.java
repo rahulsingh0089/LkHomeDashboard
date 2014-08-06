@@ -49,6 +49,7 @@ import lenkeng.com.welcome.bean.ScanInfo;
 import lenkeng.com.welcome.bean.WeatherInfo;
 import lenkeng.com.welcome.db.AppDataDao;
 import lenkeng.com.welcome.db.AppStoreDao;
+import lenkeng.com.welcome.view.LKToast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -69,6 +70,7 @@ import org.json.JSONTokener;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -570,7 +572,7 @@ public class LKHomeUtil {
 				conn.connect();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			return conn;
 		}

@@ -58,7 +58,7 @@ public class XmppMsgContentProvider extends ContentProvider {
 		SQLiteDatabase db=helper.getWritableDatabase();
 		
 		//db.execSQL("DELETE FROM "+Constant.TABALE_NAME +" WHERE time="+arg1);
-		db.delete(Constant.XMPP_TABALE_NAME, "style=? and content=?",arg2);
+		db.delete(Constant.XMPP_TABALE_NAME, "style=? and msgtime=?",arg2);
 		//getContext().getContentResolver().notifyChange(uri, null);
 		return 0;
 	}

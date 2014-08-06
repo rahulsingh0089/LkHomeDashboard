@@ -13,6 +13,10 @@ import android.hardware.LkecDevice;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -37,6 +41,7 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 	
 	
 	public static final int RESULT_COMIT_COMMEN=1000;
+	public static final int TEXT_COMMON_LENGTH = 80;
 	
 	private Handler mHandler=new Handler(){
 		public void handleMessage(Message msg) {
@@ -141,6 +146,49 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 		
 		
 		et_content=(EditText) findViewById(R.id.et_commen_content);
+	/*	et_content.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				Logger.e(TAG, "~~~~~~~~~~ onTextChanged, start="+start+",before="+before+",count="+count+",len="+s.length());
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				Logger.e(TAG, "~~~~~~~~~~ beforeTextChanged, start="+start+",count="+count+",leng="+s.length());
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				Logger.e(TAG, "~~~~~~~~~~ afterTextChanged, s="+s.length());
+			}
+		});*/
+		
+		et_content.setFilters(new InputFilter[]{
+				new InputFilter() {
+					
+					@Override
+					public CharSequence filter(CharSequence source, int start, int end,
+							Spanned dest, int dstart, int dend) {
+						
+						    int destLen = getCharacterNum(dest.toString());
+			                int sourceLen =getCharacterNum(source.toString());
+			                if(destLen + sourceLen > TEXT_COMMON_LENGTH){
+			                	
+			                    //String temp=String.format(getString(R.string.text_commen_too_length), TEXT_COMMON_LENGTH);
+			                	String temp=getString(R.string.text_commen_too_length);
+			                	LKHomeUtil.showToast(mContext,temp );
+			                    return "";
+			                }
+			                return source;
+						
+					}
+				}
+				
+		});
 		
 		btn_commen_submit=(Button) findViewById(R.id.btn_commen_submit);
 		btn_commen_submit.setOnClickListener(this);
@@ -212,4 +260,26 @@ public class EditCommonActivity extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	  public  int getCharacterNum(String content){
+	        if(content.equals("")||null == content){
+	            return 0;
+	        }else {
+	            return content.length()+getChineseNum(content);
+	        }
+	        
+	    }
+	  
+	  
+	  public  int getChineseNum(String s){
+	        int num = 0;
+	        char[] myChar = s.toCharArray();
+	        for(int i=0;i<myChar.length;i++){
+	            if((char)(byte)myChar[i] != myChar[i]){
+	                num++;
+	            }
+	        }
+	        return num;
+	    }
+	
 }

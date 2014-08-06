@@ -1036,7 +1036,10 @@ public class ApiClient {
 	
 	
 	
-	
+	/**
+	 * 暂停下载,将指定的包名添加到下载集合,下载线程会循环判断正在下载的pkg是否包含在暂停集合中,如果包含,就退出下载循环,发送下载暂停的状态
+	 * @param pkg
+	 */
 	public void addDownloadPausedRecord(String pkg){
 		synchronized (downloadPausedList) {
 			

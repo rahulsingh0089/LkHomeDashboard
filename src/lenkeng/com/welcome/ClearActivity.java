@@ -214,21 +214,23 @@ public class ClearActivity extends Activity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			PackageManager manager = context.getPackageManager();
-			List<PackageInfo> Infos= manager.getInstalledPackages(0);
-				for (PackageInfo packInfo : Infos) {
-					String pName = packInfo.packageName;
-					try {
-						if(!"org.xbmc.xbmc".equals(pName)){
-							manager.deleteApplicationCacheFiles(pName, null);
+			String action=intent.getAction();
+			if(Intent.ACTION_SCREEN_OFF.equals(action)){
+				PackageManager manager = context.getPackageManager();
+				List<PackageInfo> Infos= manager.getInstalledPackages(0);
+					for (PackageInfo packInfo : Infos) {
+						String pName = packInfo.packageName;
+						try {
+							if(!"org.xbmc.xbmc".equals(pName)){
+								manager.deleteApplicationCacheFiles(pName, null);
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							
 						}
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						
 					}
-				}
-			
+			}
 		}
 	}
 }

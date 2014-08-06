@@ -15,11 +15,11 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:textSize="20sp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="10dp"
        android:includeFontPadding="false"
         android:layout_toRightOf="@+id/iv_head"
         android:textColor="#fff"
-        android:layout_alignBottom="@+id/iv_head"
+        android:layout_marginTop="10dp"
         />
       
      <RatingBar
@@ -31,7 +31,7 @@
         android:layout_toRightOf="@+id/tv_devId"
         android:layout_marginLeft="40dp"
         android:isIndicator="true"
-        android:layout_alignBottom="@+id/iv_head"
+        android:layout_alignBottom="@+id/tv_devId"
         />
      
       <TextView 
@@ -43,7 +43,7 @@
        android:includeFontPadding="false"
         android:layout_toRightOf="@+id/rbar_level"
         android:textColor="#fff"
-        android:layout_alignBottom="@+id/iv_head"
+        android:layout_alignBottom="@+id/tv_devId"
         />
      
     
@@ -54,7 +54,7 @@
         android:textSize="16sp"
         android:layout_marginLeft="10dp"
           android:layout_toRightOf="@+id/iv_head"
-          android:layout_below="@+id/iv_head"
+          android:layout_below="@+id/tv_devId"
           android:layout_marginTop="10dp"
           android:textColor="#fff"
           

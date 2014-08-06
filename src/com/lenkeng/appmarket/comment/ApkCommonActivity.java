@@ -72,7 +72,7 @@ public class ApkCommonActivity extends Activity implements OnClickListener {
 		mCommentDetailAdapter=new ApkCommentDetailAdapter(mContext, commentList);
 		lv_detailCommen=(ListView) findViewById(R.id.lv_detailCommen);
 		lv_detailCommen.setAdapter(mCommentDetailAdapter);
-		lv_detailCommen.setSelector(R.drawable.bg_commen_select);
+		lv_detailCommen.setSelector(R.drawable.select_bg_common_detail);
 		
 		pb_load_commen=(ProgressBar) findViewById(R.id.pb_load_commen);
 		

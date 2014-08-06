@@ -728,7 +728,7 @@ public class LKService extends Service implements OnClickListener,
 				} catch (IllegalStateException e) {
 					conn = LKHomeUtil.getConnection();
 				} catch (Exception e3) {
-					e3.printStackTrace();
+					//e3.printStackTrace();
 					continue;
 				}
 
@@ -749,14 +749,14 @@ public class LKService extends Service implements OnClickListener,
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					// conn.disconnect();
-					e1.printStackTrace();
+					//e1.printStackTrace();
 					conn = LKHomeUtil.getConnection();
 				}
 				try {
 					Thread.sleep(PEER_TIME);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		}
@@ -1204,8 +1204,8 @@ public class LKService extends Service implements OnClickListener,
 						// xmsg.setVariable(strs[2]);
 						xmpUtil.addNewMsg(xmsg);
 						String imgName = strs[1].substring(strs[1]
-								.lastIndexOf("/"));
-						String path = "/sdcard/image/" + imgName;
+								.lastIndexOf("/")+1);
+						String path = "/sdcard/image/" + xmsg.getMsgTime()+imgName;
 						File f2 = new File(path);
 						if (f2.exists()) {
 							return;

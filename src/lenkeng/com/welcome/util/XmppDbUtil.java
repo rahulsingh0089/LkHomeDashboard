@@ -14,9 +14,7 @@ import android.net.Uri;
 import android.os.Handler;
 
 
-/*
- * $Id: XmppDbUtil.java 72 2014-02-09 03:28:03Z gww $
- */
+
 
 
 //消息推送工具类
@@ -66,7 +64,7 @@ public class XmppDbUtil {
 	}
 	//删除一条推送消息
 	public static int delete(XmppMessage xmsg) {
-	    String[] strs=new String[]{xmsg.getStyle(),xmsg.getContent()};
+	    String[] strs=new String[]{xmsg.getStyle(),xmsg.getMsgTime()};
 		return resolver.delete(uri, null, strs);
 	}
 	

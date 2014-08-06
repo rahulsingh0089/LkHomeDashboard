@@ -5,4 +5,5 @@
     <item android:state_selected="true" android:drawable="@drawable/market_app_enable"></item>
     <item android:state_checked="true" android:drawable="@drawable/market_app_enable"></item>
 	<item android:drawable="@drawable/market_app_def"></item>
+	
 </selector>

@@ -7,7 +7,6 @@
     android:orientation="vertical"
      >
 
-    <!-- $Id: message.xml 114 2014-02-20 03:35:17Z gww $ -->
 
     <RelativeLayout
         android:id="@id/message_show"
@@ -21,7 +20,7 @@
         
         <LinearLayout 
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:orientation="horizontal"
             android:gravity="center_vertical"
@@ -30,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/msg_time"
-                android:textSize="15sp"
+                android:textSize="25sp"
                 android:layout_marginLeft="50dp"
                 />
              <TextView 
@@ -70,7 +69,7 @@
         >
 		 <Button
             android:id="@+id/up"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="55dp" 
            android:background="@drawable/detail_left_selector" 
             android:text="@string/msg_up"
@@ -79,7 +78,7 @@
             />
         <Button
             android:id="@+id/next"
-           android:layout_width="200dp"
+           android:layout_width="150dp"
             android:layout_height="55dp" 
            
               android:background="@drawable/detail_center_selector"
@@ -89,12 +88,21 @@
             />
         <Button 
             android:id="@+id/msg_del"
-           android:layout_width="200dp"
+           android:layout_width="150dp"
             android:layout_height="55dp" 
-            android:background="@drawable/select_button"
+            android:background="@drawable/detail_center_selector"
             android:text="@string/msg_del"
              android:textColor="@android:color/white"
              android:textSize="20sp"
+            />
+        <Button
+            android:id="@+id/msg_clear"
+           android:layout_width="150dp"
+            android:layout_height="55dp" 
+              android:background="@drawable/select_button"
+              android:text="@string/msgClear"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
             />
     </LinearLayout>
 

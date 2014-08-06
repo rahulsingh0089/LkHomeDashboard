@@ -4,6 +4,7 @@ import java.io.File;
 
 
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -252,9 +253,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			}
 
 		} else {
-			if (num > 99) {
-				num = 99;
-			}
+			
 			rl_msg.setVisibility(View.VISIBLE);
 			if (bt_message.isFocused()) {
 				IS_NEW_MSG = true;
@@ -263,7 +262,11 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				bt_message.setBackgroundResource(R.drawable.new_1);
 			}
 			msgNum.setVisibility(View.VISIBLE);
-			msgNum.setText(num + "");
+			if(num>99){
+				msgNum.setText(99 + "+");
+			}else{
+				msgNum.setText(num + "");
+			}
 		}
 	}
 
@@ -467,7 +470,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			public void run() {
 				initCameraStateReceiver();
 			}
-		}, 10000);
+		}, 12000);
 		handler.postDelayed(new Runnable() {
 
 			@Override
@@ -480,7 +483,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 					Logger.d("kao", "----- check video  1 ----");
 				}
 			}
-		}, 15000);
+		}, 17000);
 	}
 	SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
 	
@@ -1714,7 +1717,8 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 					
 					// handler.sendEmptyMessage(Constant.HANDLER_DOWNLOAD_WEATHER);
 					if (LKHomeUtil.getConnectedStyle() == 1) {
-						iv_wifiFlag.setBackgroundResource(R.drawable.signal_1);
+						int level=LKHomeUtil.getWifiLevel();
+						iv_wifiFlag.setBackgroundResource(wifi_icons[level]);
 					} else {
 						iv_wifiFlag.setBackgroundResource(R.drawable.connected);
 					}

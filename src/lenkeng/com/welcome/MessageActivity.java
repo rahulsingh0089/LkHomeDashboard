@@ -1,66 +1,93 @@
 package lenkeng.com.welcome;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import lenkeng.com.welcome.bean.XmppMessage;
+import lenkeng.com.welcome.util.Constant;
+import lenkeng.com.welcome.util.LKHomeUtil;
+import lenkeng.com.welcome.util.Logger;
+import lenkeng.com.welcome.util.XmppDbUtil;
 import android.annotation.SuppressLint;
-
+import android.annotation.TargetApi;
 import android.app.Activity;
-
-import android.content.DialogInterface;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import java.io.File;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import lenkeng.com.welcome.bean.XmppMessage;
-import lenkeng.com.welcome.util.Logger;
-import lenkeng.com.welcome.util.XmppDbUtil;
-/*
- * $Id: MessageActivity.java 26 2014-01-02 01:41:04Z gww $
- */
+
 public class MessageActivity extends Activity implements OnClickListener  {
 	private String TAG="MessageActivity";
 	private TextView bt_msg;
 	private Button bt_next;
 	private Button bt_up;
 	private Button bt_del;
+	private Button bt_clear;
 	private List<XmppMessage> msg_list;
 	private int COUNTER=0;
 	private TextView tv_msg_time;
 	private TextView tv_msg_status;
+	private boolean isImgMsg=false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message);
 		initViewAndObject();
-		Logger.i("ez2", "♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣    #210    ♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣");
-		Logger.i("ez2", "♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣#邮件功能完善 ♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣" );
-		Logger.i("ez2", "♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣#2013-01-04♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣");
-		Logger.i("ez2", "♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣  #送测     ♣♣♣♣♣♣♣♣♣♣♣♣♣♣♣");
+		IntentFilter filter=new IntentFilter();
+		filter.addAction("com.lenkeng.action.newmsg");
+		registerReceiver(receiver, filter);
 		
 	}
-
+	@SuppressLint("NewApi")
+	private BroadcastReceiver receiver=new BroadcastReceiver() {
+		
+		@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			
+			 String action=intent.getAction();
+			 if("com.lenkeng.action.newmsg".equals(action)){
+				 try {
+					msg_list=XmppDbUtil.getAllMsgList();
+					 XmppMessage msg=msg_list.get(0);
+					 bt_msg.setText(msg.getContent());
+					 bt_msg.setBackground(null);
+					 tv_msg_time.setText(formatTime(Long.valueOf(msg.getMsgTime())));
+					 XmppDbUtil.updateReadStatus(msg);
+				 } catch (Exception e) {
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}
+			 }
+		}
+	};
 	private void initViewAndObject() {
-	    
 	    bt_msg=(TextView) this.findViewById(R.id.Msg);
 	    bt_msg.setText(getString(R.string.click_check));
 	    bt_next=(Button) this.findViewById(R.id.next);
 	    bt_up=(Button) this.findViewById(R.id.up);
 	    bt_del=(Button) this.findViewById(R.id.msg_del);
+	    bt_clear=(Button) this.findViewById(R.id.msg_clear);
 	    tv_msg_time=(TextView) this.findViewById(R.id.msg_time);
 	    tv_msg_status=(TextView) this.findViewById(R.id.msg_status);
 	    bt_next.setOnClickListener(this);
 	    bt_up.setOnClickListener(this);
 	    bt_del.setOnClickListener(this);
-	    
+	    bt_clear.setOnClickListener(this);
 	    msg_list=XmppDbUtil.getAllMsgList();
 	    
 	    if(msg_list.size() ==0){
@@ -86,8 +113,8 @@ public class MessageActivity extends Activity implements OnClickListener  {
 						}else if("img".equals(xmsg.getStyle())){
 						    try {
 								String url=xmsg.getContent();
-								String imgName=url.substring(url.lastIndexOf("/"));
-								String path="/sdcard/image/"+imgName;
+								String imgName=url.substring(url.lastIndexOf("/")+1);
+								String path="/sdcard/image/"+xmsg.getMsgTime()+imgName;
 								bt_msg.setBackground(Drawable.createFromPath(path));
 								bt_msg.setText("");
 							} catch (Exception e) {
@@ -199,21 +226,25 @@ public class MessageActivity extends Activity implements OnClickListener  {
 			}
 			break;
 		case R.id.msg_del:
-			try {
+			delete(false, COUNTER);
+			/*try {
+				if(msg_list.size()==0){
+					return;
+				}
 				XmppMessage xmsg=msg_list.get(COUNTER);
 				if("img".equals(xmsg.getStyle())){
 					String url=xmsg.getContent();
-					String imgName=url.substring(url.lastIndexOf("/"));
-					String path="/sdcard/image/"+imgName;
+					String imgName=url.substring(url.lastIndexOf("/")+1);
+					String path="/sdcard/image/"+xmsg.getMsgTime()+imgName;
 					bt_msg.setBackground(null);
 					File f=new File(path);
 					if(f.exists()){
 					    f.delete();
 					}
 				}
-				msg_list.remove(COUNTER);
 				int result=XmppDbUtil.delete(xmsg);
 				if(result !=-1){
+					msg_list.remove(COUNTER);
 					msg_list=XmppDbUtil.getAllMsgList();
 					if(msg_list.size()>0){
 						COUNTER--;
@@ -230,13 +261,63 @@ public class MessageActivity extends Activity implements OnClickListener  {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			
 			break;
-		
+		case R.id.msg_clear:
+			if(msg_list!=null){
+				for(int i=0;i<msg_list.size();i++){
+					delete(true, i);
+				}
+			}
+			msg_list.clear();
+			bt_msg.setText(getString(R.string.noMsg));
+			tv_msg_time.setText("");
+			bt_msg.setBackground(null);
+			break;
 		default:
 			break;
 		}
 	};
-	
+	@SuppressLint("NewApi")
+	private void delete(boolean delAll,int index){
+		try {
+			if(msg_list==null || msg_list.size()==0){
+				return;
+			}
+			XmppMessage xmsg=msg_list.get(index);
+			if("img".equals(xmsg.getStyle())){
+				String url=xmsg.getContent();
+				String imgName=url.substring(url.lastIndexOf("/")+1);
+				String path="/sdcard/image/"+xmsg.getMsgTime()+imgName;
+				bt_msg.setBackground(null);
+				File f=new File(path);
+				if(f.exists()){
+				    f.delete();
+				}
+			}
+			int result=XmppDbUtil.delete(xmsg);
+			if(result !=-1){
+				if(!delAll){
+					msg_list.remove(index);
+					msg_list=XmppDbUtil.getAllMsgList();
+					if(msg_list.size()>0){
+						COUNTER--;
+						if(COUNTER<0){
+							COUNTER=0;
+						}
+						checkMsg(COUNTER);
+					}else{
+						bt_msg.setText(getString(R.string.noMsg));
+						tv_msg_time.setText("");
+					}
+				}else{
+					COUNTER=0;
+				}
+			}
+			Logger.i("tag", "$$$---"+TAG+"---COUNTER DEL   = "+COUNTER+"---MSG_SIZE   "+msg_list.size());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+		}
+	}
 }

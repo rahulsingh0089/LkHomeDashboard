@@ -347,6 +347,10 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 			infos.get(position).setIschecked(false);
 			selectedInfos.remove((TaskInfo) adapter.getItem(position));
 		}
+		if(infos.size()==selectedInfos.size()){
+			cb_choiceAll.setChecked(true);
+		}
+	
 	}
 
 	public void back(View v) {

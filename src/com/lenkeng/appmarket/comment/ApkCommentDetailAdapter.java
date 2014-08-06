@@ -53,8 +53,8 @@ public class ApkCommentDetailAdapter extends BaseAdapter {
 		ViewHoler viewHolder = null;
 		ApkCommentParam commen=null;
 		if(convertView == null){
-			viewHolder = new ViewHoler();
 			convertView = LayoutInflater.from(mContext).inflate(R.layout.adapter_apk_commen_detail, parent,false);
+			viewHolder = new ViewHoler();
 			viewHolder.tv_devId = (TextView) convertView.findViewById(R.id.tv_devId);
 			viewHolder.tv_content = (TextView) convertView.findViewById(R.id.tv_commen_content);
 			viewHolder.rbar_level = (RatingBar) convertView.findViewById(R.id.rbar_level);

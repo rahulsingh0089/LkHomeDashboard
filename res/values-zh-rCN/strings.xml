@@ -240,6 +240,9 @@
     <string name="common_hint_level_5">强烈推荐,这真不错 </string>
     
     <string name="text_empty_common">暂时没有评论 </string>
+    <string name="text_continue">继续</string>
+    	<string name="msgClear">清空</string>
+     <string name="text_commen_too_length">评论内容长度已超过上限</string>
     
     
     

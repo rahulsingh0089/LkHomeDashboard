@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -47,6 +48,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.lenkeng.adapter.AppAdapter;
 import com.lenkeng.adapter.GameAdapter;
@@ -164,6 +166,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				progress_movie.setVisibility(View.GONE);
 				grid_movie.setVisibility(View.VISIBLE);
+				grid_movie.setSelection(0);
 				
 				mVideoSubIndex = entity_movie.getCurrentPage();
 				//rb_cate_movie.requestFocus();
@@ -198,6 +201,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				progress_app.setVisibility(View.GONE);
 				grid_app.setVisibility(View.VISIBLE);
+				grid_app.setSelection(0);
 				mAppSubIndex = entity_app.getCurrentPage();
 				
 				//rb_cate_app.requestFocus();
@@ -231,6 +235,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				progress_game.setVisibility(View.GONE);
 				grid_game.setVisibility(View.VISIBLE);
+				grid_game.setSelection(0);
 				mGameSubIndex = entity_game.getCurrentPage();
 				
 				//rb_cate_game.requestFocus();
@@ -281,6 +286,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 					rb_cate_search.setNextFocusUpId(R.id.gridView_search);
 				//	freshControllerLayout(entity_search);
 				} else {
+					tv_search_title.setText(R.string.text_search_result);
 					grid_search.setVisibility(View.GONE);
 					tv_no_result.setVisibility(View.VISIBLE);
 					btn_search.setNextFocusDownId(R.id.radio4);
@@ -480,7 +486,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		
 		
 		// }
-		// ui_search_input.requestFocus();
+		et_search_input.requestFocus();
 	}
 
 	private void initGameLayout() {
@@ -605,11 +611,28 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		view_search = inflater.inflate(R.layout.search, null);
 		btn_search = (Button) view_search.findViewById(R.id.do_search);
 		btn_search.setOnClickListener(this);
-		et_search_input = (EditText) view_search
-				.findViewById(R.id.search_input);
+		
+		et_search_input = (EditText) view_search.findViewById(R.id.search_input);
 		et_search_input.setOnKeyListener(keyListener);
-		tv_search_title = (TextView) view_search
-				.findViewById(R.id.msg_search_title);
+	/*	et_search_input.setOnEditorActionListener(new OnEditorActionListener() {
+			
+			@Override
+			public boolean onEditorAction(TextView arg0, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+					Log.e(TAG, "~~~~~~~~~~~~~~~actionId="+actionId+",event="+event);
+	                return true;
+
+	            }
+
+				
+				
+				return false;
+			}
+		});*/
+		
+		
+		tv_search_title = (TextView) view_search.findViewById(R.id.msg_search_title);
 
 		// progres find
 		progress_movie = (RelativeLayout) view_movie
@@ -664,6 +687,8 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				
 				switch (keyCode) {
 				case KeyEvent.KEYCODE_ENTER:
+					Log.e(TAG, "~~~~~~~isEditor="+et_search_input.isInEditMode());
+					
 				//case KeyEvent.KEYCODE_DPAD_CENTER:
 					if(!isSearching){
 						isSearching=true;
@@ -975,6 +1000,10 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			break;
 
 		case R.id.do_search: //搜素按钮
+			/*if(et_search_input.isInEditMode()){
+				return;
+			}*/
+			
 			String key = et_search_input.getText().toString().trim();
 			if(key.length()==0){
 				return;

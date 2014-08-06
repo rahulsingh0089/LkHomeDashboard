@@ -1,7 +1,9 @@
 package lenkeng.com.welcome;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lenkeng.com.welcome.util.Constant;
 import lenkeng.com.welcome.util.LKHomeUtil;
@@ -14,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageMoveObserver;
 import android.content.pm.PackageInfo;
@@ -46,15 +49,15 @@ import android.widget.Toast;
 
 public class AppManagerActivity extends Activity implements
 		OnItemClickListener, OnItemSelectedListener {
-	// private static final int MOVE_SUCCESSED=1;
-	// private static final int MOVE_FAILED=2;
+	 private static final int DELETE=1;
+	 private static final int DATACHANGED=2;
 	private GridView gv_appList;
 	private Button clearDef;
 	private List<String> installApp;
 	private MyAdapter adapter;
 	// private ImageView iv_scoll_fade;
 	private ViewHolder holder;
-	private ViewHolder moveHolder;
+	
 	private int isSelected = -1;
 	// private ViewHolder tempHolder;
 	// private ImageButton ib_del;
@@ -63,41 +66,55 @@ public class AppManagerActivity extends Activity implements
 	private String appManagerPackage = "";
 	// private LayoutInflater inflater;
 	private boolean isMoveSucceed = true;
+	private Map<String,ViewHolder> holderMap=new HashMap<String, ViewHolder>();
 	private Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
-
+			
 			// ib_move.setEnabled(false);
 			// ib_move.setBackgroundResource(R.drawable.move_to_def);
 			String packageName = (String) msg.obj;
+			ViewHolder moveHolder=holderMap.get(packageName);
+			String name=LKHomeUtil.getLabel(packageName);
 			if (isMoveSucceed) {
 				LKHomeUtil.showToast(getApplicationContext(),
-						R.string.moveSuccessfully);
+						name+" "+getString(R.string.moveSuccessfully));
 			} else {
 				LKHomeUtil
-						.showToast(getApplicationContext(), R.string.moveFail);
+						.showToast(getApplicationContext(),name+" "+ getString(R.string.moveFail));
 			}
-			if (isSDcardApp(packageName)) {
-				// holder.bt_moveTo.setEnabled(false);
-				moveHolder.tv_move.setText(getString(R.string.moveTo));
-			} else {
-				// holder.bt_moveTo.setEnabled(true);
-				moveHolder.tv_move.setText(getString(R.string.moveToSD));
+			if(moveHolder !=null){
+				if (isSDcardApp(packageName)) {
+					// holder.bt_moveTo.setEnabled(false);
+						moveHolder.tv_move.setText(getString(R.string.moveTo));
+				} else {
+					// holder.bt_moveTo.setEnabled(true);
+					moveHolder.tv_move.setText(getString(R.string.moveToSD));
+				}
+				moveHolder.bt_moveTo.setEnabled(true);
+				moveHolder.tv_move.setEnabled(true);
 			}
-			moveHolder.bt_moveTo.setEnabled(true);
-			moveHolder.tv_move.setEnabled(true);
 			// adapter.notifyDataSetChanged();
 		};
 	};
 
 	private Handler handler2 = new Handler() {
 		public void handleMessage(Message msg) {
-			try {
-				String packagename = (String) msg.obj;
-				forceStopPackage(packagename);
-				uninstallAPK(packagename);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			switch (msg.what) {
+			case DELETE:
+				try {
+					String packagename = (String) msg.obj;
+					forceStopPackage(packagename);
+					uninstallAPK(packagename);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			case DATACHANGED:
+				adapter.notifyDataSetChanged();
+				break;
+			default:
+				break;
 			}
 		};
 	};
@@ -109,7 +126,6 @@ public class AppManagerActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		// inflater = getLayoutInflater();
 		setContentView(R.layout.app_manager);
-
 		gv_appList = (GridView) this.findViewById(R.id.appList);
 		gv_appList.setOnFocusChangeListener(focusChangeListener);
 		clearDef=(Button) this.findViewById(R.id.clearDef);
@@ -122,8 +138,10 @@ public class AppManagerActivity extends Activity implements
 		gv_appList.setAdapter(adapter);
 		gv_appList.setOnItemClickListener(this);
 		gv_appList.setOnItemSelectedListener(this);
-		adapter.setSelect(0,true);
+		gv_appList.setSelection(0);
+		//adapter.setSelect(0,true);
 		// getCacheSize("com.jingdong.app.tv");
+		
 	}
 	private OnFocusChangeListener focusChangeListener=new OnFocusChangeListener() {
 		
@@ -136,15 +154,14 @@ public class AppManagerActivity extends Activity implements
 				}
 			}else if(v==gv_appList){
 				if(hasFocus){
-					//adapter.setSelect(holder.position, false);
 					View selV=gv_appList.getSelectedView();
-					if(selV!=null){
-						ViewHolder holder=(ViewHolder) selV.getTag();
-						holder.rl_bg
+					if (selV != null) {
+					ViewHolder vh=(ViewHolder) selV.getTag();
+					//adapter.setSelect(holder.position, false);
+						vh.rl_bg
 						.setBackgroundResource(R.drawable.app_manager_selector);
+						holder=vh;
 					}
-					
-					
 				}
 			}
 		}
@@ -156,6 +173,7 @@ public class AppManagerActivity extends Activity implements
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Constant.ACTION_INSTALED);
 		registerReceiver(uninstall, filter);
+		
 	}
 
 	public void back(View v) {
@@ -202,73 +220,75 @@ public class AppManagerActivity extends Activity implements
 			// TODO Auto-generated method stub
 
 			String packagename = installApp.get(arg0);
+			ViewHolder vh;
 			if (contentView == null) {
-				holder = new ViewHolder();
+				 vh = new ViewHolder();
 				contentView = View.inflate(AppManagerActivity.this,
 						R.layout.app_manager_item, null);
-				holder.iv_icon = (ImageView) contentView
+				vh.iv_icon = (ImageView) contentView
 						.findViewById(R.id.app_manager_icon);
-				holder.tv_label = (TextView) contentView
+				vh.tv_label = (TextView) contentView
 						.findViewById(R.id.app_manager_label);
-				holder.ll_handle_item = (LinearLayout) contentView
+				vh.ll_handle_item = (LinearLayout) contentView
 						.findViewById(R.id.handle_item);
-				holder.bt_delete = (ImageButton) contentView
+				vh.bt_delete = (ImageButton) contentView
 						.findViewById(R.id.delete);
-				holder.bt_moveTo = (ImageButton) contentView
+				vh.bt_moveTo = (ImageButton) contentView
 						.findViewById(R.id.moveTo);
-				holder.ll_appManager_up = (LinearLayout) contentView
+				vh.ll_appManager_up = (LinearLayout) contentView
 						.findViewById(R.id.app_manager_up);
-				holder.rl_bg = (LinearLayout) contentView
+				vh.rl_bg = (LinearLayout) contentView
 						.findViewById(R.id.appSelectedBg);
-				holder.tv_move = (TextView) contentView
+				vh.tv_move = (TextView) contentView
 						.findViewById(R.id.tv_move);
-				holder.tv_delete = (TextView) contentView
+				vh.tv_delete = (TextView) contentView
 						.findViewById(R.id.tv_delete);
 
-				holder.position = arg0;
+				vh.position = arg0;
 
-				contentView.setTag(holder);
+				contentView.setTag(vh);
 			} else {
-				holder = (ViewHolder) contentView.getTag();
+				vh = (ViewHolder) contentView.getTag();
 			}
 			Logger.i("kao", "------  isSelected  ---" + isSelected
 					+ "----  arg0  --- " + arg0);
-			if (isSelected == arg0) {
-				if(isNeedDataChanage){
-					holder.ll_handle_item.setVisibility(View.VISIBLE);
+			//if (0 == arg0) {
+				/*if(isNeedDataChanage){
+					vh.ll_handle_item.setVisibility(View.VISIBLE);
 				}else{
-					holder.ll_handle_item.setVisibility(View.INVISIBLE);
-				}
-				holder.rl_bg
+					vh.ll_handle_item.setVisibility(View.INVISIBLE);
+				}*/
+				vh.ll_handle_item.setVisibility(View.VISIBLE);
+				vh.rl_bg
 						.setBackgroundResource(R.drawable.app_manager_selector);
-			} else {
-				holder.ll_handle_item.setVisibility(View.INVISIBLE);
-				holder.rl_bg.setBackgroundResource(0);
-			}
+			//} else {
+				vh.ll_handle_item.setVisibility(View.INVISIBLE);
+				vh.rl_bg.setBackgroundResource(0);
+			//}
 			if (isSDcardApp(packagename)) {
 				// holder.bt_moveTo.setEnabled(false);
-				holder.tv_move.setText(getString(R.string.moveTo));
+				vh.tv_move.setText(getString(R.string.moveTo));
 			} else {
 				// holder.bt_moveTo.setEnabled(true);
-				holder.tv_move.setText(getString(R.string.moveToSD));
+				vh.tv_move.setText(getString(R.string.moveToSD));
 
 			}
 			// holder.bt_delete.setOnClickListener(clickListener);
 			// holder.bt_moveTo.setOnClickListener(clickListener);
-			holder.iv_icon.setBackgroundDrawable(LKHomeUtil
+			vh.iv_icon.setBackgroundDrawable(LKHomeUtil
 					.getIcon(packagename));
-			holder.tv_label.setText(LKHomeUtil.getLabel(packagename));
-			holder.bt_delete.setOnClickListener(new MyOnClick(packagename));
-			holder.bt_moveTo.setOnClickListener(new MyOnClick(packagename));
-			holder.bt_delete.setOnKeyListener(btKeyListener);
-			holder.bt_moveTo.setOnKeyListener(btKeyListener);
-			holder.bt_moveTo.setEnabled(true);
-			holder.tv_delete.setOnClickListener(new MyOnClick(packagename));
-			holder.tv_move.setOnClickListener(new MyOnClick(packagename));
-			holder.bt_delete.setTag(holder);
-			holder.bt_moveTo.setTag(holder);
-			holder.tv_move.setTag(holder);
-			holder.tv_move.setEnabled(true);
+			vh.tv_label.setText(LKHomeUtil.getLabel(packagename));
+			vh.bt_delete.setOnClickListener(new MyOnClick(packagename));
+			vh.bt_moveTo.setOnClickListener(new MyOnClick(packagename));
+			vh.bt_delete.setOnKeyListener(btKeyListener);
+			vh.bt_moveTo.setOnKeyListener(btKeyListener);
+			vh.bt_moveTo.setEnabled(true);
+			vh.tv_delete.setOnClickListener(new MyOnClick(packagename));
+			vh.tv_move.setOnClickListener(new MyOnClick(packagename));
+			vh.bt_delete.setTag(vh);
+			vh.bt_moveTo.setTag(vh);
+			vh.tv_move.setTag(vh);
+			vh.tv_move.setEnabled(true);
 			contentView.setOnHoverListener(hoverListener);
 			return contentView;
 		}
@@ -301,14 +321,17 @@ public class AppManagerActivity extends Activity implements
 			if (v.getId() == R.id.delete || v.getId() == R.id.tv_delete) {
 				Message msg = Message.obtain();
 				msg.obj = packagename;
+				msg.what=DELETE;
 				handler2.sendMessage(msg);
 
 			} else if (v.getId() == R.id.moveTo || v.getId() == R.id.tv_move) {
-				moveHolder = (ViewHolder) v.getTag();
+				ViewHolder moveHolder = (ViewHolder) v.getTag();
 				moveApptoSdcard(packagename);
 				moveHolder.bt_moveTo.setEnabled(false);
 				moveHolder.tv_move.setEnabled(false);
 				moveHolder.tv_move.setText(getString(R.string.moving));
+				holderMap.put(packagename, moveHolder);
+				Logger.d("ww", " moving true: "+packagename);
 			}
 		}
 
@@ -322,7 +345,7 @@ public class AppManagerActivity extends Activity implements
 
 			try {
 				ViewHolder holder_ = (ViewHolder) v.getTag();
-				String packagename = installApp.get(holder_.position);
+				//String packagename = installApp.get(holder_.position);
 				/*
 				 * if(holder_ !=null ){
 				 * holder_.ll_handle_item.setVisibility(View.INVISIBLE); }
@@ -336,17 +359,23 @@ public class AppManagerActivity extends Activity implements
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_HOVER_ENTER:
 					// if(v.isHovered()){
-					if (packagename != null
-							&& !getAppManagerPackage().equals(packagename)) {
+					//if (packagename != null
+					//		&& !getAppManagerPackage().equals(packagename)) {
 						// disMissAppManagerPopu(packagename);
-						holder.ll_appManager_up.setBackgroundResource(0);
+					if(holder!=null){
+						if(holder.ll_handle_item.getVisibility()!=View.VISIBLE){
+							holder.rl_bg.setBackgroundResource(0);
+						}
 					}
-					holder_.ll_appManager_up
+					//}
+					holder_.rl_bg
 							.setBackgroundResource(R.drawable.app_manager_selector);
 					// }
 					break;
 				case MotionEvent.ACTION_HOVER_EXIT:
-					holder_.ll_appManager_up.setBackgroundResource(0);
+					if(holder_.ll_handle_item.getVisibility()!=View.VISIBLE){
+						holder_.rl_bg.setBackgroundResource(0);
+					}
 
 					// holder_.ll_handle_item.setVisibility(View.INVISIBLE);
 					break;
@@ -376,10 +405,16 @@ public class AppManagerActivity extends Activity implements
 		 * if(holder !=null){ holder.ll_appManager_up.setBackgroundResource(0);
 		 * }
 		 */
-		Logger.i("tag", "---- app manager selection  "+position);
-		holder = (ViewHolder) view.getTag();
+		if(holder !=null){
+			holder.rl_bg.setBackgroundResource(0);
+		}
+		ViewHolder vh = (ViewHolder) view.getTag();
+		vh.rl_bg.setBackgroundResource(R.drawable.app_manager_selector);
+		holder=vh;
+		Logger.d("ww", " holder.getposition = "+holder.position);
+		Logger.d("ww", " vh.getposition = "+vh.position);
 		// seleHolder=(ViewHolder) view.getTag();
-		adapter.setSelect(position,false);
+		//adapter.setSelect(position,false);
 		// holder.ll_appManager_up.setBackgroundResource(R.drawable.app_manager_selector);
 
 	}
@@ -402,9 +437,16 @@ public class AppManagerActivity extends Activity implements
 		 * showAppManagerPopu(arg1, installApp.get(position));
 		 * initAppManagerPopu(arg1);
 		 */
-		adapter.setSelect(position,true);
-		Logger.i("kao", "---------   AppManager  onItemClick  ----  "
-				+ position);
+		//adapter.setSelect(position,true);
+		if(holder !=null){
+			if(holder.ll_handle_item.getVisibility()==View.VISIBLE){
+				holder.ll_handle_item.setVisibility(View.INVISIBLE);
+				holder.rl_bg.setBackgroundResource(0);
+			}
+		}
+		ViewHolder vh=(ViewHolder) arg1.getTag();
+		vh.ll_handle_item.setVisibility(View.VISIBLE);
+		holder=vh;
 	}
 
 	/**
@@ -426,19 +468,23 @@ public class AppManagerActivity extends Activity implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			String str = intent.getStringExtra("installFlag");
+			/*String str = intent.getStringExtra("installFlag");
 			if (str != null && "uninstall".equals(str)) {
 				installApp = getUserInstallApp();
 				adapter.notifyDataSetChanged();
-				/*
+				
 				 * if (appManagerPopu != null) { appManagerPopu.dismiss(); }
-				 */
-			}
-
-			Logger.e(
-					"tag",
-					"$$$-----uninstall-----"
-							+ intent.getStringExtra("installFlag"));
+				 
+			}*/
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					installApp = getUserInstallApp();
+					handler2.sendEmptyMessage(DATACHANGED);
+				}
+			}).start();
 		}
 	};
 
@@ -528,7 +574,7 @@ public class AppManagerActivity extends Activity implements
 		return appManagerPackage;
 	}
 
-	public void moveApptoSdcard(String packagename) {
+	public void moveApptoSdcard(final String packagename) {
 
 		try {
 			PackageManager mPm = getPackageManager();
@@ -545,8 +591,11 @@ public class AppManagerActivity extends Activity implements
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			isMoveSucceed=false;
+			Message msg = Message.obtain();
+			msg.obj = packagename;
+			handler.sendMessage(msg);
 		}
-
 	}
 
 	public boolean isSDcardApp(String packageName) {
@@ -575,10 +624,12 @@ public class AppManagerActivity extends Activity implements
 			} else {
 				isMoveSucceed = false;
 			}
+			Logger.d("ww", " moved: "+packageName);
 			Message msg = Message.obtain();
 			msg.obj = packageName;
 			handler.sendMessage(msg);
-
+			Logger.d("ww", " moved2: "+packageName);
+			
 		}
 	};
 
@@ -639,26 +690,37 @@ public class AppManagerActivity extends Activity implements
 			}
 
 			if (v instanceof GridView) {
-				View tempView = ((GridView) v).getSelectedView();
+				/*View tempView = ((GridView) v).getSelectedView();
 				if (tempView != null) {
 					holder = (ViewHolder) ((GridView) v).getSelectedView()
 							.getTag();
-				}
-				if (holder.ll_handle_item.getVisibility() == View.VISIBLE) {
-					holder.bt_moveTo.requestFocus();
-					clearDef.setFocusable(false);
-					return true;
+				}*/
+				if(holder !=null){
+					if (holder.ll_handle_item.getVisibility() == View.VISIBLE) {
+						holder.bt_moveTo.requestFocus();
+						clearDef.setFocusable(false);
+						return true;
 
-				} else {
-					clearDef.setFocusable(true);
-					holder.rl_bg
-					.setBackgroundResource(R.drawable.app_manager_selector);
-					return false;
+					} else {
+						clearDef.setFocusable(true);
+						holder.rl_bg
+						.setBackgroundResource(0);
+						View tempView = ((GridView) v).getSelectedView();
+						if (tempView != null) {
+							holder = (ViewHolder) ((GridView) v).getSelectedView()
+									.getTag();
+							if(holder !=null){
+								holder.rl_bg
+								.setBackgroundResource(R.drawable.app_manager_selector);
+							}
+						}
+						return false;
+					}
 				}
+				return false;
 			} else {
 				return false;
 			}
-
 		}
 	};
 

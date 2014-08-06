@@ -110,7 +110,6 @@
                  android:textSize="16sp"
                  android:textColor="#fff"
                  android:background="@drawable/bg_edittext_commen"
-                 android:maxLength="80"
                  android:gravity="top"
                  android:hint="@string/common_hint_level_3"
                  
