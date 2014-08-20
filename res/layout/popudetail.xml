@@ -13,8 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/evaluate" />
+        android:layout_marginTop="10dp"
+        android:text="@string/evaluate" 
+        android:textSize="22sp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,29 +26,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical" >
 
             <ImageView
                 android:id="@+id/popuIcon"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_margin="20dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="60dp"
                 android:src="@drawable/ic_launcher" />
 
             <TextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp" />
+                android:layout_marginLeft="20dp" 
+                android:textSize="22sp"
+                />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical" >
 
             <LinearLayout
@@ -61,7 +67,9 @@
                     android:layout_margin="20dp"
                     android:layout_marginLeft="110dp"
                     android:drawableTop="@drawable/parise_big"
-                    android:text="@string/parise" />
+                    android:text="@string/parise" 
+                    android:focusableInTouchMode="true"
+                    />
 
                 <Button
                     android:id="@+id/hate"
@@ -70,7 +78,9 @@
                     android:layout_margin="20dp"
                     android:layout_marginLeft="80dp"
                     android:drawableTop="@drawable/reject_big"
-                    android:text="@string/reject" />
+                    android:text="@string/reject" 
+                    android:focusableInTouchMode="true"
+                    />
 
             </LinearLayout>
 
@@ -122,9 +132,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:gravity="left"
-                android:text="@string/ticket_used" />
+                android:text="@string/ticket_used" 
+                android:textSize="20sp"
+                />
     
     
 </LinearLayout>

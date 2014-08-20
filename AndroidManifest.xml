@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="lenkeng.com.welcome"
     android:versionCode="9"
-    android:versionName="1.1.8" 
+    android:versionName="1.1.9" 
      android:sharedUserId="android.uid.system"
     >
 

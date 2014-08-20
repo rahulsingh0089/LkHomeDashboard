@@ -22,6 +22,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,6 +79,7 @@ public class MessageActivity extends Activity implements OnClickListener  {
 	private void initViewAndObject() {
 	    bt_msg=(TextView) this.findViewById(R.id.Msg);
 	    bt_msg.setText(getString(R.string.click_check));
+	    bt_msg.setMovementMethod(ScrollingMovementMethod.getInstance());
 	    bt_next=(Button) this.findViewById(R.id.next);
 	    bt_up=(Button) this.findViewById(R.id.up);
 	    bt_del=(Button) this.findViewById(R.id.msg_del);

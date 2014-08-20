@@ -54,7 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="125dp"
             android:focusable="false"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:visibility="gone"
+            >
 
             <Button
                 android:id="@+id/up"

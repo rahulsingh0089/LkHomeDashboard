@@ -72,6 +72,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -163,7 +164,10 @@ public class LKService extends Service implements OnClickListener,
 	public static final int CMD_LOOP_CHECK_UPLOAD_STATE = 1008;
 	public static final int CHECK_UPLOAD_STATE_TIME=1000*60*60*6; //间隔时间为6小时
 	public static final int TEST_CHECK_UPLOAD_STATE_TIME=1000*20; //测试间隔时间为20秒
-
+	public static final int SHOW_TICKET_VIEW = 0;
+	public static final int CHECK_TICKET_STATE = 4;
+	
+	
 	class RemoveRun implements Runnable {
 
 		@Override
@@ -275,7 +279,7 @@ public class LKService extends Service implements OnClickListener,
 				super.handleMessage(msg);
 				switch (msg.what) {
 
-				case 4:
+				case CHECK_TICKET_STATE:
 
 					ComponentName cn = mActivityManager.getRunningTasks(1).get(
 							0).topActivity;
@@ -300,7 +304,7 @@ public class LKService extends Service implements OnClickListener,
 
 					}
 					break;
-				case 0: // 根据packageName查找到AppInfo
+				case SHOW_TICKET_VIEW: // 根据packageName查找到AppInfo
 
 					if (info == null) {
 
@@ -419,6 +423,7 @@ public class LKService extends Service implements OnClickListener,
 
 		LayoutInflater mInflater = LayoutInflater.from(this);
 		detail = mInflater.inflate(R.layout.popudetail, null);
+		
 		tv_mess = (TextView) detail.findViewById(R.id.mess);
 		tv_name = (TextView) detail.findViewById(R.id.name);
 		tv_praise = (TextView) detail.findViewById(R.id.praise);
@@ -426,23 +431,26 @@ public class LKService extends Service implements OnClickListener,
 		iconView = (ImageView) detail.findViewById(R.id.popuIcon);
 
 		btn_like = (Button) detail.findViewById(R.id.like);
-		btn_hate = (Button) detail.findViewById(R.id.hate);
-		// ImageView pupuIcon = (ImageView) detail.findViewById(R.id.popuIcon);
 		btn_like.setOnClickListener(this);
 		btn_like.setOnFocusChangeListener(this);
+		btn_like.setOnKeyListener(keyListener);
+		
+		// ImageView pupuIcon = (ImageView) detail.findViewById(R.id.popuIcon);
+		btn_hate = (Button) detail.findViewById(R.id.hate);
 		btn_hate.setOnClickListener(this);
 		btn_hate.setOnFocusChangeListener(this);
-		//btn_like.setOnKeyListener(keyListener);
-		//btn_hate.setOnKeyListener(keyListener);
+		btn_hate.setOnKeyListener(keyListener);
+		
+		
 		mLayoutParams = new LayoutParams();
 		mLayoutParams.type = LayoutParams.TYPE_SYSTEM_ALERT;
 		mLayoutParams.format = PixelFormat.RGBA_8888;
 		mLayoutParams.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL;
-		mLayoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-		mLayoutParams.x = 350;
-		mLayoutParams.y = 100;
+		mLayoutParams.gravity = Gravity.CENTER;
+		//mLayoutParams.x = 350;
+		//mLayoutParams.y = 100;
 		mLayoutParams.width = 600;
-		mLayoutParams.height = 300;
+		mLayoutParams.height =300;
 
 		initVoteReceiver();
 
@@ -467,10 +475,12 @@ public class LKService extends Service implements OnClickListener,
 		
 		@Override
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
-			// TODO Auto-generated method stub
-			if(keyCode ==KeyEvent.KEYCODE_BACK){
-				
-			}
+			/*if(keyCode ==KeyEvent.KEYCODE_BACK && event.getAction()==KeyEvent.ACTION_UP){  //不拦截back键
+				Logger.e(TAG, "~~~~~~~~~ onkey(), keycode="+keyCode+"event="+event);
+				msgHandler.removeCallbacks(removeRun);
+				msgHandler.post(removeRun);
+				//return true;
+			}*/
 			return false;
 		}
 	};
@@ -497,7 +507,7 @@ public class LKService extends Service implements OnClickListener,
 
 				if (!popuing) {
 					android.os.Message msg = new android.os.Message();
-					msg.what = 4;
+					msg.what = CHECK_TICKET_STATE;
 
 					msgHandler.sendMessage(msg);
 					popuing = true;
@@ -518,6 +528,7 @@ public class LKService extends Service implements OnClickListener,
 	 */
 	class AppSync extends AsyncTask<String, Integer, String> {
 
+		
 		String packagename = "";
 		TextView text = null;
 		Context context = null;
@@ -581,7 +592,7 @@ public class LKService extends Service implements OnClickListener,
 			 * info = app; }
 			 */
 			android.os.Message msg2 = new android.os.Message();
-			msg2.what = 0;
+			msg2.what = SHOW_TICKET_VIEW;
 			msg2.obj = info;
 			msgHandler.sendMessage(msg2);
 

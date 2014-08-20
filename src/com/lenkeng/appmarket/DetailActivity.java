@@ -850,6 +850,11 @@ public class DetailActivity extends Activity implements OnClickListener,
 					 progress=mCurrentMap.get(currentProgressKey);
 				}
 				
+				//将进度值取偶数(数据库记录的是偶数值,优化性能)
+				/*if(progress%2 != 0){
+					progress-=1;
+				}*/
+				
 				String s = String.format(getString(R.string.text_degree),progress);
 				tv_progress.setText(s);
 				mInterStub.downLoad(apkBean);

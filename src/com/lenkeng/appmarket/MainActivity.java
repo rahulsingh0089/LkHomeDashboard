@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -74,7 +76,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	
 	private MarketPageAdapter pageAdapter;
 	private Logic logic;
-	private Boolean flag;
+	private Boolean searchTitleFlag;
 
 	// widget
 	private RadioGroup ui_radio_group;
@@ -273,7 +275,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				entity_search = (DataEntity) (msg.obj);
 				if (entity_search != null && entity_search.getData().size() > 0) {
 					adapter_search.setDataEntity(entity_search, grid_search);
-					tv_search_title.setText(flag ? R.string.text_search_result
+					tv_search_title.setText(searchTitleFlag ? R.string.text_search_result
 							: R.string.text_recommend);
 					grid_search.setVisibility(View.VISIBLE);
 					grid_search.setNextFocusDownId(R.id.radio4);
@@ -473,7 +475,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			isFirstRun = false;
 			progress_search.setVisibility(View.GONE);
 			logic.getRecommApps(handler_search);
-			flag = false;
+			searchTitleFlag = false;
 		}else{
 			progress_search.setVisibility(View.GONE);
 			ll_controller.setVisibility(View.GONE);
@@ -614,22 +616,31 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		
 		et_search_input = (EditText) view_search.findViewById(R.id.search_input);
 		et_search_input.setOnKeyListener(keyListener);
-	/*	et_search_input.setOnEditorActionListener(new OnEditorActionListener() {
+		et_search_input.addTextChangedListener(new TextWatcher() {
 			
 			@Override
-			public boolean onEditorAction(TextView arg0, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-					Log.e(TAG, "~~~~~~~~~~~~~~~actionId="+actionId+",event="+event);
-	                return true;
-
-	            }
-
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				
-				
-				return false;
 			}
-		});*/
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				if(s.length()==0){
+					searchTitleFlag=false;
+					logic.getRecommApps(handler_search);
+					
+				}
+				
+				
+			}
+		});
+		
 		
 		
 		tv_search_title = (TextView) view_search.findViewById(R.id.msg_search_title);
@@ -1019,7 +1030,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			HashMap<String, String> param = new HashMap<String, String>();
 			param.put("key", key);
 			logic.getSearchApps(handler_search, param);
-			flag = true;
+			searchTitleFlag = true;
 			break;
 		default:
 			break;

@@ -56,8 +56,7 @@
             android:autoLink="web"
             android:layout_marginLeft="25dp"
             android:layout_marginBottom="20dp"
-            android:lines="10"
-            android:ellipsize="end"
+            android:scrollbars="vertical"
              />
     </RelativeLayout>
 

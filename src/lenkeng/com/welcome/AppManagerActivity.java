@@ -24,9 +24,12 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.text.style.LineHeightSpan.WithDensity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnHoverListener;
 import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -51,13 +55,14 @@ public class AppManagerActivity extends Activity implements
 		OnItemClickListener, OnItemSelectedListener {
 	 private static final int DELETE=1;
 	 private static final int DATACHANGED=2;
+	 private static final int MOVE_APP_NUM=1;
 	private GridView gv_appList;
 	private Button clearDef;
 	private List<String> installApp;
 	private MyAdapter adapter;
 	// private ImageView iv_scoll_fade;
 	private ViewHolder holder;
-	
+	private boolean IS_ITEM_CLICK=true;
 	private int isSelected = -1;
 	// private ViewHolder tempHolder;
 	// private ImageButton ib_del;
@@ -66,16 +71,20 @@ public class AppManagerActivity extends Activity implements
 	private String appManagerPackage = "";
 	// private LayoutInflater inflater;
 	private boolean isMoveSucceed = true;
-	private Map<String,ViewHolder> holderMap=new HashMap<String, ViewHolder>();
+	private   Map<String,ViewHolder> HOLDER_MAP=new HashMap<String, ViewHolder>();
+	
 	private Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
 			
 			// ib_move.setEnabled(false);
 			// ib_move.setBackgroundResource(R.drawable.move_to_def);
 			String packageName = (String) msg.obj;
-			ViewHolder moveHolder=holderMap.get(packageName);
+			ViewHolder moveHolder=HOLDER_MAP.get(packageName);
+			Logger.d("ww", "   moving  size =  "+LKHomeUtil.MOVE_MAP.size());
+			boolean isMoving=LKHomeUtil.MOVE_MAP.get(packageName);
+			LKHomeUtil.MOVE_MAP.remove(packageName);
 			String name=LKHomeUtil.getLabel(packageName);
-			if (isMoveSucceed) {
+			if (isMoving) {
 				LKHomeUtil.showToast(getApplicationContext(),
 						name+" "+getString(R.string.moveSuccessfully));
 			} else {
@@ -245,56 +254,55 @@ public class AppManagerActivity extends Activity implements
 						.findViewById(R.id.tv_delete);
 
 				vh.position = arg0;
-
+				Logger.i("kao", "------  isSelected  ---" + isSelected
+						+ "----  arg0  --- " + arg0);
+				//if (0 == arg0) {
+					/*if(isNeedDataChanage){
+						vh.ll_handle_item.setVisibility(View.VISIBLE);
+					}else{
+						vh.ll_handle_item.setVisibility(View.INVISIBLE);
+					}*/
+					//vh.ll_handle_item.setVisibility(View.VISIBLE);
+					//vh.rl_bg
+					//		.setBackgroundResource(R.drawable.app_manager_selector);
+				//} else {
+					vh.ll_handle_item.setVisibility(View.INVISIBLE);
+					vh.rl_bg.setBackgroundResource(0);
+				//}
+				if (isSDcardApp(packagename)) {
+					// holder.bt_moveTo.setEnabled(false);
+					vh.tv_move.setText(getString(R.string.moveTo));
+				}else{
+					vh.tv_move.setText(getString(R.string.moveToSD));
+				}
+				// holder.bt_delete.setOnClickListener(clickListener);
+				// holder.bt_moveTo.setOnClickListener(clickListener);
+				vh.iv_icon.setBackgroundDrawable(LKHomeUtil
+						.getIcon(packagename));
+				vh.tv_label.setText(LKHomeUtil.getLabel(packagename));
+				vh.bt_delete.setOnClickListener(new MyOnClick(packagename));
+				vh.bt_moveTo.setOnClickListener(new MyOnClick(packagename));
+				vh.bt_delete.setOnKeyListener(btKeyListener);
+				vh.bt_moveTo.setOnKeyListener(btKeyListener);
+				vh.bt_moveTo.setEnabled(true);
+				vh.tv_delete.setOnClickListener(new MyOnClick(packagename));
+				vh.tv_move.setOnClickListener(new MyOnClick(packagename));
+				vh.bt_delete.setTag(vh);
+				vh.bt_moveTo.setTag(vh);
+				vh.tv_move.setTag(vh);
+				vh.tv_move.setEnabled(true);
+				contentView.setOnHoverListener(hoverListener);
+				contentView.setOnTouchListener(onTouchListener);
 				contentView.setTag(vh);
 			} else {
 				vh = (ViewHolder) contentView.getTag();
 			}
-			Logger.i("kao", "------  isSelected  ---" + isSelected
-					+ "----  arg0  --- " + arg0);
-			//if (0 == arg0) {
-				/*if(isNeedDataChanage){
-					vh.ll_handle_item.setVisibility(View.VISIBLE);
-				}else{
-					vh.ll_handle_item.setVisibility(View.INVISIBLE);
-				}*/
-				vh.ll_handle_item.setVisibility(View.VISIBLE);
-				vh.rl_bg
-						.setBackgroundResource(R.drawable.app_manager_selector);
-			//} else {
-				vh.ll_handle_item.setVisibility(View.INVISIBLE);
-				vh.rl_bg.setBackgroundResource(0);
-			//}
-			if (isSDcardApp(packagename)) {
-				// holder.bt_moveTo.setEnabled(false);
-				vh.tv_move.setText(getString(R.string.moveTo));
-			} else {
-				// holder.bt_moveTo.setEnabled(true);
-				vh.tv_move.setText(getString(R.string.moveToSD));
-
-			}
-			// holder.bt_delete.setOnClickListener(clickListener);
-			// holder.bt_moveTo.setOnClickListener(clickListener);
-			vh.iv_icon.setBackgroundDrawable(LKHomeUtil
-					.getIcon(packagename));
-			vh.tv_label.setText(LKHomeUtil.getLabel(packagename));
-			vh.bt_delete.setOnClickListener(new MyOnClick(packagename));
-			vh.bt_moveTo.setOnClickListener(new MyOnClick(packagename));
-			vh.bt_delete.setOnKeyListener(btKeyListener);
-			vh.bt_moveTo.setOnKeyListener(btKeyListener);
-			vh.bt_moveTo.setEnabled(true);
-			vh.tv_delete.setOnClickListener(new MyOnClick(packagename));
-			vh.tv_move.setOnClickListener(new MyOnClick(packagename));
-			vh.bt_delete.setTag(vh);
-			vh.bt_moveTo.setTag(vh);
-			vh.tv_move.setTag(vh);
-			vh.tv_move.setEnabled(true);
-			contentView.setOnHoverListener(hoverListener);
+			
 			return contentView;
 		}
 	}
 
-	static class ViewHolder {
+	public static class ViewHolder {
 
 		ImageView iv_icon;
 		TextView tv_label;
@@ -324,19 +332,66 @@ public class AppManagerActivity extends Activity implements
 				msg.what=DELETE;
 				handler2.sendMessage(msg);
 
-			} else if (v.getId() == R.id.moveTo || v.getId() == R.id.tv_move) {
+			}else if (v.getId() == R.id.moveTo || v.getId() == R.id.tv_move) {
+				if(LKHomeUtil.MOVE_MAP.size()>=MOVE_APP_NUM){
+					Toast.makeText(AppManagerActivity.this, getString(R.string.appMoving), 0).show();
+					return;
+				}
 				ViewHolder moveHolder = (ViewHolder) v.getTag();
 				moveApptoSdcard(packagename);
 				moveHolder.bt_moveTo.setEnabled(false);
 				moveHolder.tv_move.setEnabled(false);
 				moveHolder.tv_move.setText(getString(R.string.moving));
-				holderMap.put(packagename, moveHolder);
+				HOLDER_MAP.put(packagename, moveHolder);
+				LKHomeUtil.MOVE_MAP.put(packagename, false);
 				Logger.d("ww", " moving true: "+packagename);
+			}else if(v.getId()==R.id.appSelectedBg){
+				
 			}
 		}
-
 	}
-
+	OnTouchListener onTouchListener=new OnTouchListener() {
+		
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			// TODO Auto-generated method stub
+			float y=event.getY();
+			switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				Log.d("ww", "  down ");
+				if(y>=80){
+					return false;
+				}
+				IS_ITEM_CLICK=false;
+				ViewHolder holder_=(ViewHolder) v.getTag();
+				if(holder !=null && holder !=holder_){
+					if(holder.ll_handle_item.getVisibility()==View.VISIBLE){
+						holder.ll_handle_item.setVisibility(View.INVISIBLE);
+						holder.rl_bg.setBackgroundResource(0);
+					}
+				}
+				Log.d("ww", "  touch  IS_ITEM_CLICK = "+IS_ITEM_CLICK);
+				//if(holder_==holder){
+					if(holder_.ll_handle_item.getVisibility()==View.VISIBLE){
+						holder_.ll_handle_item.setVisibility(View.INVISIBLE);
+					}else{
+						holder_.ll_handle_item.setVisibility(View.VISIBLE);
+					}
+				//}
+				//holder_.ll_handle_item.setVisibility(View.VISIBLE);
+				
+				holder=holder_;
+				break;
+			case MotionEvent.ACTION_UP:
+				Log.d("ww", "  up ");
+				break;
+				
+			default:
+				break;
+			}
+			return false;
+		}
+	};
 	OnHoverListener hoverListener = new OnHoverListener() {
 
 		@Override
@@ -362,21 +417,27 @@ public class AppManagerActivity extends Activity implements
 					//if (packagename != null
 					//		&& !getAppManagerPackage().equals(packagename)) {
 						// disMissAppManagerPopu(packagename);
+					
+					//}
 					if(holder!=null){
 						if(holder.ll_handle_item.getVisibility()!=View.VISIBLE){
 							holder.rl_bg.setBackgroundResource(0);
+						}else{
+							if(holder !=holder_){
+								holder.ll_handle_item.setVisibility(View.INVISIBLE);
+							}
 						}
 					}
-					//}
+					
 					holder_.rl_bg
 							.setBackgroundResource(R.drawable.app_manager_selector);
 					// }
+					
 					break;
 				case MotionEvent.ACTION_HOVER_EXIT:
 					if(holder_.ll_handle_item.getVisibility()!=View.VISIBLE){
 						holder_.rl_bg.setBackgroundResource(0);
 					}
-
 					// holder_.ll_handle_item.setVisibility(View.INVISIBLE);
 					break;
 				default:
@@ -438,15 +499,18 @@ public class AppManagerActivity extends Activity implements
 		 * initAppManagerPopu(arg1);
 		 */
 		//adapter.setSelect(position,true);
-		if(holder !=null){
-			if(holder.ll_handle_item.getVisibility()==View.VISIBLE){
-				holder.ll_handle_item.setVisibility(View.INVISIBLE);
-				holder.rl_bg.setBackgroundResource(0);
+		if(IS_ITEM_CLICK){
+			ViewHolder vh=(ViewHolder) arg1.getTag();
+			if(holder !=null){
+				if(holder.ll_handle_item.getVisibility()==View.VISIBLE){
+					holder.ll_handle_item.setVisibility(View.INVISIBLE);
+					holder.rl_bg.setBackgroundResource(0);
+				}
 			}
+			vh.ll_handle_item.setVisibility(View.VISIBLE);
+			Log.d("ww", "  itemclick  IS_ITEM_CLICK = "+IS_ITEM_CLICK);
+			holder=vh;
 		}
-		ViewHolder vh=(ViewHolder) arg1.getTag();
-		vh.ll_handle_item.setVisibility(View.VISIBLE);
-		holder=vh;
 	}
 
 	/**
@@ -592,6 +656,7 @@ public class AppManagerActivity extends Activity implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			isMoveSucceed=false;
+			LKHomeUtil.MOVE_MAP.put(packagename, false);
 			Message msg = Message.obtain();
 			msg.obj = packagename;
 			handler.sendMessage(msg);
@@ -621,15 +686,14 @@ public class AppManagerActivity extends Activity implements
 			// TODO Auto-generated method stub
 			if (returnCode == PackageManager.MOVE_SUCCEEDED) {
 				isMoveSucceed = true;
+				LKHomeUtil.MOVE_MAP.put(packageName, true);
 			} else {
+				LKHomeUtil.MOVE_MAP.put(packageName, false);
 				isMoveSucceed = false;
 			}
-			Logger.d("ww", " moved: "+packageName);
 			Message msg = Message.obtain();
 			msg.obj = packageName;
 			handler.sendMessage(msg);
-			Logger.d("ww", " moved2: "+packageName);
-			
 		}
 	};
 
@@ -685,6 +749,7 @@ public class AppManagerActivity extends Activity implements
 		public boolean onKey(View v, int keyCode, KeyEvent event) {
 			Logger.i("tag", "-grid---DELETE_COUNTER---" + DELETE_COUNTER
 					+ "------MOVE_COUNTER-----" + MOVE_COUNTER);
+			IS_ITEM_CLICK=true;
 			if (keyCode == KeyEvent.KEYCODE_BACK) {
 				AppManagerActivity.this.finish();
 			}

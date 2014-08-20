@@ -587,6 +587,10 @@ public class ApiClient {
 								
 								//=====end====
 								
+								if(bean.getProgress()!=100){ //解决暂停后百分比会后退1的bug
+									bean.setProgress(bean.getProgress()-1);
+								}
+								
 								mListener.setProgress(bean);
 								tempProgres=(int) bean.getProgress();
 								}

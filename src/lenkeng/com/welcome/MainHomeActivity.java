@@ -187,7 +187,28 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	private Context mContext;
 	private AppDataDao tDao;
 	private AppStoreDao storeDao;
+	int[] wifi_icons = new int[] { R.drawable.signal_4,
+			R.drawable.signal_3, R.drawable.signal_2, R.drawable.signal_1 };
 	
+	public static final int CHECK_WIFI_LEVEL=0x81;
+
+
+	private static final long CHECK_WIFI_LEVEL_INTERVEL = 1500; //检测wifi信号强度的间隔
+	private Handler checkWifiLevelHandler=new Handler(){
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case CHECK_WIFI_LEVEL:
+				startCheckWifiLevel();
+				break;
+
+			default:
+				break;
+			}
+			
+		}
+
+		
+	};
 	
 	
 	
@@ -485,7 +506,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			}
 		}, 17000);
 	}
-	SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
+	SimpleDateFormat sdfd = new SimpleDateFormat("yyyy-MM-dd");
 	
 	SimpleDateFormat sdft = new SimpleDateFormat(" HH:mm");
 	private BroadcastReceiver videoMsg = new BroadcastReceiver() {
@@ -615,6 +636,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		stopCheckWifiLevel();
 		// checkAPK();
 		cycleFlag = false;
 	}
@@ -653,16 +675,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 
 		super.onResume();
 		// startDemolauncher();
-		if (LKHomeUtil.isNetConnected()) {
-			if (LKHomeUtil.getConnectedStyle() == 1) {
-				iv_wifiFlag.setBackgroundResource(R.drawable.signal_1);
-			} else {
-				iv_wifiFlag.setBackgroundResource(R.drawable.connected);
-			}
-			// iv_wifiFlag.setBackgroundResource(R.drawable.wifi_conn);
-		} else {
-			iv_wifiFlag.setBackgroundResource(R.drawable.signal_5);
-		}
+		startCheckWifiLevel();
 
 		// handler.sendEmptyMessage(Constant.HANDLER_DOWNLOAD_RECOMMEND_APP);
 		handler.sendEmptyMessage(Constant.HANDLER_DOWNLOAD_WEATHER);
@@ -1702,8 +1715,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 
 	int i = 0;
 	private BroadcastReceiver wifiListener = new BroadcastReceiver() {
-		int[] wifi_icons = new int[] { R.drawable.signal_4,
-				R.drawable.signal_3, R.drawable.signal_2, R.drawable.signal_1 };
+		
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -1713,11 +1725,13 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 					|| WifiManager.RSSI_CHANGED_ACTION.equals(action)) {
 				i++;
 				// if (i == 1) {
-				if (LKHomeUtil.isNetConnected()) {
+			/*	if (LKHomeUtil.isNetConnected()) {
 					
 					// handler.sendEmptyMessage(Constant.HANDLER_DOWNLOAD_WEATHER);
 					if (LKHomeUtil.getConnectedStyle() == 1) {
 						int level=LKHomeUtil.getWifiLevel();
+						Logger.e(TAG, "~~~~~~~~~~~~~~~~~~~ need update wifi level ,level="+level);
+						
 						iv_wifiFlag.setBackgroundResource(wifi_icons[level]);
 					} else {
 						iv_wifiFlag.setBackgroundResource(R.drawable.connected);
@@ -1728,8 +1742,9 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 					// if(LKHomeUtil.conn !=null){
 					// LKHomeUtil.conn.disconnect();
 					// }
-				}
+				}*/
 				// }
+				//startCheckWifiLevel();
 				if (i == 2) {
 					i = 0;
 				}
@@ -2513,4 +2528,29 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			Log.i("ez2", msg);
 		}
 	}
+	
+	private void startCheckWifiLevel() {
+		checkWifiLevelHandler.removeMessages(CHECK_WIFI_LEVEL);
+		
+		if (LKHomeUtil.isNetConnected()) {
+			if (LKHomeUtil.getConnectedStyle() == 1) {
+				int level=LKHomeUtil.getWifiLevel();
+			  //Logger.e(TAG, "~~~~~~~~~~~~~~~~~~~ need update wifi level ,level="+level);
+			
+			  iv_wifiFlag.setBackgroundResource(wifi_icons[level]);
+			} else {
+				iv_wifiFlag.setBackgroundResource(R.drawable.connected);
+			}
+			// iv_wifiFlag.setBackgroundResource(R.drawable.wifi_conn);
+		} else {
+			iv_wifiFlag.setBackgroundResource(R.drawable.signal_5);
+		}
+		
+		checkWifiLevelHandler.sendEmptyMessageDelayed(CHECK_WIFI_LEVEL, CHECK_WIFI_LEVEL_INTERVEL);
+		
+	};
+	private void stopCheckWifiLevel() {
+		checkWifiLevelHandler.removeMessages(CHECK_WIFI_LEVEL);
+		
+	};
 }

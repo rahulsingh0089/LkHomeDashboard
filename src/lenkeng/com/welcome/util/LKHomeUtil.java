@@ -44,6 +44,7 @@ import java.util.TimerTask;
 import lenkeng.com.welcome.LKHomeApp;
 import lenkeng.com.welcome.MainHomeActivity;
 import lenkeng.com.welcome.R;
+import lenkeng.com.welcome.AppManagerActivity.ViewHolder;
 import lenkeng.com.welcome.bean.AppInfo;
 import lenkeng.com.welcome.bean.ScanInfo;
 import lenkeng.com.welcome.bean.WeatherInfo;
@@ -151,8 +152,7 @@ public class LKHomeUtil {
 	public static final String CURRENT_NET_TYPE = "LKsetting_netButton_id";
 	public static final String DISPLAY_PERCENT_HORIZONTAL = "display_percent_horizontal";// 水平百分比
 	public static final String DISPLAY_PERCENT_VERTICAL = "display_percent_vertical"; // 垂直百分比
-	
-	
+	public static final Map<String,Boolean> MOVE_MAP=new HashMap<String,Boolean>();
 	
 	
 	static {
@@ -835,7 +835,7 @@ public class LKHomeUtil {
 			appInfo.setHDIcon(obj.getString("HDIcon"));
 			appInfo.setMd5(obj.getString("md5"));
 			appInfo.setOperateType(obj.getInt("operateType"));  
-			
+			appInfo.setRealSize(obj.getLong("realSize"));
 			Logger.e(TAG, "~~~~~~~~~~~~~~~~operateType="+appInfo.getOperateType()+",json="+obj.getInt("operateType"));
 			// appInfo.setRecommImage(context.getString(R.string.url_str)+obj.getString("recommImage"));
 			appInfo.setUrl(URLs.getBASE()+ obj.getString("url"));

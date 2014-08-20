@@ -133,8 +133,6 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	}
 
 	private void initView() {
-		infos = getRunningTaskInfos();
-		adapter = new MyAdapter();
 		bt_back = (Button) this.findViewById(R.id.bt_back);
 		bt_speed = (Button) this.findViewById(R.id.bt_speed);
 		bt_speed.setOnFocusChangeListener(focusChangeListener);
@@ -143,7 +141,6 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		bt_back.setOnFocusChangeListener(focusChangeListener);
 		bt_back.setOnHoverListener(hoverListener);
 		lv_task = (ListView) this.findViewById(R.id.lv_task);
-		lv_task.setAdapter(adapter);
 		lv_task.setOnItemClickListener(this);
 		cb_choiceAll = (CheckBox) this.findViewById(R.id.selected_all);
 		rl_mycheck = (RelativeLayout) this.findViewById(R.id.my_check);
@@ -155,13 +152,16 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		tv_no_user_task = (TextView) this.findViewById(R.id.no_user_task);
 		buttom_bt = (LinearLayout) this.findViewById(R.id.buttom_bt);
 		pb.setVisibility(View.GONE);
-		cb_choiceAll.performClick();
+		infos = getRunningTaskInfos();
 		if (infos.size() == 0) {
 			tv_no_user_task.setVisibility(View.VISIBLE);
 			// cb_choiceAll.setVisibility(View.INVISIBLE);
 			rl_mycheck.setVisibility(View.INVISIBLE);
 			buttom_bt.setVisibility(View.INVISIBLE);
 		}
+		adapter = new MyAdapter();
+		lv_task.setAdapter(adapter);
+		cb_choiceAll.performClick();
 	}
 
 	OnFocusChangeListener focusChangeListener = new OnFocusChangeListener() {
@@ -249,7 +249,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 				}
 			} catch (NameNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 				String packname = rap.processName;
 				/*
 				 * if (!"system".equals(packname)&& isSystemTask(ai)) { ti = new

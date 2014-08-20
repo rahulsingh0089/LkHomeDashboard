@@ -33,9 +33,12 @@
         <ProgressBar
             android:id="@+id/progressBar1"
             style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true" />
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true" 
+            android:indeterminateDrawable="@drawable/ic_circle_sync_anim"
+           android:indeterminateDuration="1500" 
+            />
 
         <TextView
             android:id="@+id/textView1"
