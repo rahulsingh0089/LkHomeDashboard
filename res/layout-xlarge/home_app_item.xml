@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_back"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="210dp"
+    android:layout_height="200dp"
     android:layout_gravity="center"
     android:orientation="vertical"
     android:weightSum="10"
@@ -24,7 +24,8 @@
         android:focusable="false"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="35dp"
-        android:scaleType="fitCenter" />
+        android:visibility="gone"
+     />
 
   <ImageView 
         android:id="@+id/btn_upload"

@@ -10,6 +10,7 @@ import lenkeng.com.welcome.util.Constant;
 import lenkeng.com.welcome.util.LKHomeUtil;
 import lenkeng.com.welcome.util.Logger;
 import lenkeng.com.welcome.util.XmppDbUtil;
+import lenkeng.com.welcome.view.LKDialog;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -41,15 +42,16 @@ public class MessageActivity extends Activity implements OnClickListener  {
 	private TextView tv_msg_time;
 	private TextView tv_msg_status;
 	private boolean isImgMsg=false;
+	private LKDialog dialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.message);
 		initViewAndObject();
-		IntentFilter filter=new IntentFilter();
+		/*IntentFilter filter=new IntentFilter();
 		filter.addAction("com.lenkeng.action.newmsg");
-		registerReceiver(receiver, filter);
+		registerReceiver(receiver, filter);*/
 		
 	}
 	@SuppressLint("NewApi")
@@ -267,15 +269,31 @@ public class MessageActivity extends Activity implements OnClickListener  {
 			
 			break;
 		case R.id.msg_clear:
-			if(msg_list!=null){
-				for(int i=0;i<msg_list.size();i++){
-					delete(true, i);
+			 dialog=new LKDialog(this, getString(R.string.ConfirmClear), new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(v.getId()==R.id.yes){
+						if(msg_list!=null){
+							for(int i=0;i<msg_list.size();i++){
+								delete(true, i);
+							}
+						}
+						msg_list.clear();
+						bt_msg.setText(getString(R.string.noMsg));
+						tv_msg_time.setText("");
+						bt_msg.setBackground(null);
+					}
+					dialog.dismiss();
 				}
-			}
-			msg_list.clear();
-			bt_msg.setText(getString(R.string.noMsg));
-			tv_msg_time.setText("");
-			bt_msg.setBackground(null);
+			}, R.style.MyDialog);
+			 if(dialog !=null && dialog.isShowing()){
+				 dialog.dismiss();
+			 }
+			 if(msg_list!=null && msg_list.size()>0){
+				 dialog.show();
+			 }
 			break;
 		default:
 			break;

@@ -22,6 +22,7 @@ import android.content.pm.IPackageMoveObserver;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -71,8 +72,9 @@ public class AppManagerActivity extends Activity implements
 	private String appManagerPackage = "";
 	// private LayoutInflater inflater;
 	private boolean isMoveSucceed = true;
-	private   Map<String,ViewHolder> HOLDER_MAP=new HashMap<String, ViewHolder>();
-	
+	private Map<String,ViewHolder> HOLDER_MAP=new HashMap<String, ViewHolder>();
+	private Map<String,Drawable> ITEM_DRAWABLE=new HashMap<String,Drawable>(); 
+	private Map<String,String> ITEM_NAME=new HashMap<String,String>();
 	private Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
 			
@@ -254,55 +256,58 @@ public class AppManagerActivity extends Activity implements
 						.findViewById(R.id.tv_delete);
 
 				vh.position = arg0;
-				Logger.i("kao", "------  isSelected  ---" + isSelected
-						+ "----  arg0  --- " + arg0);
-				//if (0 == arg0) {
-					/*if(isNeedDataChanage){
-						vh.ll_handle_item.setVisibility(View.VISIBLE);
-					}else{
-						vh.ll_handle_item.setVisibility(View.INVISIBLE);
-					}*/
-					//vh.ll_handle_item.setVisibility(View.VISIBLE);
-					//vh.rl_bg
-					//		.setBackgroundResource(R.drawable.app_manager_selector);
-				//} else {
-					vh.ll_handle_item.setVisibility(View.INVISIBLE);
-					vh.rl_bg.setBackgroundResource(0);
-				//}
-				if (isSDcardApp(packagename)) {
-					// holder.bt_moveTo.setEnabled(false);
-					vh.tv_move.setText(getString(R.string.moveTo));
-				}else{
-					vh.tv_move.setText(getString(R.string.moveToSD));
-				}
-				// holder.bt_delete.setOnClickListener(clickListener);
-				// holder.bt_moveTo.setOnClickListener(clickListener);
-				vh.iv_icon.setBackgroundDrawable(LKHomeUtil
-						.getIcon(packagename));
-				vh.tv_label.setText(LKHomeUtil.getLabel(packagename));
-				vh.bt_delete.setOnClickListener(new MyOnClick(packagename));
-				vh.bt_moveTo.setOnClickListener(new MyOnClick(packagename));
-				vh.bt_delete.setOnKeyListener(btKeyListener);
-				vh.bt_moveTo.setOnKeyListener(btKeyListener);
-				vh.bt_moveTo.setEnabled(true);
-				vh.tv_delete.setOnClickListener(new MyOnClick(packagename));
-				vh.tv_move.setOnClickListener(new MyOnClick(packagename));
-				vh.bt_delete.setTag(vh);
-				vh.bt_moveTo.setTag(vh);
-				vh.tv_move.setTag(vh);
-				vh.tv_move.setEnabled(true);
-				contentView.setOnHoverListener(hoverListener);
-				contentView.setOnTouchListener(onTouchListener);
+
 				contentView.setTag(vh);
 			} else {
 				vh = (ViewHolder) contentView.getTag();
 			}
-			
+				vh.ll_handle_item.setVisibility(View.INVISIBLE);
+				vh.rl_bg.setBackgroundResource(0);
+			if (isSDcardApp(packagename)) {
+				vh.tv_move.setText(getString(R.string.moveTo));
+			} else {
+				vh.tv_move.setText(getString(R.string.moveToSD));
+			}
+			vh.position = arg0;
+			vh.ll_handle_item.setVisibility(View.INVISIBLE);
+			vh.rl_bg.setBackgroundResource(0);
+			if (isSDcardApp(packagename)) {
+				vh.tv_move.setText(getString(R.string.moveTo));
+			}else{
+				vh.tv_move.setText(getString(R.string.moveToSD));
+			}
+			Drawable d=ITEM_DRAWABLE.get(packagename);
+			if(d !=null){
+				vh.iv_icon.setBackground(d);
+			}else{
+				vh.iv_icon.setBackground(LKHomeUtil.getIcon(packagename));
+				ITEM_DRAWABLE.put(packagename, LKHomeUtil.getIcon(packagename));
+			}
+			String name=ITEM_NAME.get(packagename);
+			if(name !=null){
+				vh.tv_label.setText(name);
+			}else{
+				vh.tv_label.setText(LKHomeUtil.getLabel(packagename));
+				ITEM_NAME.put(packagename, LKHomeUtil.getLabel(packagename));
+			}
+			vh.bt_delete.setOnClickListener(new MyOnClick(packagename));
+			vh.bt_moveTo.setOnClickListener(new MyOnClick(packagename));
+			vh.bt_delete.setOnKeyListener(btKeyListener);
+			vh.bt_moveTo.setOnKeyListener(btKeyListener);
+			vh.bt_moveTo.setEnabled(true);
+			vh.tv_delete.setOnClickListener(new MyOnClick(packagename));
+			vh.tv_move.setOnClickListener(new MyOnClick(packagename));
+			vh.bt_delete.setTag(vh);
+			vh.bt_moveTo.setTag(vh);
+			vh.tv_move.setTag(vh);
+			vh.tv_move.setEnabled(true);
+			contentView.setOnHoverListener(hoverListener);
+			contentView.setOnTouchListener(onTouchListener);
 			return contentView;
 		}
 	}
 
-	public static class ViewHolder {
+	static class ViewHolder {
 
 		ImageView iv_icon;
 		TextView tv_label;
@@ -376,10 +381,14 @@ public class AppManagerActivity extends Activity implements
 						holder_.ll_handle_item.setVisibility(View.INVISIBLE);
 					}else{
 						holder_.ll_handle_item.setVisibility(View.VISIBLE);
+						holder_.rl_bg.setBackgroundResource(R.drawable.app_manager_selector);
+						if(v.getY()>250.0 || v.getY()<0){
+							gv_appList.setSelection(holder_.position);
+						}
+						Logger.d("ww", "   v.getY = "+v.getY() +"  y = "+y);
 					}
 				//}
 				//holder_.ll_handle_item.setVisibility(View.VISIBLE);
-				
 				holder=holder_;
 				break;
 			case MotionEvent.ACTION_UP:
@@ -432,7 +441,6 @@ public class AppManagerActivity extends Activity implements
 					holder_.rl_bg
 							.setBackgroundResource(R.drawable.app_manager_selector);
 					// }
-					
 					break;
 				case MotionEvent.ACTION_HOVER_EXIT:
 					if(holder_.ll_handle_item.getVisibility()!=View.VISIBLE){

@@ -1,6 +1,7 @@
 package lenkeng.com.welcome.server;
 
 import java.io.File;
+import java.io.IOException;
 
 
 import java.util.ArrayList;
@@ -1163,6 +1164,17 @@ public class LKService extends Service implements OnClickListener,
 
 	// 进行推送消息的监听，当有推送消息到达时触发该监听器
 	private ChatManagerListener listener = new ChatManagerListener() {
+		XmppMessage picmsg=null;
+		Handler aHandler=new Handler(){
+			public void handleMessage(android.os.Message msg) {
+				if(msg.what==0){
+					if(picmsg!=null){
+						Logger.d("ww", "  aHandler  ");
+						xmpUtil.addNewMsg(picmsg);
+					}
+				}
+			};
+		};
 		@Override
 		public void chatCreated(Chat chat, boolean arg1) {
 			// TODO Auto-generated method stub
@@ -1199,30 +1211,42 @@ public class LKService extends Service implements OnClickListener,
 						if (!f.exists()) {
 							f.mkdir();
 						}
-						Logger.e(
-								TAG,
+						Logger.d(
+								"ww",
 								"------strs[1].contains HTTP--"
 										+ strs[1].contains("http"));
 						if (!strs[1].contains("http")) {
 							return;
 						}
-						XmppMessage xmsg = new XmppMessage();
-						xmsg.setStyle(strs[0]);
-						xmsg.setContent(strs[1]);
-						xmsg.setRead(-1);
-						xmsg.setMsgTime(String.valueOf(System
+						picmsg= new XmppMessage();
+						picmsg.setStyle(strs[0]);
+						picmsg.setContent(strs[1].trim());
+						picmsg.setRead(-1);
+						picmsg.setMsgTime(String.valueOf(System
 								.currentTimeMillis()));
 						// xmsg.setVariable(strs[2]);
-						xmpUtil.addNewMsg(xmsg);
-						String imgName = strs[1].substring(strs[1]
+						//xmpUtil.addNewMsg(xmsg);
+						String content=picmsg.getContent();
+						String imgName = content.substring(content
 								.lastIndexOf("/")+1);
-						String path = "/sdcard/image/" + xmsg.getMsgTime()+imgName;
+						String path = "/sdcard/image/" + picmsg.getMsgTime()+imgName;
 						File f2 = new File(path);
+						//Logger.d("ww", "1   imgName = "+imgName +"\n    f2.exists  "+f2.exists()+"\n   path  "+path);
 						if (f2.exists()) {
 							return;
+						}else{
+							try {
+								f2.createNewFile();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						}
+						//Logger.d("ww", "2   imgName = "+imgName +"\n    f2.exists  "+f2.exists()+"\n   path  "+path);
 						tm.setFile(f2);
-						tm.setUrl(strs[1]);
+						tm.setUrl(content);
+						tm.setHandler(aHandler);
+						tm.setHandlerWhat(0);
 						// tm.setAction(Constant.ACTION_IMG_DOWNLOAD_COMPLETE);
 						tm.startDownload();
 					} else if ("apk".equals(strs[0])) {

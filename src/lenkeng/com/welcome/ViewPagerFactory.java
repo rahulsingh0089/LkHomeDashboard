@@ -523,7 +523,8 @@ public class ViewPagerFactory {
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			// TODO Auto-generated method stub
-			MainHomeActivity.mpf.disMiss();
+			//MainHomeActivity.mpf.disMiss();
+			Logger.d("awk", " moveScrollListener  dismiss  ");
 			SCROLL_STATE = scrollState;
 			view.setSelection(moveFirstVisible);
 		}
@@ -545,6 +546,7 @@ public class ViewPagerFactory {
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			// TODO Auto-generated method stub
+			Logger.d("awk", " gameScrollListener  dismiss  ");
 			MainHomeActivity.mpf.disMiss();
 			SCROLL_STATE = scrollState;
 			view.setSelection(gameFirstVisible);
@@ -565,6 +567,7 @@ public class ViewPagerFactory {
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			// TODO Auto-generated method stub
+			Logger.d("awk", " userScrollListener  dismiss  ");
 			MainHomeActivity.mpf.disMiss();
 			SCROLL_STATE = scrollState;
 			view.setSelection(userFirstVisible);
@@ -586,6 +589,7 @@ public class ViewPagerFactory {
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			// TODO Auto-generated method stub
+			Logger.d("awk", " settingScrollListener  dismiss  ");
 			MainHomeActivity.mpf.disMiss();
 			SCROLL_STATE = scrollState;
 			view.setSelection(settingFirstVisible);
@@ -603,7 +607,9 @@ public class ViewPagerFactory {
 
 	private void appScorll(String style_flag, AbsListView view,
 			int firstVisibleItem, int visibleItemCount, int SCROLL_STATE_IDLE) {
+		Logger.d("awk", "  appScorl  view.isHover "+view.isHovered());
 		MainHomeActivity.mpf.disMiss();
+		
 		int index = tempPageNum - firstVisibleItem;
 		if (SCROLL_STATE == SCROLL_STATE_IDLE) {
 			if (visibleItemCount > 10) {

@@ -66,10 +66,10 @@ public class DigitalClock extends LinearLayout {
         tv_date.setText(sdfd.format(new Date()));
         
        // tv_date.setText(LKHomeUtil.getCurrentDate());
-        IntentFilter filter=new IntentFilter();
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        filter.addAction(Intent.ACTION_DATE_CHANGED);
-        context.registerReceiver(timeChanaged, filter);
+        //IntentFilter filter=new IntentFilter();
+       // filter.addAction(Intent.ACTION_TIME_TICK);
+       // filter.addAction(Intent.ACTION_DATE_CHANGED);
+        //context.registerReceiver(timeChanaged, filter);
     }
 
 

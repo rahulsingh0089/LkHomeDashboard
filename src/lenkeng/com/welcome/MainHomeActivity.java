@@ -4,7 +4,6 @@ import java.io.File;
 
 
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -1179,12 +1178,13 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			case R.id.home_backup_bt_setting:
 				IS_MSG = false;
 				if (v.isFocused()) {
-					if (IS_APP_FROM_BUTTON) {
-						onClick(v);
+					/*if (IS_APP_FROM_BUTTON) {
+					
 						IS_APP_FROM_BUTTON = false;
 					} else {
 						onButtonClick(v);
-					}
+					}*/
+					onClick(v);
 				} else {
 
 				}
@@ -1206,6 +1206,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 					if (MOUSE_UP) {
 						MOUSE_UP = false;
 						showFirstItem();
+						Logger.d("awk", " showFirstItem   appList  up ");
 						iv_move_frame.clearAnimation();
 					}
 				} else {
@@ -1342,6 +1343,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			// vpf.getCurrentAdapter(style_flag).getPrimaryItem().requestFocus();
 			mpf.clearAnim();
 			AppInfo appInfo = (AppInfo) parent.getItemAtPosition(position);
+			//Logger.d("awk", " item click info:   "+appInfo);
 			mpf.openUserApp(style_flag, appInfo);
 
 		}
@@ -1359,10 +1361,10 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		@Override
 		public void onItemSelected(AdapterView<?> view, View v, int position,
 				long arg3) {
-			Logger.e("ez2", "$$$---onItemSelected---" + v);
 			IS_MOUSE_CLICK = false;
 			if (!vpf.currentPageIsFistShow(style_flag)) {
 				showFirstItem();
+				Logger.d("awk", " onItemSelected  ");
 			}
 			/*
 			 * if (IS_BUTTON_CLICK) { IS_BUTTON_CLICK = false;
@@ -1529,6 +1531,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		IS_BUTTON_CLICK = true;
+		vpf.setCurrentFistShow(style_flag, false);
 		onButtonClick(v);
 		// startAnition(v, v, iv_move_frame, v);
 		animationFactory.startUnderLineAnition(v, v, v);
@@ -1539,7 +1542,6 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		 * if(!IS_APP_FROM_BUTTON ){ if(bt_big !=null){ startScaleAnimation(v,
 		 * bt_big); } }else{ mpf.clearAnim(); }
 		 */
-		vpf.setCurrentFistShow(style_flag, false);
 		buttonEvent(v);
 	}
 
@@ -1715,7 +1717,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 
 	int i = 0;
 	private BroadcastReceiver wifiListener = new BroadcastReceiver() {
-		
+
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {

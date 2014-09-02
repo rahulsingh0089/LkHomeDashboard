@@ -252,6 +252,8 @@ public class DetailActivity extends Activity implements OnClickListener,
 		initLoadApkCommentReceiver();
 		
 		mApp = (AppInfo) getIntent().getExtras().get("appinfo");
+		Logger.e(TAG, "~~~~~~~~~ 收到的mAp="+mApp);
+		
 		downloadBean=downloadDao.findDownloadBeanByPackageName(mApp.getPackage_name());
 		
 		
@@ -433,7 +435,7 @@ public class DetailActivity extends Activity implements OnClickListener,
 	 * 断点下载调用的onResume前处理
 	 */
 	private void duandianOnresume() {
-		if(getIntent().getExtras()!=null){
+		if(getIntent()!=null && getIntent().getExtras()!=null){
 			mApp = (AppInfo) getIntent().getExtras().get("appinfo");
 		}
 		

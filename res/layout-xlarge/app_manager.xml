@@ -25,6 +25,7 @@
         android:listSelector="#00000000"
           android:scrollbarTrackVertical="@drawable/vertical_track"
         android:scrollbarThumbVertical="@drawable/vertical_thumb"
+        android:scrollbarStyle="outsideInset"
         android:numColumns="4"
         android:verticalSpacing="0dp" 
         android:layout_marginLeft="30dp"

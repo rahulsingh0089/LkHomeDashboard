@@ -81,16 +81,17 @@ public class AnimationFactory {
 		bigScaleAnimation.setInterpolator(context,android.R.anim.accelerate_decelerate_interpolator);
 		bigScaleAnimation.setDuration(200);
 		bigScaleAnimation.setFillAfter(true);
-		vpf.showAnimation(big);
-		vpf.hideAnimation(small);
+		//vpf.showAnimation(big);
+		//vpf.hideAnimation(small);
 		bigScaleAnimation.setAnimationListener(new Animation.AnimationListener() {
 			
 			@Override
 			public void onAnimationStart(Animation animation) {
 				// TODO Auto-generated method stub
+				Logger.d("awk", " startScaleAnimation dismiss ");
 				mpf.disMiss();
 				mpf.clearAnim();
-			}
+			} 
 			
 			@Override
 			public void onAnimationRepeat(Animation animation) {

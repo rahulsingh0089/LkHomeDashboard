@@ -115,7 +115,7 @@ public class AppQueryAdapter extends BaseAdapter {
 			});
 			// holder.ico.setFocusable(false);
 			// holder.title.setFocusable(false);
-			//holder.ico.setLayoutParams(new LayoutParams(145,140));
+			//holder.ico.setLayoutParams(new RelativeLayout.LayoutParams(145,140));
 			holder.ll_itemBack = (RelativeLayout) convertView.findViewById(R.id.item_back);
 			holder.info=info;;
 			holder.position=position;
@@ -137,7 +137,7 @@ public class AppQueryAdapter extends BaseAdapter {
 		holder.ico.setFocusable(false);
 		holder.ico.setClickable(false);
 		holder.btn_upload.setTag(info);
-		convertView.setOnHoverListener(hoverListener);
+		//convertView.setOnHoverListener(hoverListener);
 		
 		
 		return convertView;
@@ -177,12 +177,12 @@ public class AppQueryAdapter extends BaseAdapter {
 		if (Constant.CLASSIFY_SETTING.equals(style_flag)) {
 			holder.ll_itemBack.setBackgroundResource(Integer.parseInt(info.getHDIcon()));
 			holder.ico.setBackgroundResource(Integer.parseInt(info.getHDIcon()));
-			holder.title.setVisibility(View.INVISIBLE);
-			holder.ico.setVisibility(View.INVISIBLE);
+			//holder.title.setVisibility(View.INVISIBLE);
+			//holder.ico.setVisibility(View.INVISIBLE);
 
 		} else if (Constant.CLASSIFY_USER.equals(style_flag)) {
-			holder.title.setVisibility(View.INVISIBLE);
-			holder.title.setText(info.getName());
+			//holder.title.setVisibility(View.INVISIBLE);
+			//holder.title.setText(info.getName());
 			holder.ico.setVisibility(View.VISIBLE);
 			Drawable d=LKHomeUtil.getIcon(info.getPackage_name());
 			if(d == null){
@@ -220,26 +220,26 @@ public class AppQueryAdapter extends BaseAdapter {
 			}
 			holder.ll_itemBack.setBackgroundResource(Constant.ITEM_BACKS[position% Constant.ITEM_BACKS.length]);
 		} else {
-			holder.title.setVisibility(View.INVISIBLE);
+			//holder.title.setVisibility(View.INVISIBLE);
 			if (info.getPackage_name().equals(Constant.MORE)) {
 				if(Constant.CLASSIFY_APPLICATION.equals(style_flag)){
-					holder.ico.setVisibility(View.INVISIBLE);
+					//holder.ico.setVisibility(View.INVISIBLE);
 					holder.ico.setBackgroundResource(R.drawable.app_store);
-					holder.title.setText(context.getString(R.string.More));
+					//holder.title.setText(context.getString(R.string.More));
 					holder.ll_itemBack.setBackgroundResource(R.drawable.app_store);
 				}else if(Constant.CLASSIFY_GAME.equals(style_flag)){
-					holder.ico.setVisibility(View.INVISIBLE);
+					//holder.ico.setVisibility(View.INVISIBLE);
 					holder.ico.setBackgroundResource(R.drawable.game_store);
-					holder.title.setText(context.getString(R.string.More));
+					//holder.title.setText(context.getString(R.string.More));
 					holder.ll_itemBack.setBackgroundResource(R.drawable.game_store);
 				}else if(Constant.CLASSIFY_MOVIE.equals(style_flag)){
-					holder.ico.setVisibility(View.INVISIBLE);
+					//holder.ico.setVisibility(View.INVISIBLE);
 					holder.ico.setBackgroundResource(R.drawable.tv_store);
-					holder.title.setText(context.getString(R.string.More));
+					//holder.title.setText(context.getString(R.string.More));
 					holder.ll_itemBack.setBackgroundResource(R.drawable.tv_store);
 				}
 			} else {
-				holder.title.setText(info.getName());
+				//holder.title.setText(info.getName());
 				
 				
 				//=========使用缓存管理图片===========
@@ -259,26 +259,26 @@ public class AppQueryAdapter extends BaseAdapter {
 				//Drawable d = LKHomeUtil.getLocalDrawable(info.getHDIcon());
 				if (bit != null) {
 					Drawable d =new BitmapDrawable(bit);
-					holder.ico.setVisibility(View.INVISIBLE);
+					//holder.ico.setVisibility(View.GONE);
 					holder.ico.setBackground(d);
 					holder.ll_itemBack.setBackground(d);
 				} else {
 					//int resId=LKHomeUtil.getPreApkIcon(info.getPackage_name());
 					//---------------英文版独有------------------
 					/*if("com.lenkeng.video".equals(info.getPackage_name())){
-						holder.ico.setVisibility(View.INVISIBLE);
+						//holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.video_icon);
 						holder.ll_itemBack.setBackgroundResource(R.drawable.video_icon);
 					}else if("com.android.email".equals(info.getPackage_name())){
-						holder.ico.setVisibility(View.INVISIBLE);
+						//holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.email);
 						holder.ll_itemBack.setBackgroundResource(R.drawable.email);
 					}else if("com.lenkeng.filebrowser".equals(info.getPackage_name())){
-						holder.ico.setVisibility(View.INVISIBLE);
+						//holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.icon_filebrowser);
 						holder.ll_itemBack.setBackgroundResource(R.drawable.icon_filebrowser);
 					}else if("com.android.browser".equals(info.getPackage_name())){
-						holder.ico.setVisibility(View.INVISIBLE);
+						//holder.ico.setVisibility(View.INVISIBLE);
 						holder.ico.setBackgroundResource(R.drawable.browser);
 						holder.ll_itemBack.setBackgroundResource(R.drawable.browser);
 					}*/

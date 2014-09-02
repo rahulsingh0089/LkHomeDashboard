@@ -154,7 +154,10 @@ public class MyDownloadThreadManager {
 						file.delete();
 					}
 					break;
-
+				case 0:
+					handler.sendEmptyMessage(0);
+					Logger.d("awk", "  pic msg download complete");
+					break;
 				default:
 					break;
 				}

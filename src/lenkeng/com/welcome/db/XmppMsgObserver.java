@@ -25,9 +25,9 @@ public class XmppMsgObserver extends ContentObserver {
 		super.onChange(selfChange);
 		Logger.i("gww", "a new message was send succefully");
 		
-		Intent intent=new Intent();
+		/*Intent intent=new Intent();
 		intent.setAction("com.lenkeng.action.newmsg");
-		context.sendBroadcast(intent);
+		context.sendBroadcast(intent);*/
 		//notice home activity chanage message icon
 		handler.sendEmptyMessage(Constant.HANADLER_NOTICE_MSG);
 	}

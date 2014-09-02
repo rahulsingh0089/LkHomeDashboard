@@ -89,6 +89,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		if (mPopupWindow != null) {
 			mPopupWindow.dismiss();
 			mPopupWindow = null;
+			Logger.d("awk", "  initPopup dismiss ");
 		}
 		mPopupWindow = new PopupWindow();
 		mPopupWindow.setAnimationStyle(R.style.popu);
@@ -203,10 +204,10 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		// (int)v.getY()+35);
 		mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, (int) v.getX() + 80,
 				(int) v.getY() + 105);
-		if(Constant.MORE.equals(info.getPackage_name())){
+		/*if(Constant.MORE.equals(info.getPackage_name())){
 			v.setVisibility(View.INVISIBLE);
 			mPopupWindow.setOnDismissListener(new PopuDissListener(v,info));
-		}
+		}*/
 	}
 
 	public void createRecPopup(View v, AppInfo info, int index) {
@@ -348,6 +349,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			mPopupWindow.dismiss();
 			mPopupWindow = null;
 		}
+		Logger.d("awk", "   disMiss()  ");
 	}
 
 	public void setAppInfo(AppInfo info) {
@@ -428,6 +430,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 							Intent intent = new Intent(context,
 									DetailActivity.class);
 							Log.e(TAG, "line 336 传递的url="+appInfo.getUrl());
+							appInfo.setRealSize(appInfo.getSize()*1024);
 							intent.putExtra("appinfo", appInfo);
 							context.startActivity(intent);
 						}
@@ -455,7 +458,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 				}
 				Intent intent = context.getPackageManager()
 						.getLaunchIntentForPackage(packageName);
-
+				Logger.d("awk", "   click intent  "+intent +" \n  packageName  "+packageName);
 				if (intent != null) {
 					context.startActivity(intent);
 				}
@@ -519,6 +522,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 						if (rl_popu != null) {
 							rl_popu.setBackgroundResource(0);
 						}
+						Logger.d("awk", "  popuBigAnimation  dismiss ");
 						disMiss();
 						AnimationFactory.clearUnderLineAnimation();
 					}

@@ -187,7 +187,7 @@
     <string name="camera_cover_on">摄像头挡板已打开</string>
     <string name="camera_cover_off">摄像头挡板已关闭</string>
     <string name="memory">可用内部存储空间</string>
-    <string name="sdcard">本地储存</string>
+    <string name="sdcard">可用本地储存空间</string>
     <string name="space">存储空间</string>
     <string name="space_value">4G</string>
     
@@ -244,6 +244,6 @@
     	<string name="msgClear">清空</string>
      <string name="text_commen_too_length">评论内容长度已超过上限</string>
     <string name="appMoving">其他应用正在移动，请稍候再试</string>
-    
+    <string name="ConfirmClear">确定要清空消息吗？</string>
     
     </resources>

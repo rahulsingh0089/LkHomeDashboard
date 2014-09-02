@@ -44,7 +44,6 @@ import java.util.TimerTask;
 import lenkeng.com.welcome.LKHomeApp;
 import lenkeng.com.welcome.MainHomeActivity;
 import lenkeng.com.welcome.R;
-import lenkeng.com.welcome.AppManagerActivity.ViewHolder;
 import lenkeng.com.welcome.bean.AppInfo;
 import lenkeng.com.welcome.bean.ScanInfo;
 import lenkeng.com.welcome.bean.WeatherInfo;
@@ -118,7 +117,7 @@ import com.lenkeng.bean.Screen;
 import com.lenkeng.bean.URLs;
 import com.lenkeng.tools.Util;
 
-
+ 
 
 //全局工具类
 @SuppressLint("SdCardPath")

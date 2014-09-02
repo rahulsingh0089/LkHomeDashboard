@@ -170,7 +170,7 @@
     <string name="camera_cover_on">Camera cover is on</string>
     <string name="camera_cover_off">Camara cover is off</string>
     <string name="memory">Available memory</string>
-    <string name="sdcard">Local Storage</string>
+    <string name="sdcard">Local memory size available</string>
     <string name="space_value">4G</string>
     <string name=":">:</string>
     <string name="ticket_error">no connection, do not work</string>
@@ -226,5 +226,5 @@
      	<string name="msgClear">Clear</string>
       <string name="text_commen_too_length">Comment is too long</string>
      <string name="appMoving">Other applications are mobile, please try again later</string>
-     
+     <string name="ConfirmClear">Sure you want to empty the news?</string>
 </resources>

@@ -601,13 +601,13 @@ public class ApiClient {
 					}
 
 					
-					if(load==bean.getRealSize()){ //内容字节数下载完成,判断md5是否相同
+					//if(load==bean.getRealSize()){ //内容字节数下载完成,判断md5是否相同
 						
 						if (LKHomeUtil.checkDownloadFileSuccessed(md5, file)) {
 							f = new File(Constants.APK_DIR, fileName);
 							file.renameTo(f);
 						}
-					}
+					//}
 				}
 			} catch (Exception e) { //捕获网络异常
 				e.printStackTrace();
