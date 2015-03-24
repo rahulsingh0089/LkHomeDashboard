@@ -485,14 +485,16 @@ public class LKService extends Service implements OnClickListener,
 			return false;
 		}
 	};
-	private void setNotificationsEnabled(boolean enabled,String packageName) {
+    
+  /*	private void setNotificationsEnabled(boolean enabled,String packageName) {
         INotificationManager nm = INotificationManager.Stub.asInterface(
                 ServiceManager.getService(Context.NOTIFICATION_SERVICE));
         try {
             nm.setNotificationsEnabledForPackage(packageName, enabled);
         } catch (android.os.RemoteException ex) {
         }
-    }
+  
+    }*/
 	/**
 	 * 监听"赞/踩"按钮广播
 	 */
