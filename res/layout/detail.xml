@@ -104,7 +104,6 @@
                 android:layout_height="37dp"
                 android:text="@string/text_comment"
                 android:layout_alignParentRight="true"
-                android:nextFocusDown="@+id/btn_back"
                 android:background="@drawable/btn_commen_selector"
                 android:textColor="#fff"
                 android:textSize="18sp"
@@ -132,7 +131,6 @@
         android:layout_marginTop="25dp"
         android:layout_gravity="center_horizontal"
         android:fadingEdge="none"
-        android:focusable="false"
         >
       <LinearLayout 
             android:layout_height="fill_parent"
@@ -146,6 +144,9 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:background="@drawable/select_bg_detail_thumb"
+            android:focusable="true"
+            android:padding="5dp"
             />
         <ImageView 
             android:id="@+id/iv_thumb2"
@@ -153,13 +154,19 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:background="@drawable/select_bg_detail_thumb"
+            android:focusable="true"
+             android:padding="5dp"
             />
          <ImageView 
             android:id="@+id/iv_thumb3"
             android:layout_width="420dp"
             android:layout_height="match_parent"
-              android:layout_marginLeft="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:background="@drawable/select_bg_detail_thumb"
+            android:focusable="true"
+             android:padding="5dp"
             />
     
         </LinearLayout> 
@@ -188,7 +195,6 @@
                 android:textColor="#ffffffff"
                 android:textSize="26sp" 
                  android:gravity="center"
-                 android:nextFocusUp="@+id/btn_comment"
                 >
             </Button>
 
@@ -202,7 +208,6 @@
                 android:textColor="#ffffffff"
                 android:textSize="26sp" 
                 android:gravity="center"
-                  android:nextFocusUp="@+id/btn_comment"
                 />
 
             <Button
@@ -214,7 +219,6 @@
                 android:textColor="#ffffffff"
                 android:textSize="26sp" 
                  android:gravity="center"
-                   android:nextFocusUp="@+id/btn_comment"
                 />
         </RelativeLayout>
 
@@ -229,7 +233,6 @@
             android:textColor="#ffffffff"
             android:textSize="26sp" 
             android:gravity="center"
-              android:nextFocusUp="@+id/btn_comment"
             />
 
         <TextView
