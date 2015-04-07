@@ -310,7 +310,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {  
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
@@ -1197,9 +1197,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			default:
 				break;
 			}
-    		 Logger.e(TAG, "==========鑿滃崟娌℃湁浜嗙劍鐐�currentPage="+currentPage+",flag="+flag);
+    		// Logger.e(TAG, "==========鑿滃崟娌℃湁浜嗙劍鐐�currentPage="+currentPage+",flag="+flag);
     	 }else{
-    		 Logger.e(TAG, "~~~~~~ 鑿滃崟鑾峰彇浜嗙劍鐐�);
+    		 //Logger.e(TAG, "~~~~~~ 鑿滃崟鑾峰彇浜嗙劍鐐�); 
     		 finish();
     		 
     	 }
