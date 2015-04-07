@@ -310,7 +310,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {  
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
@@ -325,7 +325,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		initAdapter();
 		initApkHideInstallReceiver();
 		
-		//获取初始的显示页面
+		//鑾峰彇鍒濆鐨勬樉绀洪〉闈�
 		Intent tIni = getIntent();
 		int tFlag = currentPage;
 		int beginPage=0;
@@ -358,7 +358,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	}
 
 	/**
-	 * 隐式安装监听器
+	 * 闅愬紡瀹夎鐩戝惉鍣�
 	 */
 	private void initApkHideInstallReceiver() {
 		
@@ -371,7 +371,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				String flag=intent.getStringExtra("installFlag");
 				String packageName=intent.getStringExtra("packageName");
 				//if("install".equals(flag)){
-					Logger.e(TAG, "-----隐式安装/卸载apk.intent="+intent.getExtras()+",action="+intent.getAction());
+					Logger.e(TAG, "-----闅愬紡瀹夎/鍗歌浇apk.intent="+intent.getExtras()+",action="+intent.getAction());
 				  //notifyAllGrid();
 					 switch (currentPage) {
 					case 0: 
@@ -440,7 +440,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
 	private void showThePage(int curPage) {
 
-		//Logger.e(TAG, "~~~~~~~~~调用了showThePage(),tempPage="+curPage+",currentPage="+currentPage);
+		//Logger.e(TAG, "~~~~~~~~~璋冪敤浜唖howThePage(),tempPage="+curPage+",currentPage="+currentPage);
 	if(curPage==currentPage){
 		return;
 	}
@@ -584,7 +584,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		ll_controller = (LinearLayout) findViewById(R.id.page_control);
 		btn_up = (Button) findViewById(R.id.up);
 		btn_down = (Button) findViewById(R.id.down);
-		btn_down.setOnKeyListener(new OnKeyListener() {//拦截向下的方向键
+		btn_down.setOnKeyListener(new OnKeyListener() {//鎷︽埅鍚戜笅鐨勬柟鍚戦敭
 			
 			@Override
 			public boolean onKey(View arg0, int keyCode, KeyEvent event) {
@@ -728,7 +728,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	}
 
 	private void updateRadioButtonState(int selPage) {
-		//Logger.e(TAG, "~~~~~~~~~~~ 需要选中的item="+selPage);
+		//Logger.e(TAG, "~~~~~~~~~~~ 闇�閫変腑鐨刬tem="+selPage);
 		switch (selPage) {
 		case 0:
 			rb_cate_movie.setChecked(true);
@@ -806,7 +806,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			}
 			updateRadioButtonState(tempPage);
 			
-			//不能调用v.performClick(), 要直接切换显示页面,否则会重复2次用户操作
+			//涓嶈兘璋冪敤v.performClick(), 瑕佺洿鎺ュ垏鎹㈡樉绀洪〉闈�鍚﹀垯浼氶噸澶�娆＄敤鎴锋搷浣�
 			showThePage(tempPage);
 		}
 	}
@@ -850,7 +850,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	}
 
 	private void freshControllerLayout(DataEntity entity) {
-		if(currentPage==3){ //搜索页不显示翻页按钮
+		if(currentPage==3){ //鎼滅储椤典笉鏄剧ず缈婚〉鎸夐挳
 			
 			ll_controller.setVisibility(View.GONE);
 			
@@ -923,13 +923,13 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 		int tempPage=0;
 		switch (arg0.getId()) {
 
-		case R.id.radio1:  //影视
+		case R.id.radio1:  //褰辫
 			/*((RadioButton) ui_radio_group.getChildAt(currentPage))
 			.setChecked(true);*/
 			
 			tempPage=0;
 			updateRadioButtonState(tempPage);
-			Logger.e(TAG, "----------1111111 onClick(),点击了影视, temp="+tempPage+",currentPage="+currentPage);
+			Logger.e(TAG, "----------1111111 onClick(),鐐瑰嚮浜嗗奖瑙� temp="+tempPage+",currentPage="+currentPage);
 			
 			if(currentPage!=tempPage){
 				
@@ -938,7 +938,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 				showThePage(tempPage);
 			}
 			break;
-		case R.id.radio2:  //应用
+		case R.id.radio2:  //搴旂敤
 			/*mSubIndex = 1;
 			currentPage = 1;
 			((RadioButton) ui_radio_group.getChildAt(currentPage))
@@ -950,7 +950,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			
 			tempPage=1;
 			updateRadioButtonState(tempPage);
-			Logger.e(TAG, "----------2222 onClick(),点击了应用, temp="+tempPage+",currentPage="+currentPage);
+			Logger.e(TAG, "----------2222 onClick(),鐐瑰嚮浜嗗簲鐢� temp="+tempPage+",currentPage="+currentPage);
 			
 			if(currentPage!=tempPage){
 				
@@ -960,7 +960,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			}
 			
 			break; 
-		case R.id.radio3:  //游戏
+		case R.id.radio3:  //娓告垙
 		/*	currentPage = 2;
 			mSubIndex = 1;
 			((RadioButton) ui_radio_group.getChildAt(currentPage))
@@ -971,7 +971,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
 			tempPage=2;
 			updateRadioButtonState(tempPage);
-			Logger.e(TAG, "----------33333 onClick(),点击了游戏, temp="+tempPage+",currentPage="+currentPage);
+			Logger.e(TAG, "----------33333 onClick(),鐐瑰嚮浜嗘父鎴� temp="+tempPage+",currentPage="+currentPage);
 			
 			if(currentPage!=tempPage){
 				
@@ -981,7 +981,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			}
 			
 			break;
-		case R.id.radio4: //搜索
+		case R.id.radio4: //鎼滅储
 /*			currentPage = 3;
 			mSubIndex = 1;
 			((RadioButton) ui_radio_group.getChildAt(currentPage))
@@ -992,7 +992,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
 			tempPage=3;
 			updateRadioButtonState(tempPage);
-			Logger.e(TAG, "----------444444 onClick(),点击了搜素, temp="+tempPage+",currentPage="+currentPage);
+			Logger.e(TAG, "----------444444 onClick(),鐐瑰嚮浜嗘悳绱� temp="+tempPage+",currentPage="+currentPage);
 			
 			if(currentPage!=tempPage){
 				
@@ -1010,7 +1010,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			pageDown();
 			break;
 
-		case R.id.do_search: //搜素按钮
+		case R.id.do_search: //鎼滅礌鎸夐挳
 			/*if(et_search_input.isInEditMode()){
 				return;
 			}*/
@@ -1040,7 +1040,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	private void pageDown() {
 		
 		isLoadding=true;
-		Logger.e(TAG, "------修改isloading="+isLoadding);
+		Logger.e(TAG, "------淇敼isloading="+isLoadding);
 		
 		switch (currentPage) {
 		case 0:
@@ -1119,7 +1119,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 
 	private void handMessage(Handler handler, DataEntity data) {
 		Message msg = new Message();
-		msg.what = 0;// �ɹ�
+		msg.what = 0;// 锟缴癸拷
 		msg.obj = data;
 		handler.sendMessage(msg);
 	}
@@ -1128,7 +1128,7 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 	public boolean onKey(View view, int keycode, KeyEvent event) {
 		
 	/*	if(keycode==KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN && view==ll_root){
-			Logger.e(TAG, "======按钮键盘向下按钮,isLoading="+isLoadding);
+			Logger.e(TAG, "======鎸夐挳閿洏鍚戜笅鎸夐挳,isLoading="+isLoadding);
 			if(isLoadding){
 				return true;
 			}
@@ -1197,9 +1197,9 @@ public class MainActivity extends Activity implements OnFocusChangeListener,
 			default:
 				break;
 			}
-    		 Logger.e(TAG, "==========菜单没有了焦点,currentPage="+currentPage+",flag="+flag);
+    		 Logger.e(TAG, "==========鑿滃崟娌℃湁浜嗙劍鐐�currentPage="+currentPage+",flag="+flag);
     	 }else{
-    		 Logger.e(TAG, "~~~~~~ 菜单获取了焦点");
+    		 Logger.e(TAG, "~~~~~~ 鑿滃崟鑾峰彇浜嗙劍鐐�);
     		 finish();
     		 
     	 }
@@ -1230,7 +1230,7 @@ private boolean menuHasFocus() {
 /*	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if(keyCode==KeyEvent.KEYCODE_DPAD_DOWN && event.getAction() == KeyEvent.ACTION_DOWN && isLoadding ){
-			Logger.e(TAG, "======按钮键盘向下按钮,isLoading="+isLoadding);
+			Logger.e(TAG, "======鎸夐挳閿洏鍚戜笅鎸夐挳,isLoading="+isLoadding);
 				return true;
 		}else{
 			
@@ -1240,7 +1240,7 @@ private boolean menuHasFocus() {
 	
 	
 	/**
-	 * 监听Adapter的点击事件
+	 * 鐩戝惉Adapter鐨勭偣鍑讳簨浠�
 	 * @author Administrator
 	 *
 	 */
