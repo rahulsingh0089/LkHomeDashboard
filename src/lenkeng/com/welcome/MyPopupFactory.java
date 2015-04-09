@@ -166,7 +166,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			int position) {
 		initPopup();
 		ImageView icon = (ImageView) v.findViewById(R.id.home_app_ico);
-		rl_normal = new RelativeLayout.LayoutParams(227, 222);
+		rl_normal = new RelativeLayout.LayoutParams(327, 322);
 		// rl_normal.topMargin = 71;
 		// rl_normal.leftMargin = 69;
 		rl_normal.topMargin = 3;
@@ -198,12 +198,12 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		popu_icon.requestFocus();
 		// mPopupWindow.setHeight(365);
 		// mPopupWindow.setWidth(365);
-		mPopupWindow.setHeight(230);
-		mPopupWindow.setWidth(235);
+		mPopupWindow.setHeight(330);
+		mPopupWindow.setWidth(335);
 		// mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, (int)v.getX()+15,
 		// (int)v.getY()+35);
-		mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, (int) v.getX() + 80,
-				(int) v.getY() + 105);
+		mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, (int) v.getX() + 135,
+				(int) v.getY() + 165);
 		/*if(Constant.MORE.equals(info.getPackage_name())){
 			v.setVisibility(View.INVISIBLE);
 			mPopupWindow.setOnDismissListener(new PopuDissListener(v,info));
@@ -217,7 +217,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		switch (index) {
 		case 1:
 			RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(
-					470, 441);
+					710, 680);
 			// rl.topMargin = 83;
 			// rl.leftMargin = 85;
 			rl.topMargin = 2;
@@ -230,17 +230,17 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 
 			popu_icon.setBackgroundDrawable(LKHomeUtil.zoomBitmap(v
 					.getBackground().mutate(), 405));
-			mPopupWindow.setWidth(475);
-			mPopupWindow.setHeight(445);
+			mPopupWindow.setWidth(715);
+			mPopupWindow.setHeight(685);
 			mPopupWindow.update();
 			//mPopupWindow.setOnDismissListener(new PopuDissListener(v,info));
-			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, v.getLeft()-15,
-					v.getTop() + 100);
+			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, v.getLeft(),
+					v.getTop() + 120);
 			//v.setVisibility(View.INVISIBLE);
 			break;
 		case 2:
 			RelativeLayout.LayoutParams rl_1 = new RelativeLayout.LayoutParams(
-					228, 223);
+					328, 323);
 			// rl_1.topMargin = 70;
 			// rl_1.leftMargin = 68;
 			rl_1.topMargin = 3;
@@ -252,15 +252,15 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			// R.drawable.rec_shadow_2));
 			rl_popu.setBackgroundDrawable(context.getResources().getDrawable(
 					R.drawable.rec_shadow_2_));
-			mPopupWindow.setHeight(230);
-			mPopupWindow.setWidth(235);
+			mPopupWindow.setHeight(330);
+			mPopupWindow.setWidth(335);
 			//mPopupWindow.setOnDismissListener(new PopuDissListener(v));
 			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					v.getRight() + 325, v.getTop() + 105);
+					v.getRight() + 485, v.getTop() + 165);
 			break;
 		case 3:
 			RelativeLayout.LayoutParams rl_5 = new RelativeLayout.LayoutParams(
-					437, 212);
+					640, 320);
 			// rl_5.topMargin = 83;
 			// rl_5.leftMargin = 82;
 			rl_5.topMargin = 2;
@@ -273,18 +273,18 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			rl_popu.setBackgroundDrawable(context.getResources().getDrawable(
 					R.drawable.rec_shadow_3_));
 
-			mPopupWindow.setWidth(440);
-			mPopupWindow.setHeight(218);
+			mPopupWindow.setWidth(645);
+			mPopupWindow.setHeight(325);
 			//mPopupWindow.setOnDismissListener(new PopuDissListener(v));
 			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					v.getRight() + 115, v.getTop() + 113);
+					v.getRight() + 170, v.getTop() + 173);
 			break;
 		case 4:
 			RelativeLayout.LayoutParams rl_2 = new RelativeLayout.LayoutParams(
-					228, 223);
+					328, 323);
 			// rl_2.topMargin = 70;
 			// rl_2.leftMargin = 68;
-			rl_2.topMargin = 3;
+			rl_2.topMargin = 4;
 			rl_2.leftMargin = 4;
 			popu_icon.setLayoutParams(rl_2);
 			popu_icon.setBackgroundDrawable(LKHomeUtil.zoomBitmap(v
@@ -293,18 +293,18 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			// R.drawable.rec_shadow_2));
 			rl_popu.setBackgroundDrawable(context.getResources().getDrawable(
 					R.drawable.rec_shadow_2_));
-			mPopupWindow.setHeight(230);
-			mPopupWindow.setWidth(235);
+			mPopupWindow.setHeight(333);
+			mPopupWindow.setWidth(335);
 			//mPopupWindow.setOnDismissListener(new PopuDissListener(v));
 			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					v.getRight() + 325, v.getBottom() + 110);
+					v.getRight() + 485, v.getBottom() + 170);
 			break;
 		case 5:
 			RelativeLayout.LayoutParams rl_3 = new RelativeLayout.LayoutParams(
-					228, 223);
+					328, 323);
 			// rl_3.topMargin = 70;
 			// rl_3.leftMargin = 68;
-			rl_3.topMargin = 3;
+			rl_3.topMargin = 4;
 			rl_3.leftMargin = 4;
 			popu_icon.setLayoutParams(rl_3);
 			popu_icon.setBackgroundDrawable(LKHomeUtil.zoomBitmap(v
@@ -313,16 +313,16 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			// R.drawable.rec_shadow_2));
 			rl_popu.setBackgroundDrawable(context.getResources().getDrawable(
 					R.drawable.rec_shadow_2_));
-			mPopupWindow.setHeight(230);
-			mPopupWindow.setWidth(235);
+			mPopupWindow.setHeight(333);
+			mPopupWindow.setWidth(335);
 			//mPopupWindow.setOnDismissListener(new PopuDissListener(v));
 			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					v.getRight() + 325, v.getBottom() + 110);
+					v.getRight() + 485, v.getBottom() + 170);
 			break;
 		case 6:
 			RelativeLayout.LayoutParams rl_4 = new RelativeLayout.LayoutParams(
-					228, 223);
-			rl_4.topMargin = 3;
+					328, 323);
+			rl_4.topMargin = 4;
 			rl_4.leftMargin = 4;
 			// rl_4.topMargin = 70;
 			// rl_4.leftMargin = 68;
@@ -333,11 +333,11 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 			// R.drawable.rec_shadow_2));
 			rl_popu.setBackgroundDrawable(context.getResources().getDrawable(
 					R.drawable.rec_shadow_2_));
-			mPopupWindow.setHeight(230);
-			mPopupWindow.setWidth(235);
+			mPopupWindow.setHeight(333);
+			mPopupWindow.setWidth(335);
 		//	mPopupWindow.setOnDismissListener(new PopuDissListener(v));
 			mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY,
-					v.getRight() + 325, v.getBottom() + 110);
+					v.getRight() + 485, v.getBottom() + 170);
 			break;
 		default:
 			break;

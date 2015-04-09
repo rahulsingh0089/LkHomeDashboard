@@ -20,7 +20,7 @@
         android:layout_width="125dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
-        
+        android:visibility="invisible"
         android:focusable="false"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="35dp"
@@ -59,8 +59,8 @@
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 <LinearLayout 
-    android:layout_width="212dp"
-    android:layout_height="200dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:id="@+id/face"
     android:background="@null"
     ></LinearLayout>
