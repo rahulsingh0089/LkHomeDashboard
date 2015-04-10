@@ -1162,7 +1162,10 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			 * null; }
 			 */
 			//Logger.e("kao", "$$$---onFocusChange---" + v);
-			iv_move_frame.setVisibility(View.INVISIBLE);
+		    if(iv_move_frame !=null){
+		        iv_move_frame.setVisibility(View.INVISIBLE);
+		        
+		    }
 			if (mpf != null) {
 				mpf.disMiss();
 			}
@@ -1202,6 +1205,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				break;
 			case R.id.home_app_list:
 				if (v.isFocused()) {
+				    Log.d("awk", "  applist..... ");
 					vpf.setCurrentFistShow(style_flag, false);
 					if (MOUSE_UP) {
 						MOUSE_UP = false;
@@ -2152,7 +2156,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				|| keyCode == KeyEvent.KEYCODE_SHIFT_RIGHT) {
 			return true;
 		}
-		
+		Log.d("awk", " keycode = "+keyCode);
 		return myKeyEvent(keyCode, event);
 
 	}

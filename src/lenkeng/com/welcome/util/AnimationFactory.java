@@ -102,7 +102,7 @@ public class AnimationFactory {
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				// TODO Auto-generated method stub
-				
+				big.requestFocus();
 			}
 		});
 		big.startAnimation(bigScaleAnimation);
