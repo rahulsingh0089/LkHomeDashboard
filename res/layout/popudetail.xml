@@ -102,7 +102,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:src="@drawable/praise_small" />
+                    android:src="@drawable/parise_big" />
 
                 <TextView
                     android:id="@+id/reject"
@@ -117,7 +117,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:src="@drawable/reject_small" />
+                    android:src="@drawable/reject_big" />
             </LinearLayout>
 
        

@@ -450,8 +450,8 @@ public class LKService extends Service implements OnClickListener,
 		mLayoutParams.gravity = Gravity.CENTER;
 		//mLayoutParams.x = 350;
 		//mLayoutParams.y = 100;
-		mLayoutParams.width = 600;
-		mLayoutParams.height =300;
+		mLayoutParams.width = 900;
+		mLayoutParams.height =450;
 
 		initVoteReceiver();
 
