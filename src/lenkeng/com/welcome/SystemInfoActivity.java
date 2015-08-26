@@ -38,6 +38,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.os.SystemProperties;
 public class SystemInfoActivity extends Activity {
 	 public static final ComponentName DEFAULT_CONTAINER_COMPONENT = new ComponentName(
 			 "com.android.defcontainer", "com.android.defcontainer.DefaultContainerService");
@@ -76,9 +77,24 @@ public class SystemInfoActivity extends Activity {
 		//----------英文版独有----------------
 		ez_ui.setText("en-version-"+LKHomeUtil.getVersionNmae(getPackageName()));
 		//-------------
-		local_model.setText(Build.MODEL);
+		
+		//=======edit by xgh====
+		//String model=getString(R.string.device_model);
+		String model =  SystemProperties.get("ro.product.lkname", Build.MODEL);
+		local_model.setText(model);
+		String firmware=Build.FIRMWARE;
+		if(model.equals("eztv3")){
+			
+		}else{
+			firmware=firmware.replaceFirst("en_", "");
+		}
+		system_version.setText(firmware);
+		
+/*		local_model.setText(Build.MODEL);
+		system_version.setText(Build.FIRMWARE);*/
+		
+		//========end=======
 		local_id.setText(getSystemVersion());
-		system_version.setText(Build.FIRMWARE);
 		local_ip.setText(getLocalIpAddress());
 		 avi_memory.setText(getData());
 			avi_sdcard.setText(getSDCard());
