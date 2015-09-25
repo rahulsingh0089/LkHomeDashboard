@@ -331,7 +331,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) { 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home_backup_);
 
@@ -805,7 +805,8 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				(ImageButton) this.findViewById(R.id.Recommend_four),
 				(ImageButton) this.findViewById(R.id.Recommend_five),
 				(ImageButton) this.findViewById(R.id.Recommend_six) };
-		String systemVersion=Build.FIRMWARE;
+		//String systemVersion=Build.FIRMWARE;
+		String systemVersion="test_firmware";
 		for (int i = 0; i < imgButton.length; i++) {
 			imgButton[i].setOnClickListener(recOnclick);
 			imgButton[i].setOnFocusChangeListener(recoFocusListener);

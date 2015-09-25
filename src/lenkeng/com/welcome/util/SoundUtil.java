@@ -130,9 +130,9 @@ public class SoundUtil {
 			// Method m=clazz.getMethod("getActiveAudioDevices", new
 			// Class<?>[]{});
 			//if (Build.MODEL.equals(Constant.MODEL_EZTV_2)) {
-
-				return audioManager
-						.getActiveAudioDevices(AudioManager.AUDIO_OUTPUT_ACTIVE);
+			return null;
+				/*return audioManager
+						.getActiveAudioDevices(AudioManager.AUDIO_OUTPUT_ACTIVE);*/
 				// ArrayList<String> models = new ArrayList<String>();
 				// models.add("AUDIO_HDMI");
 				// models.add("AUDIO_CODEC");
@@ -155,13 +155,13 @@ public class SoundUtil {
 	public void setAudioMode(ArrayList<String> modes,int flag) {
 
 		//if (Build.MODEL.equals(Constant.MODEL_EZTV_2)) {
-			if (audioManager != null) {
+			/*if (audioManager != null) {
 				audioManager.setAudioDeviceActive(modes,
 						AudioManager.AUDIO_OUTPUT_ACTIVE,flag);
 			} else {
 				Logger.d("tag", "-----setAudioMode-----audioManager---"
 						+ audioManager);
-			}
+			}*/
 		//}
 		/*
 		 * try { //Class<AudioManager> clazz=AudioManager.class; //Method

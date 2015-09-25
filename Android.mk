@@ -1,5 +1,3 @@
-ifneq (,$(findstring en,$(TARGET_PRODUCT)))
-
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -20,5 +18,4 @@ include $(BUILD_PACKAGE)
 include $(CLEAR_VARS)
 LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := xmpp:libs/asmack.jar jackon:libs/jackson-all-1.9.2.jar
 include $(BUILD_MULTI_PREBUILT)    
-endif
 
