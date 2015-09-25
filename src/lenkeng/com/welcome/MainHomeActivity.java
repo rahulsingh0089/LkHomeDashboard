@@ -728,7 +728,6 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		
 		super.onDestroy();
 		unbindService(conn);
-		unregisterReceiver(mCameraStateReceiver);
 		unregisterReceiver(wifiListener);
 		unregisterReceiver(clearReceiver);
 		unregisterReceiver(speedReceiver);
@@ -736,6 +735,12 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		unregisterReceiver(videoMsg);
 		lock.release();
 		mpf.disMiss();
+		
+		try {
+			unregisterReceiver(mCameraStateReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	// init the view and object
