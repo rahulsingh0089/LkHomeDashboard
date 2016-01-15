@@ -121,6 +121,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.speed);
+		Log.e("SpeedActivity", "oncreate");
 		/*
 		 * IntentFilter filter=new IntentFilter();
 		 * filter.addAction(Intent.ACTION_SCREEN_OFF); registerReceiver(new
