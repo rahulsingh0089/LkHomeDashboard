@@ -130,9 +130,9 @@ public class SoundUtil {
 			// Method m=clazz.getMethod("getActiveAudioDevices", new
 			// Class<?>[]{});
 			//if (Build.MODEL.equals(Constant.MODEL_EZTV_2)) {
-			return null;
-				/*return audioManager
-						.getActiveAudioDevices(AudioManager.AUDIO_OUTPUT_ACTIVE);*/
+				Log.e("SoundUtil", "getActiveAudioDevices");
+				return audioManager
+						.getActiveAudioDevices(AudioManager.AUDIO_OUTPUT_ACTIVE);
 				// ArrayList<String> models = new ArrayList<String>();
 				// models.add("AUDIO_HDMI");
 				// models.add("AUDIO_CODEC");
@@ -155,13 +155,15 @@ public class SoundUtil {
 	public void setAudioMode(ArrayList<String> modes,int flag) {
 
 		//if (Build.MODEL.equals(Constant.MODEL_EZTV_2)) {
-			/*if (audioManager != null) {
+			if (audioManager != null) {
 				audioManager.setAudioDeviceActive(modes,
 						AudioManager.AUDIO_OUTPUT_ACTIVE,flag);
+				Logger.e("SoundUtil", "-----setAudioMode-----audioManager---"
+						+ audioManager);
 			} else {
 				Logger.d("tag", "-----setAudioMode-----audioManager---"
 						+ audioManager);
-			}*/
+			}
 		//}
 		/*
 		 * try { //Class<AudioManager> clazz=AudioManager.class; //Method
@@ -522,7 +524,7 @@ public class SoundUtil {
 				public boolean onError(MediaPlayer mp, int what, int extra) {
 					// TODO Auto-generated method stub
 					//isVideoPlay = false;
-					Logger.e("gw", "-----onError-----playVideoMsg-----isVideoPlay   "+isVideoPlay);
+					Logger.e("gw", "-----onError-----playVideoMsg-----isVideoPlay   "+isVideoPlay+"OnError - Error code: " + what + " Extra code: " + extra);
 					completionListener.onCompletion(mp);
 					return false;
 				}
