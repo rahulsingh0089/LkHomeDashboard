@@ -255,7 +255,7 @@ public class SoundUtil {
 							Logger.e("gw", "----- canageModel  2  --");
 						}
 						//volum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-						openOrcloseBackMusic(0);
+//						openOrcloseBackMusic(0);
 						//audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 100, 0);
 
 					} else {
@@ -268,7 +268,7 @@ public class SoundUtil {
 						/*audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
 						Logger.d("gw", "---  Remove  volum  -- "+volum);
 						volum=-1;*/
-						openOrcloseBackMusic(1);
+//						openOrcloseBackMusic(1);
 						//audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
 					}
 					setAudioMode(modes,flag);
