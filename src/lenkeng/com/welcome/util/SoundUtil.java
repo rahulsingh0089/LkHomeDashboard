@@ -285,6 +285,7 @@ public class SoundUtil {
 		}
 	}
 	public void openOrcloseBackMusic(int openOrclose){
+		/*
 		if(openOrclose == 1){
 			Log.d("awk", "  volum open 1= "+volum);
 			if(volum !=-1){
@@ -303,6 +304,7 @@ public class SoundUtil {
 				Log.d("awk", "  volum  close  2=  "+volum);
 			}
 		}
+		*/
 	}
 	public void playerOFF() {
 		try {
