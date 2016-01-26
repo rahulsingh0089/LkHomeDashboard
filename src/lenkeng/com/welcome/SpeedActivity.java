@@ -123,7 +123,10 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 				
 				lv_task.setVisibility(View.VISIBLE);
 				if (infos.size() == 0){
-										
+					tv_no_user_task.setVisibility(View.VISIBLE);
+//					// cb_choiceAll.setVisibility(View.INVISIBLE);
+					rl_mycheck.setVisibility(View.INVISIBLE);
+					buttom_bt.setVisibility(View.INVISIBLE);
 				}else{
 					cb_choiceAll.setVisibility(View.VISIBLE);
 					tv_speed_all.setVisibility(View.VISIBLE);
