@@ -74,7 +74,7 @@ public class PackageListener extends BroadcastReceiver {
 		                intent_choose.putExtra("flag", flag);
 		                context.startActivity(intent_choose);*/
 		            	if(!"".equals(LKHomeUtil.getPreApkIcon(packageName))){
-		            		flag=LKHomeUtil.appStyles.get(packageName);
+		            		flag=LKHomeUtil.addAppMap.get(packageName);
 		            	}else{
 		            		flag=Constant.CLASSIFY_USER;
 		            	}
@@ -134,7 +134,7 @@ public class PackageListener extends BroadcastReceiver {
 			            }
 			            if("".equals(flag) || null == flag){
 			            	if(!"".equals(LKHomeUtil.getPreApkIcon(packageName))){
-			            		flag=LKHomeUtil.appStyles.get(packageName);
+			            		flag=LKHomeUtil.addAppMap.get(packageName);
 			            	}else{
 			            		flag=Constant.CLASSIFY_USER;
 			            	}

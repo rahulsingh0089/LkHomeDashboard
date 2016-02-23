@@ -245,5 +245,6 @@
      <string name="text_commen_too_length">评论内容长度已超过上限</string>
     <string name="appMoving">其他应用正在移动，请稍候再试</string>
     <string name="ConfirmClear">确定要清空消息吗？</string>
-    
+    <string name="tr_radio_op1">有线网络</string>
+    <string name="tr_radio_op2">无线Wi-Fi</string>
     </resources>

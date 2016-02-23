@@ -10,8 +10,6 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xbill.DNS.tests.primary;
-
 import lenkeng.com.welcome.bean.AppInfo;
 import lenkeng.com.welcome.bean.TaskInfo;
 import lenkeng.com.welcome.util.LKHomeUtil;
@@ -68,7 +66,6 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		OnCheckedChangeListener, OnClickListener {
 	private String TAG = "SpeedActivity";
 	private static final int GET_CACHE_COMPLETE = 0;
-	private static final int READ_INFO_COMPLETE = 1;
 	// private static final int KILL_TASK_COMPLETE = 1;
 	private static final long TOTAL_SIZE = 1024 * 1024 * 900;
 	// private long killCacheSize = 0;
@@ -88,9 +85,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	private Button bt_back;
 	List<PackageInfo> packageInfos;
 	private long systemMemory = 0;
-	private ProgressBar mProgressBar;
-	private TextView tv_speed_all;
-	
+
 	private Handler handler = new Handler() {
 
 		@SuppressLint("NewApi")
@@ -114,23 +109,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 								.getString(R.string.text_speed_success_end));
 				ram = 0;
 				break;
-				
-			case READ_INFO_COMPLETE:
-				adapter = new MyAdapter();
-				lv_task.setAdapter(adapter);
-				cb_choiceAll.performClick();
-				mProgressBar.setVisibility(View.GONE);
-				
-				lv_task.setVisibility(View.VISIBLE);
-				if (infos.size() == 0){
-					tv_no_user_task.setVisibility(View.VISIBLE);
-//					// cb_choiceAll.setVisibility(View.INVISIBLE);
-					rl_mycheck.setVisibility(View.INVISIBLE);
-					buttom_bt.setVisibility(View.INVISIBLE);
-				}else{
-					cb_choiceAll.setVisibility(View.VISIBLE);
-					tv_speed_all.setVisibility(View.VISIBLE);
-				}
+
 			default:
 				break;
 			}
@@ -142,7 +121,6 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.speed);
-		Log.e("SpeedActivity", "oncreate");
 		/*
 		 * IntentFilter filter=new IntentFilter();
 		 * filter.addAction(Intent.ACTION_SCREEN_OFF); registerReceiver(new
@@ -151,8 +129,6 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		inflater = getLayoutInflater();
 		aManager = (ActivityManager) getSystemService(Service.ACTIVITY_SERVICE);
 		initView();
-		
-		Log.e("SpeedActivity", "afterinitView");
 
 	}
 
@@ -176,34 +152,16 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 		tv_no_user_task = (TextView) this.findViewById(R.id.no_user_task);
 		buttom_bt = (LinearLayout) this.findViewById(R.id.buttom_bt);
 		pb.setVisibility(View.GONE);
-		mProgressBar = (ProgressBar) findViewById(R.id.progressBarSpeed);
-		
-		tv_speed_all = (TextView)findViewById(R.id.speed_all);
-		tv_speed_all.setVisibility(View.INVISIBLE);
-		mProgressBar.setVisibility(View.VISIBLE);
-		cb_choiceAll.setVisibility(View.INVISIBLE);
-		lv_task.setVisibility(View.INVISIBLE);
-		Thread t = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				infos = getRunningTaskInfos();
-//				mProgressBar.setVisibility(View.VISIBLE);
-				Message message = new Message();
-				message.what = READ_INFO_COMPLETE;
-				handler.sendMessage(message);
-			}
-		});
-		t.start();
-		
-//		if (infos.size() == 0) {
-//			tv_no_user_task.setVisibility(View.VISIBLE);
-//			// cb_choiceAll.setVisibility(View.INVISIBLE);
-//			rl_mycheck.setVisibility(View.INVISIBLE);
-//			buttom_bt.setVisibility(View.INVISIBLE);
-//		}
-
+		infos = getRunningTaskInfos();
+		if (infos.size() == 0) {
+			tv_no_user_task.setVisibility(View.VISIBLE);
+			// cb_choiceAll.setVisibility(View.INVISIBLE);
+			rl_mycheck.setVisibility(View.INVISIBLE);
+			buttom_bt.setVisibility(View.INVISIBLE);
+		}
+		adapter = new MyAdapter();
+		lv_task.setAdapter(adapter);
+		cb_choiceAll.performClick();
 	}
 
 	OnFocusChangeListener focusChangeListener = new OnFocusChangeListener() {
@@ -658,7 +616,7 @@ public class SpeedActivity extends Activity implements OnItemClickListener,
 						ai = pManager.getPackageInfo(rap.processName, 0).applicationInfo;
 						String packageName = rap.processName;
 						
-						if (isSystemTask(ai)|| LKHomeUtil.appStyles.containsKey(packageName)) {
+						if (isSystemTask(ai)|| LKHomeUtil.addAppMap.containsKey(packageName)) {
 							if ("system".equals(packageName)|| isInputMethodApp(context, packageName)) {
 								continue;
 							}

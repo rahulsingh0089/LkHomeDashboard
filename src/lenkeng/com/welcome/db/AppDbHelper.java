@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppDbHelper extends SQLiteOpenHelper {
-	private static int 	APP_VERSION=1;
+	//private static int 	APP_VERSION=1;
+	private static int 	APP_VERSION=2;
+	//private static int 	APP_VERSION=3;  //TODO....
 	
 	public AppDbHelper(Context context) {
 		super(context, Constant.LKHOME_DATABASE, null, APP_VERSION);
@@ -16,7 +18,7 @@ public class AppDbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		String sql="CREATE TABLE app (packageName TEXT,style TEXT,appname TEXT,version INTEGER,HDIcon TEXT,id INTEGER PRIMARY KEY AUTOINCREMENT)";
+		String sql="CREATE TABLE app (packageName TEXT,style TEXT,appname TEXT,version INTEGER,HDIcon TEXT,priority INTEGER,id INTEGER PRIMARY KEY AUTOINCREMENT)";
 		db.execSQL(sql);
 		
 		
@@ -36,15 +38,10 @@ public class AppDbHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
 		//onCreate(db);
-		int indexVersion=newVersion - oldVersion;
-		switch (indexVersion) {
-		case 1:
-			//String sql_1="ALTER TABLE "+Constant.APPSTORE_TABLE_NAME+" ADD operateType DEFAULT 0 ";
-			//db.execSQL(sql_1);
-			break;
-
-		default:
-			break;
+		if(oldVersion==1){
+			
+			String sql_1="ALTER TABLE app ADD priority DEFAULT 100 ";
+			db.execSQL(sql_1);
 		}
 		
 	}

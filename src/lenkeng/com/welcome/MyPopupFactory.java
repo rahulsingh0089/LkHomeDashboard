@@ -44,6 +44,16 @@ import com.lenkeng.appmarket.DetailActivity;
 import com.lenkeng.appmarket.MainActivity;
 import com.lenkeng.logic.Logic;
 
+import android.os.FileObserver;
+import android.os.FileUtils;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import android.os.SystemProperties;
+
+
 @SuppressLint("NewApi")
 public class MyPopupFactory implements android.view.View.OnClickListener {
 	private String TAG="MyPopupFactory";
@@ -70,6 +80,9 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 	private Handler mHandler;
 	//private LKHomeUtil homeUtil;
 	private Logic mLogic;
+
+	// add by ztlin to monitor kodi file
+	private static FileObserver lkMonitorKodiFileObserver = null;
 	
 	public MyPopupFactory(Activity context,Handler handler) {
 		// TODO Auto-generated constructor stub
@@ -111,26 +124,26 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 		if (mLogic == null) {
 			mLogic = Logic.getInstance(context);
 		}
-		if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_EXITED) { // apk已经存在,不显示图标
+		if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_EXITED) { // apkå·²ç»å­˜åœ¨,ä¸æ˜¾ç¤ºå›¾æ ‡
 			btn_upload.setVisibility(View.GONE);
-		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_CANUPLOAD) {// apk可以上传
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_CANUPLOAD) {// apkå¯ä»¥ä¸Šä¼ 
 			btn_upload.setVisibility(View.VISIBLE);
 			btn_upload.setBackgroundResource(R.drawable.select_upload_button);
 			// backResId=R.drawable.select_upload_can_upload;
 
-		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_WAITVERFY) {// apk等待审核
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_WAITVERFY) {// apkç­‰å¾…å®¡æ ¸
 			btn_upload.setVisibility(View.VISIBLE);
 			btn_upload
 					.setBackgroundResource(R.drawable.select_upload_waitverify);
 			// backResId=R.drawable.select_upload_waitverify;
 
-		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_VERFY_PASS) {// apk审核通过
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_VERFY_PASS) {// apkå®¡æ ¸é€šè¿‡
 			btn_upload.setVisibility(View.VISIBLE);
 			btn_upload
 					.setBackgroundResource(R.drawable.select_upload_verify_pass);
 			// backResId=R.drawable.select_upload_verfy_pass;
 
-		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_VERFY_FAIL) {// apk审核不通过
+		} else if (mLogic.getUploadState(info.getPackage_name()) == Constant.UPLOAD_STATE_VERFY_FAIL) {// apkå®¡æ ¸ä¸é€šè¿‡
 			btn_upload.setVisibility(View.VISIBLE);
 			btn_upload
 					.setBackgroundResource(R.drawable.select_upload_verify_fail);
@@ -418,6 +431,9 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 						Intent intent = context.getPackageManager()
 								.getLaunchIntentForPackage(packageName);
 
+						lkCheckKodiToMonitor(packageName);
+
+
 						if (intent != null) {
 							context.startActivity(intent);
 						}
@@ -429,7 +445,7 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 							// TODO Auto-generated catch block
 							Intent intent = new Intent(context,
 									DetailActivity.class);
-							Log.e(TAG, "line 336 传递的url="+appInfo.getUrl());
+							Log.e(TAG, "line 336 ä¼ é€’çš„url="+appInfo.getUrl());
 							appInfo.setRealSize(appInfo.getSize()*1024);
 							intent.putExtra("appinfo", appInfo);
 							context.startActivity(intent);
@@ -459,12 +475,78 @@ public class MyPopupFactory implements android.view.View.OnClickListener {
 				Intent intent = context.getPackageManager()
 						.getLaunchIntentForPackage(packageName);
 				Logger.d("awk", "   click intent  "+intent +" \n  packageName  "+packageName);
+				
+				lkCheckKodiToMonitor(packageName);
+
 				if (intent != null) {
 					context.startActivity(intent);
 				}
+
 			}
 		}
 	}
+
+	private void lkCheckKodiToMonitor(String packageName){
+		//lkMonitorKodiFileObserver
+		if(packageName.equals("org.xbmc.kodi")){
+			Logger.e(TAG, "lkMoniterKodiFile");
+			try{
+				lkMonitorKodiFile("/mnt/internal_sd/Android/data/org.xbmc.kodi/files/.kodi/userdata",FileObserver.CLOSE_WRITE);
+			}catch(Exception e){
+				Log.e(TAG, "Can't lkMoniterKodiFile", e);
+			}
+		}
+
+	}
+
+	private void lkMonitorKodiFile(String path, int mask){
+        lkMonitorKodiFileObserver = new FileObserver(path, mask) {
+            @Override
+            public void onEvent(int event, String path) {
+                try {
+					Logger.e(TAG, "lkMoniterKodiFile event: " + event + " path: " + path);
+					if(path.equals("guisettings.xml") && (event & FileObserver.CLOSE_WRITE) !=0){
+
+						Logger.e(TAG, "lkMoniterKodiFile ready to backup guisettings.xml");
+						Thread.sleep(1000);
+						copyFile("/mnt/internal_sd/Android/data/org.xbmc.kodi/files/.kodi/userdata/guisettings.xml","/data/guisettings.xml");
+						SystemProperties.set("sys.sync_system","1");
+						Logger.e(TAG, "lkMoniterKodiFile backup guisettings.xml success");	
+					}
+                } catch (Exception e) {
+                    Log.e(TAG, "Can't lkMoniterKodiFile", e);
+                }
+            }
+        };
+
+        lkMonitorKodiFileObserver.startWatching();
+
+	}
+	private void copyFile(String oldPath, String newPath) {	 
+		 try {	 
+			 int bytesum = 0;	
+			 int byteread = 0;	 
+			 File oldfile = new File(oldPath);	 
+			 if (oldfile.exists()) { //ÎÄ¼þ´æÔÚÊ±	 
+				 InputStream inStream = new FileInputStream(oldPath); //¶ÁÈëÔ­ÎÄ¼þ	  
+				 FileOutputStream fs = new FileOutputStream(newPath);	
+				 byte[] buffer = new byte[1444];   
+				 int length;   
+				 while ( (byteread = inStream.read(buffer)) != -1) {   
+					 bytesum += byteread; //×Ö½ÚÊý ÎÄ¼þ´óÐ¡    
+					 //System.out.println(bytesum);	
+					 fs.write(buffer, 0, byteread);   
+				 }	 
+				 inStream.close();	 
+				 fs.close();
+			 }	 
+		 }	 
+		 catch (Exception e) {	 
+			 Log.e(TAG,"copyFile Exception", e);
+		 }	 
+	
+	 }	 
+
 
 	private void goSettingIntent(String action) throws Exception {
 	//	try {

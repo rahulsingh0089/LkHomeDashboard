@@ -227,4 +227,6 @@
       <string name="text_commen_too_length">Comment is too long</string>
      <string name="appMoving">Other applications are mobile, please try again later</string>
      <string name="ConfirmClear">Sure you want to empty the news?</string>
+     <string name="tr_radio_op1">Wired network</string>
+     <string name="tr_radio_op2"> Wi-Fi</string>
 </resources>

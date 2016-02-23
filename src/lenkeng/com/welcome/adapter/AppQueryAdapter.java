@@ -183,14 +183,37 @@ public class AppQueryAdapter extends BaseAdapter {
 		} else if (Constant.CLASSIFY_USER.equals(style_flag)) {
 			//holder.title.setVisibility(View.INVISIBLE);
 			//holder.title.setText(info.getName());
-			holder.ico.setVisibility(View.VISIBLE);
-			Drawable d=LKHomeUtil.getIcon(info.getPackage_name());
+			
+			/*Drawable d=LKHomeUtil.getIcon(info.getPackage_name());
 			if(d == null){
 				holder.ico.setBackgroundResource(R.drawable.ic_launcher);
 			}else{
 				holder.ico.setBackground(d);
+			}*/
+			
+			if(LKHomeUtil.mapDrawable.containsKey(info.getPackage_name())){
+				holder.ico.setVisibility(View.INVISIBLE);
+				holder.ico.setBackgroundResource(LKHomeUtil.mapDrawable.get(info.getPackage_name()));
+				holder.ll_itemBack.setBackgroundResource(LKHomeUtil.mapDrawable.get(info.getPackage_name()));
+				
+				Log.e(TAG, "~~~!!!!!! pkg="+info.getPackage_name()+",resId="+LKHomeUtil.mapDrawable.get(info.getPackage_name()));
+			}else{
+				
+				 holder.ico.setVisibility(View.VISIBLE);
+				 Drawable d=LKHomeUtil.getIcon(info.getPackage_name());
+					if(d == null){
+						holder.ico.setBackgroundResource(R.drawable.ic_launcher);
+					}else{
+						holder.ico.setBackground(d);
+					}
+				
+				holder.ll_itemBack.setBackgroundResource(Constant.ITEM_BACKS[position% Constant.ITEM_BACKS.length]);
+				 
 			}
-			if(!LKHomeUtil.appStyles.containsKey( info.getPackage_name())){//其他
+			
+			
+			
+			if(!LKHomeUtil.addAppMap.containsKey( info.getPackage_name())){//用户安装的应用
 				//holder.btn_upload.setVisibility(View.VISIBLE);
 				
 				if(mLogic.getUploadState(info.getPackage_name())==Constant.UPLOAD_STATE_EXITED){ //apk已经存在,不显示图标
@@ -218,10 +241,10 @@ public class AppQueryAdapter extends BaseAdapter {
 			}else{
 				holder.btn_upload.setVisibility(View.GONE);
 			}
-			holder.ll_itemBack.setBackgroundResource(Constant.ITEM_BACKS[position% Constant.ITEM_BACKS.length]);
+			
 		} else {
 			//holder.title.setVisibility(View.INVISIBLE);
-			if (info.getPackage_name().equals(Constant.MORE)) {
+			if (info.getPackage_name().equals(Constant.MORE)) { //电子市场
 				if(Constant.CLASSIFY_APPLICATION.equals(style_flag)){
 					//holder.ico.setVisibility(View.INVISIBLE);
 					holder.ico.setBackgroundResource(R.drawable.app_store);

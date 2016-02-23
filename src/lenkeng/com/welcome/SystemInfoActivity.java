@@ -10,7 +10,6 @@ import lenkeng.com.welcome.util.LKHomeUtil;
 import lenkeng.com.welcome.util.Logger;
 
 import org.apache.http.conn.util.InetAddressUtils;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -40,7 +39,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.os.SystemProperties;
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 public class SystemInfoActivity extends Activity {
 	 public static final ComponentName DEFAULT_CONTAINER_COMPONENT = new ComponentName(
 			 "com.android.defcontainer", "com.android.defcontainer.DefaultContainerService");
@@ -100,6 +98,11 @@ public class SystemInfoActivity extends Activity {
 		local_ip.setText(getLocalIpAddress());
 		 avi_memory.setText(getData());
 			avi_sdcard.setText(getSDCard());
+		Logger.v("ez2", "★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		Logger.v("ez2", "★★★★★★★★★★★★★★★★★     2014年1月22日     ★★★★★★★★★★★★★★★");
+		Logger.v("ez2", "★★★★★★★★★★★★★★★★★      versionCode- "+LKHomeUtil.getVersionNmae(getPackageName())+"   ★★★★★★★★★★★★★★★");
+		Logger.v("ez2", "★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
+		Logger.v("ez2", "----------------------------------------------------------------------");
 	}
 
 	private String getLocalIpAddress() {

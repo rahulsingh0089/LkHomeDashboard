@@ -666,8 +666,7 @@ public class LKService extends Service implements OnClickListener,
 
 		@Override
 		public List<AppInfo> getAppInfos() {
-			// TODO Auto-generated method stub
-			return appInfos;
+			return appInfos==null ? new ArrayList<AppInfo>(): appInfos;
 		}
 
 		@Override

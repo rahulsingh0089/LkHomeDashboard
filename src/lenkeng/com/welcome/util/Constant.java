@@ -65,7 +65,7 @@ public class Constant {
 	public static final String DEFAULT_CITY = "鍖椾含";
 	public static final int PEER_PAPGE_NUMBER = 10;
 	public static final boolean NEED_CHECK_VIDEOMSG=true;
-	
+	public static boolean IS_NEED_START=false;
 	
 	public static final int COLOR_WHITE=0XFFFFFFFF;
 	public static final int COLOR_BLACK=0XFF000000;

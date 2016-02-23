@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -133,7 +134,7 @@ public class LKHomeUtil {
 	private static LkecDevice lk_device = new LkecDevice();
 	private static Context context;
 	private Timer mTimer;
-	public static Map<String, String> appStyles;
+	public static LinkedHashMap<String, String> addAppMap =new LinkedHashMap<String, String>();;
 	private static Map<String, String> packageMapRes;
 	public static Map<String,Integer> mapDrawable;
 	private static AppDataDao appDao;
@@ -154,113 +155,48 @@ public class LKHomeUtil {
 	public static final Map<String,Boolean> MOVE_MAP=new HashMap<String,Boolean>();
 	
 	
+	//需要删除的app集合, 如果是更新app的位置,先删除,再添加
+	public static LinkedHashMap<String,String> removeAppMap=new LinkedHashMap<String, String>();
+	public static LinkedHashMap<String,String> updateAppStyleMap=new LinkedHashMap<String, String>();
+	
+	//描述某个app在某个类别下的优先位置.: key: "包名"+"="+"类别字符串"; value: 优先级: 1为最大,值越大,优先级越低
+	public static LinkedHashMap<String,Integer> updateAppPriorityMap=new LinkedHashMap<String, Integer>();
+	
+	//相同包名,需要添加到不同栏目下的app
+	public static LinkedHashMap<String, String> extraAppMap =new LinkedHashMap<String, String>();
+	
+	
+	
 	static {
 
-//------------英文版独有---------------
-		Logger.i("gww", "add app--++-");
-		appStyles = new HashMap<String, String>();
+		Log.e(TAG, "add app--++-");
+		
+		
+		//======================需要删除的应用集合,需要更换app 栏目,先删除,再添加,然后更改优先级===================
+		//removeAppMap.put("com.android.vending",Constant.CLASSIFY_USER);
+		//removeAppList.add("com.filmoncom.android.stb");
+				
+		
+		
+		
+		//==============需要添加到数据库的app列表, 如果数据库已经存在该包名且style相同的app,直接返回==============
 		packageMapRes = new HashMap<String, String>();
 		mapDrawable=new HashMap<String, Integer>();
 		
 		//packageMapRes.put("com.android.browser", R.drawable.browser);
-		appStyles.put("com.softwinner.update", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.vending", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.settings", Constant.CLASSIFY_USER);
-		/*appStyles.put("com.softwinner.TvdFileManager", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.music", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.soundrecorder", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.rockchip", Constant.CLASSIFY_USER);
-		appStyles.put("android.rk.RockVideoPlayer", Constant.CLASSIFY_USER);
-		appStyles.put("com.android.gallery3d", Constant.CLASSIFY_USER);*/
-		
-//-----------------------------------		
-		
-		//packageMapRes.put("com.lenkeng.video", R.drawable.video_icon);
-		
-		/*packageMapRes.put("com.android.email", R.drawable.email);
-		packageMapRes.put("com.lenkeng.filebrowser", R.drawable.icon_filebrowser);
-		
-		appStyles.put("cn.wps.moffice_i18n_hd", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("cn.wps.moffice_i18n_hd", R.drawable.wps);
-		appStyles.put("com.olivephone.unzip", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("com.olivephone.unzip", R.drawable.jieya);
-		appStyles.put("com.tencent.QQVideo", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("com.tencent.QQVideo", R.drawable.qq);
-		appStyles.put("com.alensw.PicFolder", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("com.alensw.PicFolder", R.drawable.kuaituliulan);
-		appStyles.put("com.meishi_tv", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("com.meishi_tv", R.drawable.meishijie);
-		appStyles.put("com.ndjh.android.ndnet", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("com.ndjh.android.ndnet", R.drawable.nandu);
-		appStyles
-				.put("sina.mobile.tianqitonghd", Constant.CLASSIFY_APPLICATION);
-		packageMapRes.put("sina.mobile.tianqitonghd", R.drawable.tianqitong);
+		addAppMap.put("com.softwinner.update", Constant.CLASSIFY_USER);
+		addAppMap.put("com.android.vending", Constant.CLASSIFY_USER);
+		addAppMap.put("com.android.settings", Constant.CLASSIFY_USER);
 
-		appStyles.put("com.the10tons.azkend_2_zh", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.the10tons.azkend_2_zh", R.drawable.azk);
-		appStyles.put("com.eyelead.bunnymazehd", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.eyelead.bunnymazehd", R.drawable.tzmgdmx);
-		appStyles.put("com.the10tons.sparkle.full", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.the10tons.sparkle.full", R.drawable.shanyaomazu);
-		appStyles.put("com.carrot.carrotfantasy", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.carrot.carrotfantasy", R.drawable.baoweiluobo);
-		appStyles.put("com.qqgame.hlddz", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.qqgame.hlddz", R.drawable.doudizhu);
-		appStyles.put("com.ArtInGames.AirAttackHD_CN", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.ArtInGames.AirAttackHD_CN",R.drawable.zhimingkongxi);
-		appStyles.put("com.rainbow.Master", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.rainbow.Master", R.drawable.qlds);
-		appStyles.put("com.angrymobgames.muffinknight3rdparty",
-				Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.angrymobgames.muffinknight3rdparty",R.drawable.songbingqishi);
-		appStyles.put("com.king.candycrushsaga", Constant.CLASSIFY_GAME);
-		packageMapRes.put("com.king.candycrushsaga", R.drawable.candy);
+		
 
-		appStyles.put("com.qipo", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.qipo", R.drawable.ali);
-		appStyles.put("tv.danmaku.bili", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("tv.danmaku.bili", R.drawable.bili);
-		appStyles.put("com.verycd.tv", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.verycd.tv", R.drawable.dianlv);
-		appStyles.put("com.elinkway.tvlive", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.elinkway.tvlive", R.drawable.tvjia);
-		appStyles.put("com.funshion.video", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.funshion.video", R.drawable.fengxing);
-		appStyles.put("com.ifeng.easyVideo", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.ifeng.easyVideo", R.drawable.fenghuang);
-		appStyles.put("com.appshare.android.ilisten.hd",
-				Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.appshare.android.ilisten.hd", R.drawable.gushi);
-		appStyles.put("com.kugou.playerHD", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("com.kugou.playerHD", R.drawable.kugou);
-		appStyles.put("xlcao.sohutv4", Constant.CLASSIFY_MOVIE);
-		packageMapRes.put("xlcao.sohutv4", R.drawable.longlong);
-*/
-		/*
-		 * appStyles.put("com.adobe.flashplayer", Constant.CLASSIFY_GAME);
-		 * appStyles.put("com.android.browser", Constant.CLASSIFY_GAME);
-		 * appStyles.put("com.android.providers.media", Constant.CLASSIFY_GAME);
-		 * appStyles.put("com.pplive.androidpad", Constant.CLASSIFY_GAME);
-		 * appStyles.put("com.softwinner.TvdVideo", Constant.CLASSIFY_GAME);
-		 * appStyles.put("com.estrongs.android.pop", Constant.CLASSIFY_GAME);
-		 * appStyles.put("com.softwinner.wifidisplayreceiver",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.android.music",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.android.email",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.android.htmlviewer",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.android.exchange",
-		 * Constant.CLASSIFY_GAME); appStyles.put("android.process.acore",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.android.calendar",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.google.process.gappes",
-		 * Constant.CLASSIFY_GAME); appStyles.put("com.android.email",
-		 * Constant.CLASSIFY_GAME);
-		 */
 		try {
 			String[] strs=getPreApk();
 			for(int i=0;i<strs.length;i++){
 				String[] pakSty=strs[i].split("\\$");
 				String packagename=pakSty[0];
 				String sty=pakSty[1];
-				appStyles.put(packagename, sty);
+				addAppMap.put(packagename, sty);
 				packageMapRes.put(packagename, preInstallUrl+packagename+".png");
 			}
 		} catch (Exception e) {
@@ -268,33 +204,47 @@ public class LKHomeUtil {
 			//e.printStackTrace();
 		}
 		//-----------英文版独有------
-		appStyles.put("com.android.email", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.android.email", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.email", R.drawable.email);
-		appStyles.put("com.lenkeng.video", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.lenkeng.video", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.lenkeng.video", R.drawable.video_icon);
-		appStyles.put("com.android.browser", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.android.browser", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.browser", R.drawable.browser);
-		appStyles.put("com.lenkeng.filebrowser", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.lenkeng.filebrowser", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.lenkeng.filebrowser", R.drawable.icon_filebrowser);
 	 
-		appStyles.put("com.softwinner.TvdFileManager", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.softwinner.TvdFileManager", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.softwinner.TvdFileManager", R.drawable.file_manager);
-		appStyles.put("com.android.music", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.android.music", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.music", R.drawable.music);
-		appStyles.put("com.android.soundrecorder", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.android.soundrecorder", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.soundrecorder", R.drawable.recoder);
-		appStyles.put("com.android.rockchip", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.android.rockchip", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.rockchip", R.drawable.file_manager);
 		//appStyles.put("android.rk.RockVideoPlayer", Constant.CLASSIFY_APPLICATION);
-		appStyles.put("com.android.gallery3d", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.android.gallery3d", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.android.gallery3d", R.drawable.video_player);
 		
-		appStyles.put("com.adobe.flashplayer", Constant.CLASSIFY_APPLICATION);
+		addAppMap.put("com.adobe.flashplayer", Constant.CLASSIFY_APPLICATION);
 		mapDrawable.put("com.adobe.flashplayer", R.drawable.flashplayer);
-		////rk: [ro.hardware]: [rk30board],/mnt/external_sd
-		//a20:[ro.hardware]: [sun7i],/mnt/extsd
-		
+
 		//--------------------------
+	//============额外需要添加的app===============
+	//	extraAppMap.put("com.android.vending", Constant.CLASSIFY_USER);
+		
+		
+
+		//===============需要修改app类别的应用集合==================
+		//updateAppStyleMap.put("com.filmoncom.android.stb", Constant.CLASSIFY_USER);
+		
+		
+		
+		//================修改应用的显示位置====================
+	//	updateAppPriorityMap.put("com.filmoncom.android.stb"+","+Constant.CLASSIFY_APPLICATION, 1);
+	//	updateAppPriorityMap.put("air.BattleCamAndroid"+","+Constant.CLASSIFY_APPLICATION, 2);
+	//	updateAppPriorityMap.put("com.android.vending"+","+Constant.CLASSIFY_APPLICATION, 3);
+	//	updateAppPriorityMap.put("com.android.vending"+","+Constant.CLASSIFY_USER, 1);
+		
 	}
 
 	private static void getDebugFileDir() {
@@ -308,6 +258,8 @@ public class LKHomeUtil {
 	}
 
 	public static String getPreApkIcon(String packagename) {
+		//Log.e(TAG, "-----5555-- getPreApkIcon, packagenme="+packagename+",packaeMap="+packageMapRes);
+		
 		if (packageMapRes.containsKey(packagename)) {
 			return packageMapRes.get(packagename);
 		} else {
@@ -316,7 +268,7 @@ public class LKHomeUtil {
 	}
 	
 	public static boolean isPreApp(String packagename) {
-		return appStyles.containsKey(packagename);
+		return addAppMap.containsKey(packagename);
 	}
 
 	
@@ -541,16 +493,88 @@ public class LKHomeUtil {
 
 	// 系统默认的APP分类
 	public static void systemAppClassify() {
-		Set<String> set = appStyles.keySet();
+		//3.删除
+		removeAppRecorder();
+		//1.新增
+		addAppRecorder();
+		
+		/*//2.修改
+		updateAppRecorder();*/
+		
+		//3.修改优先级
+		updateAppPriority();
+		
+		
+		
+	}
+
+
+	private static void updateAppPriority() {
+		
+		Set<String> set = updateAppPriorityMap.keySet();
+		Iterator<String> it = set.iterator();
+		while (it.hasNext()) {
+			String tempStr = it.next();
+			String packageName = tempStr.split(",")[0];
+			String style = tempStr.split(",")[1];
+			int priority=updateAppPriorityMap.get(tempStr);
+			appDao.updateAppPriority(packageName, style, priority);
+		}
+	}
+
+	private static void updateAppRecorder() {
+		Set<String> set = updateAppStyleMap.keySet();
+		Iterator<String> it = set.iterator();
+		while (it.hasNext()) {
+			String packageName = it.next();
+			appDao.updateAppStyle(packageName,updateAppStyleMap.get(packageName));
+		}
+		
+	}
+
+	private static void removeAppRecorder() {
+		
+		Set<String> set = removeAppMap.keySet();
+		Iterator<String> it = set.iterator();
+		while (it.hasNext()) {
+			String packageName = it.next();
+			appDao.removeApp(packageName,removeAppMap.get(packageName));
+		}
+		
+		
+	}
+	
+	
+	
+	
+	private static void addAppRecorder() {
+		
+		Set<String> set = addAppMap.keySet();
 		Iterator<String> it = set.iterator();
 		while (it.hasNext()) {
 			String packageName = it.next();
 			if (isInstalled(packageName)) {
-				appDao.addApp(packageName, appStyles.get(packageName),
+				appDao.addApp(packageName, addAppMap.get(packageName),
 						getLabel(packageName), null, getVersion(packageName));
 			}
 		}
+		
+		
+		//相同包名添加到不同栏目下
+		Set<String> set2 = extraAppMap.keySet();
+		Iterator<String> it2 = set2.iterator();
+		while (it2.hasNext()) {
+			String packageName = it2.next();
+			if (isInstalled(packageName)) {
+				appDao.addApp(packageName, extraAppMap.get(packageName),
+						getLabel(packageName), null, getVersion(packageName));
+			}
+		}
+		
+		
 	}
+
+	
 
 	//
 	public static XMPPConnection getConnection() {
@@ -656,16 +680,20 @@ public class LKHomeUtil {
 		FileInputStream fis = new FileInputStream(url);
 		return BitmapFactory.decodeStream(fis);
 	}
+	
 	public static Drawable getLocalDrawableRec(String url) {
 		// FileInputStream fis = new FileInputStream(url);
 		if (null == url) {
+			Log.e(TAG, "~~~~~~~ url is null");
+
 			return null;
 		} else {
 			File f = new File(url);
 			if (!f.exists()) {
 				return null;
 			} else {
-				return BitmapDrawable.createFromPath(f.getAbsolutePath());
+				//return BitmapDrawable.createFromPath(f.getAbsolutePath());
+				return BitmapDrawable.createFromPath(url);
 			}
 		}
 	}
@@ -857,19 +885,19 @@ public class LKHomeUtil {
 
 				appInfo.setRecomm_index(obj.getInt("recomm_index"));
 				rec_num++;
-				Logger.i("gww", "----------------json mode--------" + mode);
+				Logger.e(TAG, "----------------json mode--------" + mode);
 			} else if (Constant.APPSTORE_MODE_BANNER.equals(mode)) {
 				appInfo.setBanner_big(URLs.getBASE()
 						+ obj.getString("banner_big"));
 				appInfo.setBanner_small(URLs.getBASE()
 						+ obj.getString("banner_small"));
-				Logger.i(
-						"gww",
+				Logger.e(
+						TAG,
 						"-----json--info.getbannersmall---"
 								+ appInfo.getBanner_small());
-				Logger.i("gww", "----------------json mode--------" + mode);
+				Logger.e(TAG, "----------------json mode--------" + mode);
 			} else if (Constant.APPSTORE_MODE_STANDARD.equals(mode)) {
-				Logger.i("gww", "----------------json mode--------" + mode);
+				Logger.e(TAG, "----------------json mode--------" + mode);
 			}
 
 			
@@ -1649,7 +1677,17 @@ public class LKHomeUtil {
 	        return null;   
 	    }   
 	}
-
+	public static void startUserLancher(Context context,String packagename){
+		
+		Log.e(TAG, "=======5=======startUserLancher(), pkg="+packagename);
+		if (LKHomeUtil.isInstalled(packagename)) {
+            Intent intent = context.getPackageManager()
+                    .getLaunchIntentForPackage(packagename);
+            if (intent != null) {
+                context.startActivity(intent);
+            }
+        }
+	}
 	public static boolean isFactoryMode(){
 		//[ro.product.manufacturer]: [rockchip]
 		

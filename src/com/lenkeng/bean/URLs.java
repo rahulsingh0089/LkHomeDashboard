@@ -38,25 +38,29 @@ public class URLs implements Serializable {
 /*国内版本
  * */
  
-  	public static String getMarketHost(){
-		
-		String host="";
-		if(LKHomeUtil.isFactoryMode()){
-			host="192.168.16.223:8080";
-			//host="192.168.16.241:8080";
-		}else{
-			
-			if(isZhVertion()){
-				host=getContext().getString(R.string.market_host_zh);
-			}else{
-				host=getContext().getString(R.string.market_host_en);
-			}
-		}
-		
-		
-		Logger.e(TAG, "xgh ,----------------获取的market服务器="+host);
-		return host;
-	}
+  	 public static String getMarketHost(){
+  			
+  			String host="";
+  			if(LKHomeUtil.isFactoryMode()){ //电子市场测试模式不用切换url
+  				if(isZhVertion()){
+  					host=getContext().getString(R.string.market_host_zh);
+  				}else{
+  					host=getContext().getString(R.string.market_host_en);
+  				}
+  				//host="192.168.16.223:8080";
+  			}else{
+  				
+  				if(isZhVertion()){
+  					host=getContext().getString(R.string.market_host_zh);
+  				}else{
+  					host=getContext().getString(R.string.market_host_en);
+  				}
+  			}
+  			
+  			
+  			Logger.e(TAG, "xgh ,----------------获取的market服务器="+host);
+  			return host;
+  		}
 	
 	/**
 	 * 国外版本

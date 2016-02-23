@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import lenkeng.com.welcome.util.Logger;
 
 //主界面应用程序列表数据DAO
 public class AppDataDao {
+	private static final String TAG = "AppDataDao";
 	private Context context;
 	private AppDbHelper helper;
 	// private SharedPreferences sp;
@@ -38,7 +40,29 @@ public class AppDataDao {
 	}
 
 	// 查询某个应用程序是否已安装
-	public boolean findApp(String packageName) {
+	public boolean findAppBypkgAndStyle(String packageName,String style) {
+		synchronized (LOCK) {
+			boolean result = true;
+			SQLiteDatabase db = helper.getReadableDatabase();
+			// db.enableWriteAheadLogging();
+			Cursor c = db.rawQuery("SELECT * FROM app where packageName=? and style=? ",
+					new String[] { packageName,style });
+			if (c.getCount()>0) {
+				result = true;
+			} else {
+				result = false;
+			}
+			if (db != null && db.isOpen()) {
+				c.close();
+				db.close();
+			}
+			return result;
+		}
+	}
+	
+	
+	
+	public boolean findApp(String packageName ) {
 		synchronized (LOCK) {
 			boolean result = true;
 			SQLiteDatabase db = helper.getReadableDatabase();
@@ -57,6 +81,9 @@ public class AppDataDao {
 			return result;
 		}
 	}
+	
+	
+	
 
 	// 将APP包名及类型添加到数据库
 	/*
@@ -69,8 +96,9 @@ public class AppDataDao {
 	 */
 
 	public void addApp(String packageName, String style, String appname,
-			String icons, int version) {
-		if (findApp(packageName)) {
+			String icons, int version ) {
+		Log.e(TAG, "~~~~~addApp()~~~~~packageName="+packageName+",style="+style);
+		if (findAppBypkgAndStyle(packageName,style)) {
 			return;
 		}
 
@@ -78,8 +106,8 @@ public class AppDataDao {
 			SQLiteDatabase db = helper.getWritableDatabase();
 			// db.enableWriteAheadLogging();
 			db.execSQL(
-					"INSERT INTO app(packageName,style,appname,HDIcon,version) VALUES (?,?,?,?,?)",
-					new Object[] { packageName, style, appname, icons, version });
+					"INSERT INTO app(packageName,style,appname,HDIcon,version,priority) VALUES (?,?,?,?,?,?)",
+					new Object[] { packageName, style, appname, icons, version ,100});
 			if (null != db && db.isOpen()) {
 				db.close();
 			}
@@ -89,12 +117,26 @@ public class AppDataDao {
 	}
 
 	// 移除一个APP数据
-	public void removeApp(String packageName) {
+	public void removeApp(String packageName,String style) {
 
 		synchronized (LOCK) {
 			SQLiteDatabase db = helper.getWritableDatabase();
 			// db.enableWriteAheadLogging();
-			db.execSQL("DELETE FROM app WHERE packageName=?",
+			db.execSQL("DELETE FROM app WHERE packageName=? and style=?",
+					new String[] { packageName,style });
+			if (db != null && db.isOpen()) {
+				db.close();
+			}
+		}
+
+	}
+	
+	public void removeApp(String packageName ) {
+		Log.e(TAG, "~~~~~ removeApp(), packageName="+packageName);
+		synchronized (LOCK) {
+			SQLiteDatabase db = helper.getWritableDatabase();
+			// db.enableWriteAheadLogging();
+			db.execSQL("DELETE FROM app WHERE packageName=? ",
 					new String[] { packageName });
 			if (db != null && db.isOpen()) {
 				db.close();
@@ -102,13 +144,15 @@ public class AppDataDao {
 		}
 
 	}
+	
+	
 
 	// 获取某一分类下的所有APP
 	public List<String> getPackageName(String style) {
 		synchronized (LOCK) {
 			List<String> names = new ArrayList<String>();
 			SQLiteDatabase db = helper.getReadableDatabase();
-			Cursor c = db.rawQuery("SELECT packageName FROM app where style=?",
+			Cursor c = db.rawQuery("SELECT packageName FROM app where style=? order by priority",
 					new String[] { style });
 			while (c.moveToNext()) {
 				names.add(c.getString(0));
@@ -129,7 +173,7 @@ public class AppDataDao {
 			SQLiteDatabase db = helper.getReadableDatabase();
 			// db.enableWriteAheadLogging();
 			Cursor c = db.rawQuery(
-					"SELECT packageName,appname,HDIcon FROM app where style=?",
+					"SELECT packageName,appname,HDIcon FROM app where style=? order by priority",
 					new String[] { style });
 			while (c.moveToNext()) {
 				AppInfo info = new AppInfo();
@@ -247,4 +291,51 @@ public class AppDataDao {
 		}
 
 	}
+
+	public void updateAppStyle(String packageName, String appSytle ) {
+		synchronized (LOCK) {
+			SQLiteDatabase db = helper.getWritableDatabase();
+			//db.enableWriteAheadLogging();
+			db.execSQL("UPDATE app " + " SET style=?  WHERE packageName=?",
+					new Object[] {appSytle,packageName });
+			closeDB(db, null);
+		}
+	}
+	
+	public void updateAppPriority(String packageName, String appSytle,int priority) {
+		synchronized (LOCK) {
+			SQLiteDatabase db = helper.getWritableDatabase();
+			//db.enableWriteAheadLogging();
+			db.execSQL("UPDATE app " + " SET priority=?  WHERE packageName=? and style=?",
+					new Object[] {priority,packageName,appSytle });
+			closeDB(db, null);
+		}
+	}
+	
+	
+	
+	
+	/*public void updateAppStyle(String packageName, String appSytle) {
+		synchronized (LOCK) {
+			SQLiteDatabase db = helper.getWritableDatabase();
+			if (db != null && db.isOpen()) {
+				c.close();
+				db.close();
+			}
+		}
+		
+	}*/
+	
+	
+	private void closeDB(SQLiteDatabase db, Cursor c) {
+		if (db != null && db.isOpen()) {
+			if (c != null) {
+				c.close();
+			}
+			// db.endTransaction();
+			db.close();
+		}
+}
+	
+	
 }

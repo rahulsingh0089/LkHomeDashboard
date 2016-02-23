@@ -64,9 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_all"
-                android:textSize="20dp" 
-                android:id="@+id/speed_all"
-                />
+                android:textSize="20dp" />
         </RelativeLayout>
 
         <ListView
@@ -129,14 +127,5 @@
             android:textColor="@android:color/white"
             android:textSize="28sp" />
     </LinearLayout>
-            <ProgressBar
-            android:id="@+id/progressBarSpeed"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_centerInParent="true"
-            android:indeterminateDrawable="@drawable/ic_circle_sync_anim"
-           android:indeterminateDuration="1500" 
-           android:visibility="gone"
-            />
+
 </RelativeLayout>

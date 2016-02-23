@@ -12,12 +12,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 
 
 public class MyDownloadThreadManager {
 	private static final int RECONN_TIMES = 3;
 	private static final int RECONN_PEER_TIMES = 1000 * 30;
+	private static final String TAG = "MyDownloadThreadManager";
 	private File file;
 	private String url;
 	private Context context;
@@ -84,7 +86,7 @@ public class MyDownloadThreadManager {
 				}
 				if (reConnectingTimes == RECONN_TIMES) {
 					isStarted = false;
-					Logger.i("gww", "----------------download times---------"
+					Logger.i(TAG, "----------------download times---------"
 							+ reConnectingTimes);
 					Intent downloadFail = new Intent(context, LKService.class);
 					downloadFail.setAction(Constant.ACTION_DOWNLOAD_FAIL);
@@ -106,6 +108,12 @@ public class MyDownloadThreadManager {
 	public void getFile(String path, File file) throws Exception {
 		URL url = new URL(path);
 
+		File parent = file.getParentFile();
+		if(parent!=null && !parent.exists())
+		{
+			parent.mkdirs();
+		}
+		
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
 		InputStream is = null;
@@ -114,11 +122,20 @@ public class MyDownloadThreadManager {
 
 			is = conn.getInputStream();
 			fileSize = conn.getContentLength();
+			
+			
+			if(file.exists() && file.length()== fileSize){
+				Log.e(TAG, "~~~~`-----, file="+file.getPath());
+				is.close();
+				return;
+				}
+			
+			
 			FileOutputStream fos = new FileOutputStream(file);
 			byte[] buffer = new byte[1024];
 			int len = 0;
 			while ((len = is.read(buffer)) != -1) {
-				Logger.i("gww", "------current download----" + len);
+				Logger.i(TAG, "------current download----" + len);
 				fos.write(buffer, 0, len);
 			}
 			fos.flush();
@@ -142,7 +159,7 @@ public class MyDownloadThreadManager {
 			if (null != handler) {
 				switch (what) {
 				case Constant.HANDLER_DOWNLOAD_RECOMMEND_APP:
-					Logger.e("kao", "$$---file.size--" + file.length()
+					Logger.e(TAG, "$$---file.size--" + file.length()
 							+ "---conn.getContentLength()--" + fileSize);
 					
 					if (file.length() == fileSize) {
@@ -156,7 +173,7 @@ public class MyDownloadThreadManager {
 					break;
 				case 0:
 					handler.sendEmptyMessage(0);
-					Logger.d("awk", "  pic msg download complete");
+					Logger.d(TAG, "  pic msg download complete");
 					break;
 				default:
 					break;

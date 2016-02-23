@@ -8,7 +8,7 @@
     >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="17"
         android:targetSdkVersion="17" />
 
 <uses-permission android:name="android.permission.DELETE_CACHE_FILES"/>
@@ -72,7 +72,6 @@
                 <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LK_HOME" />
                 <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -202,7 +201,9 @@
 		
 		   </activity>
 		
-		
+		<activity android:name="lenkeng.com.welcome.NetSettingGuide"
+		    android:launchMode="singleTask"
+		    ></activity>
 		<service android:name="com.lenkeng.service.MarketService"  >
         </service>
 

@@ -130,7 +130,7 @@ public class SoundUtil {
 			// Method m=clazz.getMethod("getActiveAudioDevices", new
 			// Class<?>[]{});
 			//if (Build.MODEL.equals(Constant.MODEL_EZTV_2)) {
-				Log.e("SoundUtil", "getActiveAudioDevices");
+
 				return audioManager
 						.getActiveAudioDevices(AudioManager.AUDIO_OUTPUT_ACTIVE);
 				// ArrayList<String> models = new ArrayList<String>();
@@ -158,8 +158,6 @@ public class SoundUtil {
 			if (audioManager != null) {
 				audioManager.setAudioDeviceActive(modes,
 						AudioManager.AUDIO_OUTPUT_ACTIVE,flag);
-				Logger.e("SoundUtil", "-----setAudioMode-----audioManager---"
-						+ audioManager);
 			} else {
 				Logger.d("tag", "-----setAudioMode-----audioManager---"
 						+ audioManager);
@@ -255,7 +253,7 @@ public class SoundUtil {
 							Logger.e("gw", "----- canageModel  2  --");
 						}
 						//volum=audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-//						openOrcloseBackMusic(0);
+						openOrcloseBackMusic(0);
 						//audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, 100, 0);
 
 					} else {
@@ -268,7 +266,7 @@ public class SoundUtil {
 						/*audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
 						Logger.d("gw", "---  Remove  volum  -- "+volum);
 						volum=-1;*/
-//						openOrcloseBackMusic(1);
+						openOrcloseBackMusic(1);
 						//audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, 0, 0);
 					}
 					setAudioMode(modes,flag);
@@ -285,7 +283,6 @@ public class SoundUtil {
 		}
 	}
 	public void openOrcloseBackMusic(int openOrclose){
-		/*
 		if(openOrclose == 1){
 			Log.d("awk", "  volum open 1= "+volum);
 			if(volum !=-1){
@@ -304,7 +301,6 @@ public class SoundUtil {
 				Log.d("awk", "  volum  close  2=  "+volum);
 			}
 		}
-		*/
 	}
 	public void playerOFF() {
 		try {
@@ -526,7 +522,7 @@ public class SoundUtil {
 				public boolean onError(MediaPlayer mp, int what, int extra) {
 					// TODO Auto-generated method stub
 					//isVideoPlay = false;
-					Logger.e("gw", "-----onError-----playVideoMsg-----isVideoPlay   "+isVideoPlay+"OnError - Error code: " + what + " Extra code: " + extra);
+					Logger.e("gw", "-----onError-----playVideoMsg-----isVideoPlay   "+isVideoPlay);
 					completionListener.onCompletion(mp);
 					return false;
 				}

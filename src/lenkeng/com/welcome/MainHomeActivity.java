@@ -53,6 +53,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
+import android.net.EthernetManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -175,7 +176,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	private Intent service;
 	private MyConn conn;
 	private WakeLock lock;
-
+	private SharedPreferences sp;
 	static boolean cycleFlag = true;
 	//private Map<View, Integer> BUTTONS_HOVERED = new HashMap<View, Integer>();
 	private Map<String,View> STYLE_VIEW = new HashMap<String, View>();
@@ -331,16 +332,47 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) { 
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home_backup_);
+	
 
 		//homeUtil = new LKHomeUtil(this);
 		instance = this;
 		mContext = this;
-
+		sp = getSharedPreferences("config", Context.MODE_PRIVATE);
 		
-		long bef=System.currentTimeMillis();
+		
+				//打开以太网
+		EthernetManager mEthManager = (EthernetManager) mContext.getSystemService(Context.ETHERNET_SERVICE);
+			if (mEthManager.getEthernetIfaceState() != EthernetManager.ETHER_IFACE_STATE_UP) {
+					mEthManager.setEthernetEnabled(true);
+		}
+		
+		// 修改成 每次开机都先检测网络
+		if (true) {
+			/*
+			 * Intent route_intent = new Intent(Constant.SETTING_ACTION[0]);
+			 * route_intent.addCategory("android.intent.category.DEFAULT");
+			 * route_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			 * startActivity(route_intent);
+			 */
+
+			Intent intent = new Intent();
+			intent.setClass(this, NetSettingGuide.class);
+			startActivity(intent);
+			
+		} else {
+			//LKHomeUtil.startUserLancher(this, Constant.USER_APP_PKGNAME);
+		}
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		setContentView(R.layout.home_backup_);
+
+		long bef = System.currentTimeMillis();
 
 		lock();
 		init();
@@ -364,50 +396,6 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		it.putExtra("CMD", LKService.CMD_LOOP_CHECK_UPLOAD_STATE);
 		startService(it);
 		
-		/*
-		 * Logger.i("ez2",
-		 * "--------------------------------------------------------------------"
-		 * ); addBugLog("xgh:#218,摄像头开关，开或关的时候发出提示音,2014-1-4 svn: 29");
-		 * addBugLog("xgh:#255,屏幕大小断电不会保存,2014-1-4 svn: 29");
-		 * addBugLog("xgh:#227,[应用商店]安装游戏时出现进度条消失,无法继续下载异常,2014-1-6 svn: 31");
-		 * addBugLog
-		 * ("xgh:#233,[应用商店]搜索中点击一个已显示的应用,进入详情查看,然后提出,应用整排向下移位,2014-1-13 svn: 39"
-		 * ); addBugLog("xgh:#260,图标下加入应用名称，方便用户识别,2014-1-13 svn: 40");
-		 * Logger.i(
-		 * "ez2","#259,1.0.5底层和1.0.5LKHome在第一次烧完机或者recovery后摄像头挡板和推送消息无提示音.#");
-		 * Logger.i("ez2","#266 推送信息提示#"); Logger.i("ez2", "# 修改默认推荐图片#");
-		 * Logger.i("ez2",
-		 * "---------------------------------------------------------------------"
-		 * );
-		 */
-
-		/*Logger.i("ez2",
-				"--------------------------------------------------------------------");
-		Logger.i("ez2",
-				"--------------------------------------------------------------------");
-
-		addBugLog("xgh:#263,添加预装应用的赞踩 2014-1-16 svn:57");
-		addBugLog("xgh:更改切换语言时不更换服务器地址, 根据固件版本选择服务器地址  2014-1-17 svn:58");
-		addBugLog("xgh:#271,添加输入法切换功能,2014-1-21 svn:60");
-		addBugLog("xgh:#275,同时一键安装2个应用后,下载第3个,点击一键安装无进度出现");
-		addBugLog("xgh:#222,视频留言提醒功能");
-		addBugLog("xgh:#269,用户首次开机未联网首页展示");
-		addBugLog("xgh:#273,在英文下,摄像头挡板提示音还是中文.");
-		addBugLog("xgh:#281,应用商店反复切换导航,launcher崩溃,内存溢出,2014-1-21 svn:62");
-
-		addBugLog("xgh:,解决应用商城多个焦点的bug,2014-1-26 svn:66");
-		addBugLog("xgh:,#310,解决应用商城多个焦点的bug,2014-1-26 svn:66");
-		addBugLog("xgh:,#313/311,应用商城图标错乱,2014-2-7 svn:68");
-		addBugLog("xgh:,#312,改善Launcher内存溢出,2014-2-9 svn:71");
-		addBugLog("xgh:,修改下载时网络断开,apk一直显示最后的进度,不能操作的bug,2014-2-11 svn:89");
-		addBugLog("xgh:,优化应用商城切换类别响应慢的bug,2014-2-14 svn:97");
-		addBugLog("xgh:,优化Launcher图片bitmap加载,加入缓存,2014-2-17 svn:98");
-		addBugLog("xgh:,修改应用详情,apk下载状态,安装完成没有写入数据库的apk写入数据库,发送广播,2014-2-18 svn:103");
-
-		Logger.i("ez2",
-				"---------------------------------------------------------------------");
-		Logger.i("ez2",
-				"---------------------------------------------------------------------");*/
 
 	}
 
@@ -422,7 +410,6 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
 					boolean daoResult = tDao.findApp(packageName);
 					boolean result2 = LKHomeUtil.isInstalled(packageName);
 
@@ -473,13 +460,13 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		screenfilter.addAction(Intent.ACTION_TIME_TICK);
 		screenfilter.addAction(Intent.ACTION_DATE_CHANGED);
 		screenfilter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
-		
-		speedReceiver =new SpeedActivity().getScreenReceiver();
-		clearReceiver=new ClearActivity.ScreenReceiver();
-		registerReceiver(speedReceiver , screenfilter);
+
+		speedReceiver = new SpeedActivity().getScreenReceiver();
+		clearReceiver = new ClearActivity.ScreenReceiver();
+		registerReceiver(speedReceiver, screenfilter);
 		registerReceiver(clearReceiver, screenfilter);
 		registerReceiver(videoMsg, screenfilter);
-		
+
 		/*
 		 * IntentFilter local = new IntentFilter();
 		 * local.addAction(Intent.ACTION_LOCALE_CHANGED);
@@ -505,8 +492,9 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			}
 		}, 17000);
 	}
+
 	SimpleDateFormat sdfd = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	SimpleDateFormat sdft = new SimpleDateFormat(" HH:mm");
 	private BroadcastReceiver videoMsg = new BroadcastReceiver() {
 
@@ -514,38 +502,40 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
-				PowerManager manager=(PowerManager) getSystemService(Service.POWER_SERVICE);
-				Logger.e("gw", "--------isScreen on----"+manager.isScreenOn());
-				
-				if(manager.isScreenOn()){
-					if (Constant.NEED_CHECK_VIDEOMSG  ){
+				PowerManager manager = (PowerManager) getSystemService(Service.POWER_SERVICE);
+				Logger.e("gw", "--------isScreen on----" + manager.isScreenOn());
+
+				if (manager.isScreenOn()) {
+					if (Constant.NEED_CHECK_VIDEOMSG) {
 						Intent i = new Intent();
 						i.setAction("checkVideo");
 						sendBroadcast(i);
 						Logger.d("kao", "------ check video 2 -----");
 					}
-					
-					Intent ota=new Intent();
+
+					Intent ota = new Intent();
 					ota.setAction("ota");
 					sendBroadcast(ota);
 				}
-				
-				//buttons[0].performClick();
+
+				// buttons[0].performClick();
 			} else if ("hasNewMsg".equals(intent.getAction())) {
 
-				//synchronized (intent) {
-					su.playVideoMsg();
-				//}
+				// synchronized (intent) {
+				su.playVideoMsg();
+				// }
 				// new SoundUtil(MainHomeActivity.this).playerMessage();
 			} else if (Intent.ACTION_TIME_TICK.equals(intent.getAction())
 					|| Intent.ACTION_DATE_CHANGED.equals(intent.getAction())
-					|| Intent.ACTION_TIMEZONE_CHANGED.equals(intent.getAction())) {
-				//Logger.e("kao", "------action----"+intent.getAction());
-				if(tv_titleTimer.getVisibility()==View.VISIBLE){
+					|| Intent.ACTION_TIMEZONE_CHANGED
+							.equals(intent.getAction())) {
+				// Logger.e("kao", "------action----"+intent.getAction());
+				if (tv_titleTimer.getVisibility() == View.VISIBLE) {
 					sdfd.setTimeZone(TimeZone.getDefault());
 					sdft.setTimeZone(TimeZone.getDefault());
-					tv_titleTimer.setText(sdfd.format(new Date())+"   "+sdft.format(new Date()));
-				}else{
+					tv_titleTimer.setText(sdfd.format(new Date()) + "   "
+							+ sdft.format(new Date()));
+				} else {
 					initUpTitle();
 				}
 			}
@@ -728,6 +718,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		
 		super.onDestroy();
 		unbindService(conn);
+		unregisterReceiver(mCameraStateReceiver);
 		unregisterReceiver(wifiListener);
 		unregisterReceiver(clearReceiver);
 		unregisterReceiver(speedReceiver);
@@ -735,12 +726,6 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		unregisterReceiver(videoMsg);
 		lock.release();
 		mpf.disMiss();
-		
-		try {
-			unregisterReceiver(mCameraStateReceiver);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	// init the view and object
@@ -810,8 +795,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				(ImageButton) this.findViewById(R.id.Recommend_four),
 				(ImageButton) this.findViewById(R.id.Recommend_five),
 				(ImageButton) this.findViewById(R.id.Recommend_six) };
-		//String systemVersion=Build.FIRMWARE;
-		String systemVersion="test_firmware";
+		String systemVersion=Build.FIRMWARE;
 		for (int i = 0; i < imgButton.length; i++) {
 			imgButton[i].setOnClickListener(recOnclick);
 			imgButton[i].setOnFocusChangeListener(recoFocusListener);
@@ -943,131 +927,25 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			String recPath;
 			String localPath;
 			recPath = info.getRecommImage();
-			localPath = "/sdcard/appinfo/"
+			localPath = "/mnt/sdcard/appinfo/"
 					+ recPath.substring(recPath.lastIndexOf("/") + 1,
 							recPath.lastIndexOf(".")) + info.getRecomm_index();
-			Logger.e("gww2", "------initImageButton----localPath-----"
+			Logger.e(TAG, "------initImageButton----localPath-----"
 					+ localPath);
 			BitmapDrawable bd;
 			Drawable d = LKHomeUtil.getLocalDrawableRec(localPath);
-			Logger.e("gww2", "------initImageButton----d-----" + d);
+			Logger.e(TAG, "------initImageButton----d-----" + d);
 			if (d != null) {
 				imgButton[info.getRecomm_index() - 1].setBackground(d);
-				Logger.e("gww2", "------initImageButton----info.package-----"
+				Logger.e(TAG, "------initImageButton----info.package-----"
 						+ info.getPackage_name());
 			}
 			imgButton[info.getRecomm_index() - 1].setTag(info);
-			/*
-			 * if (recIndex == 1) { bd = new
-			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
-			 * 400,400)); } else if (recIndex == 3) { bd = new
-			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
-			 * 400,200)); } else { bd = new
-			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
-			 * 210,200)); } if (bd != null) { imgButton[recIndex -
-			 * 1].setBackground(bd); imgButton[recIndex - 1].setTag(info); }
-			 */
-
-			/*
-			 * try { int index = 1; String recPath; String localPath; for
-			 * (AppInfo info : recInfos) { index = info.getRecomm_index();
-			 * recPath = info.getRecommImage(); localPath = "/sdcard/appinfo/" +
-			 * recPath.substring(recPath.lastIndexOf("/") + 1,
-			 * recPath.lastIndexOf(".")) + index; BitmapDrawable bd; if (index
-			 * == 1) { bd = new
-			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
-			 * 400,400)); } else if (index == 3) { bd = new
-			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
-			 * 400,200)); } else { bd = new
-			 * BitmapDrawable(LKHomeUtil.decodeBitmapFromFile(localPath,
-			 * 210,200)); } times2++; Logger.e("ez2",
-			 * "$$$---initImageButton---end----times2---"+times2); if (bd !=
-			 * null) { imgButton[index - 1].setBackground(bd); imgButton[index -
-			 * 1].setTag(info); } else { imgButton[index - 1]
-			 * .setBackgroundResource(DEFAULT_ICONS[index - 1]); imgButton[index
-			 * - 1].setTag(null); } } } catch (Exception e) { imgButton[index -
-			 * 1] .setBackgroundResource(DEFAULT_ICONS[index - 1]);
-			 * imgButton[index - 1].setTag(null); e.printStackTrace(); }
-			 */
-			/*
-			 * for (AppInfo info : recInfos) { try { int index =
-			 * info.getRecomm_index(); String rec = info.getRecommImage();
-			 * String path = "/sdcard/appinfo/" +
-			 * rec.substring(rec.lastIndexOf("/") + 1, rec.lastIndexOf(".")) +
-			 * info.getRecomm_index(); imgButton[index - 1].setBackground(new
-			 * BitmapDrawable( LKHomeUtil.getLoacalBitmap(path)));
-			 * imgButton[index - 1].setTag(info); } catch (Exception e) { //
-			 * imgButton[info.getRecomm_index() - 1]
-			 * .setBackgroundResource(R.drawable.default1);
-			 * imgButton[info.getRecomm_index() - 1].setTag(null); }
-			 * recButtonMapApp.put(imgButton[index], info); }
-			 */
-
-			// imgButton[5].setBackgroundResource(R.drawable.wuxianlianjie);
-
-			/*
-			 * switch (info.getRecomm_index()) { case 1: try {
-			 * 
-			 * String rec = info.getRecommImage(); String path =
-			 * "/sdcard/appinfo/" + rec.substring(rec.lastIndexOf("/") + 1,
-			 * rec.lastIndexOf("."))+ rec; imgButton[0].setBackground(new
-			 * BitmapDrawable(LKHomeUtil .getLoacalBitmap(path))); } catch
-			 * (Exception e) {
-			 * imgButton[0].setBackgroundResource(R.drawable.default1); } break;
-			 * case 2: try { String rec = info.getRecommImage(); String path =
-			 * "/sdcard/appinfo/" + rec.substring(rec.lastIndexOf("/") + 1,
-			 * rec.lastIndexOf("."))+ rec; imgButton[1].setBackground(new
-			 * BitmapDrawable(LKHomeUtil .getLoacalBitmap(path))); } catch
-			 * (Exception e) {
-			 * imgButton[1].setBackgroundResource(R.drawable.default3); } break;
-			 * case 3: try { String rec = info.getRecommImage(); String path =
-			 * "/sdcard/appinfo/" + rec.substring(rec.lastIndexOf("/") + 1,
-			 * rec.lastIndexOf("."))+ rec; imgButton[2].setBackground(new
-			 * BitmapDrawable(LKHomeUtil .getLoacalBitmap(path))); } catch
-			 * (Exception e) {
-			 * imgButton[2].setBackgroundResource(R.drawable.default2); } break;
-			 * case 4: try { String rec = info.getRecommImage(); String path =
-			 * "/sdcard/appinfo/" + rec.substring(rec.lastIndexOf("/") + 1,
-			 * rec.lastIndexOf("."))+ rec; imgButton[3].setBackground(new
-			 * BitmapDrawable(LKHomeUtil .getLoacalBitmap(path))); } catch
-			 * (Exception e) {
-			 * imgButton[3].setBackgroundResource(R.drawable.default3); } break;
-			 * case 5: try { String rec = info.getRecommImage(); String path =
-			 * "/sdcard/appinfo/" + rec.substring(rec.lastIndexOf("/") + 1,
-			 * rec.lastIndexOf("."))+ rec; imgButton[4].setBackground(new
-			 * BitmapDrawable(LKHomeUtil .getLoacalBitmap(path))); } catch
-			 * (Exception e) {
-			 * imgButton[4].setBackgroundResource(R.drawable.default3); } break;
-			 * case 6: try {
-			 * imgButton[5].setBackgroundResource(R.drawable.wuxianlianjie); }
-			 * catch (Exception e) {
-			 * imgButton[5].setBackgroundResource(R.drawable.default3); } break;
-			 * 
-			 * default: break; }
-			 */
 
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
 
-		/*
-		 * if (recInfos != null && recInfos.size() != 0) {
-		 * 
-		 * for (int i = 0; i < recInfos.size(); i++) { int recomIndex =
-		 * recInfos.get(i).getRecomm_index(); String rec =
-		 * recInfos.get(i).getRecommImage(); String path = "/sdcard/appinfo/" +
-		 * rec.substring(rec.lastIndexOf("/") + 1, rec.lastIndexOf(".")) +
-		 * recInfos.get(i).getRecomm_index(); try {
-		 * imgButton[i].setBackgroundDrawable(); } catch (Exception e) {
-		 * Auto-generated catch block File f=new File(path); f.delete();
-		 * e.printStackTrace(); imgButton[i].setBackground(getResources()
-		 * .getDrawable(DEFAULT_ICONS[i])); } imgButton[5]
-		 * .setBackgroundResource(R.drawable.wuxianlianjie); } } else { for (int
-		 * i = 0; i < imgButton.length; i++) {
-		 * imgButton[i].setBackgroundDrawable(getResources()
-		 * .getDrawable(DEFAULT_ICONS[i])); } // imgButton[5] //
-		 * .setBackgroundResource(R.drawable.wuxianlianjie); }
-		 */
 	}
 
 	public void gotoMessage(View v) {
@@ -1688,6 +1566,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 			iser = (IService) service;
 			// initImageButton();
 			recInfos = iser.getAppInfos();
+			Log.e(TAG, "~~~~~~~~ onServiceConnected(), 获取的推荐列表="+recInfos.size());
 			/*if (recInfos != null) {
 				for (int i = 1; i <= recInfos.size(); i++) {
 					Message msg = Message.obtain();
@@ -1723,56 +1602,57 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 	 * pageNumber = (int) allAppInfos.size() / 10; } }
 	 */
 	// }
-	// 注册WIFI广播监听网络状态
-
+	// 娉ㄥ唽WIFI骞挎挱鐩戝惉缃戠粶鐘舵�
+	private void killBgActivity(){
+		try {
+			ActivityManager manager=(ActivityManager) getSystemService(Service.ACTIVITY_SERVICE);
+			manager.forceStopPackage("com.lenkeng.wifiman");
+			manager.killBackgroundProcesses("com.lenkeng.wifiman");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	int i = 0;
 	private BroadcastReceiver wifiListener = new BroadcastReceiver() {
 
-		
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action = intent.getAction();
-			Logger.e("kao", "-----wifiListener---  action "+intent.getAction());
-			if ("android.net.conn.CONNECTIVITY_CHANGE".equals(action)
-					|| WifiManager.RSSI_CHANGED_ACTION.equals(action)) {
-				i++;
-				// if (i == 1) {
-			/*	if (LKHomeUtil.isNetConnected()) {
-					
-					// handler.sendEmptyMessage(Constant.HANDLER_DOWNLOAD_WEATHER);
-					if (LKHomeUtil.getConnectedStyle() == 1) {
-						int level=LKHomeUtil.getWifiLevel();
-						Logger.e(TAG, "~~~~~~~~~~~~~~~~~~~ need update wifi level ,level="+level);
-						
-						iv_wifiFlag.setBackgroundResource(wifi_icons[level]);
-					} else {
-						iv_wifiFlag.setBackgroundResource(R.drawable.connected);
-					}
-				} else {
-					iv_wifiFlag.setBackgroundResource(R.drawable.signal_5);
+			Logger.e("kao",
+					"-----wifiListener---  action " + intent.getAction());
+			if ("android.net.conn.CONNECTIVITY_CHANGE".equals(action)) {
+				
+				if (Constant.IS_NEED_START && LKHomeUtil.isNetConnected()) {
+					//develop 版本不用打开客户的app
+				/*	LKHomeUtil.startUserLancher(MainHomeActivity.this,
+							Constant.USER_APP_PKGNAME);*/
+					handler.postDelayed(new Runnable() {
 
-					// if(LKHomeUtil.conn !=null){
-					// LKHomeUtil.conn.disconnect();
-					// }
-				}*/
-				// }
-				//startCheckWifiLevel();
-				if (i == 2) {
-					i = 0;
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							killBgActivity();
+						}
+					}, 1500);
+					Constant.IS_NEED_START=false;
 				}
 			} else if ("com.lenkeng.newdata".equals(action)) {
 				long bef = System.currentTimeMillis();
 				installed(intent);
 				long aft = System.currentTimeMillis();
 				Logger.d("ww", "$$$------wifiListener------" + (aft - bef));
-			}else if("android.net.wifi.WIFI_AP_STATE_CHANGED".equals(action)){
-				WifiManager wifiManager=(WifiManager) getSystemService(Service.WIFI_SERVICE);
-				int apState=wifiManager.getWifiApState();
-				if(apState == WIFI_AP_STATE_DISABLED || apState == WIFI_AP_STATE_FAILED){
-					Logger.e("kao", "----wifi ap is disabled or start failed----  "+apState);
+			} else if ("android.net.wifi.WIFI_AP_STATE_CHANGED".equals(action)) {
+				WifiManager wifiManager = (WifiManager) getSystemService(Service.WIFI_SERVICE);
+				int apState = wifiManager.getWifiApState();
+				if (apState == WIFI_AP_STATE_DISABLED
+						|| apState == WIFI_AP_STATE_FAILED) {
+					Logger.e("kao",
+							"----wifi ap is disabled or start failed----  "
+									+ apState);
 					iv_wifiAp.setVisibility(View.GONE);
-				}else if(apState == WIFI_AP_STATE_ENABLED){
-					Logger.e("kao", "---- wifi ap is enabled ----  "+apState);
+				} else if (apState == WIFI_AP_STATE_ENABLED) {
+					Logger.e("kao", "---- wifi ap is enabled ----  " + apState);
 					iv_wifiAp.setVisibility(View.VISIBLE);
 				}
 			}else if(Logic.NEED_UPDATE_UPLOAD_BTN.equals(action)){ //需要更新上传按钮的广播
