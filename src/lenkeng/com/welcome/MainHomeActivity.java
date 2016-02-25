@@ -330,7 +330,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		 * e.printStackTrace(); }
 		 */
 	}
-
+	static Boolean lunchFirstTime = true;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -349,19 +349,21 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		}
 		
 		// 修改成 每次开机都先检测网络
-		if (true) {
+			
+		if (lunchFirstTime) {
 			/*
 			 * Intent route_intent = new Intent(Constant.SETTING_ACTION[0]);
 			 * route_intent.addCategory("android.intent.category.DEFAULT");
 			 * route_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			 * startActivity(route_intent);
 			 */
-
+			lunchFirstTime = false;
 			Intent intent = new Intent();
 			intent.setClass(this, NetSettingGuide.class);
 			startActivity(intent);
 			
 		} else {
+			lunchFirstTime = false;
 			//LKHomeUtil.startUserLancher(this, Constant.USER_APP_PKGNAME);
 		}
 		try {
@@ -718,12 +720,16 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 		
 		super.onDestroy();
 		unbindService(conn);
-		unregisterReceiver(mCameraStateReceiver);
-		unregisterReceiver(wifiListener);
-		unregisterReceiver(clearReceiver);
-		unregisterReceiver(speedReceiver);
-		// unregisterReceiver(langueReceiver);
-		unregisterReceiver(videoMsg);
+		try {
+			unregisterReceiver(mCameraStateReceiver);
+			unregisterReceiver(wifiListener);
+			unregisterReceiver(clearReceiver);
+			unregisterReceiver(speedReceiver);
+			// unregisterReceiver(langueReceiver);
+			unregisterReceiver(videoMsg);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		lock.release();
 		mpf.disMiss();
 	}
