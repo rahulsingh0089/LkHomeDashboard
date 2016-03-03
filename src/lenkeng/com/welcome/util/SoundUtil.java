@@ -283,24 +283,24 @@ public class SoundUtil {
 		}
 	}
 	public void openOrcloseBackMusic(int openOrclose){
-		if(openOrclose == 1){
-			Log.d("awk", "  volum open 1= "+volum);
-			if(volum !=-1){
-				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
-				Log.d("awk", "  volum open 2= "+volum);
-				volum=-1;
-			}
-		}else{
-			Log.d("awk", "  volum  close  1=  "+volum);
-			if(volum ==-1){
-				int temp =audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-				volum=temp==0?-1:temp;
-				if(temp !=0){
-					audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-				}
-				Log.d("awk", "  volum  close  2=  "+volum);
-			}
-		}
+//		if(openOrclose == 1){
+//			Log.d("awk", "  volum open 1= "+volum);
+//			if(volum !=-1){
+//				audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volum, 0);
+//				Log.d("awk", "  volum open 2= "+volum);
+//				volum=-1;
+//			}
+//		}else{
+//			Log.d("awk", "  volum  close  1=  "+volum);
+//			if(volum ==-1){
+//				int temp =audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+//				volum=temp==0?-1:temp;
+//				if(temp !=0){
+//					audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+//				}
+//				Log.d("awk", "  volum  close  2=  "+volum);
+//			}
+//		}
 	}
 	public void playerOFF() {
 		try {
