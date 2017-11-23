@@ -689,6 +689,18 @@ public class AppManagerActivity extends Activity implements
 	IPackageMoveObserver moveObserver = new IPackageMoveObserver.Stub() {
 
 		@Override
+		public void onCreated(int arg0, Bundle arg1) throws RemoteException {
+			// TODO Auto-generated method stub
+			 
+		}
+
+		@Override
+		public void onStatusChanged(int arg0, int arg1, long arg2) throws RemoteException {
+			// TODO Auto-generated method stub
+			
+		}
+
+	/*	@Override
 		public void packageMoved(String packageName, int returnCode)
 				throws RemoteException {
 			// TODO Auto-generated method stub
@@ -702,7 +714,8 @@ public class AppManagerActivity extends Activity implements
 			Message msg = Message.obtain();
 			msg.obj = packageName;
 			handler.sendMessage(msg);
-		}
+		}*/
+
 	};
 
 	int DELETE_COUNTER = 0;

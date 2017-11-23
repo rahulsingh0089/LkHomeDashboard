@@ -801,7 +801,7 @@ public class MainHomeActivity extends Activity implements OnClickListener {
 				(ImageButton) this.findViewById(R.id.Recommend_four),
 				(ImageButton) this.findViewById(R.id.Recommend_five),
 				(ImageButton) this.findViewById(R.id.Recommend_six) };
-		String systemVersion=Build.FIRMWARE;
+		String systemVersion=LKHomeUtil.FIRMWARE;
 		for (int i = 0; i < imgButton.length; i++) {
 			imgButton[i].setOnClickListener(recOnclick);
 			imgButton[i].setOnFocusChangeListener(recoFocusListener);

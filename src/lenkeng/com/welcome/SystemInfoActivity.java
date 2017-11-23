@@ -82,7 +82,7 @@ public class SystemInfoActivity extends Activity {
 		//String model=getString(R.string.device_model);
 		String model =  SystemProperties.get("ro.product.lkname", Build.MODEL);
 		local_model.setText(model);
-		String firmware=Build.FIRMWARE;
+		String firmware=LKHomeUtil.FIRMWARE;
 		if(model.equals("eztv3")){
 			
 		}else{

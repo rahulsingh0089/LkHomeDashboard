@@ -153,6 +153,7 @@ public class LKHomeUtil {
 	public static final String DISPLAY_PERCENT_HORIZONTAL = "display_percent_horizontal";// 水平百分比
 	public static final String DISPLAY_PERCENT_VERTICAL = "display_percent_vertical"; // 垂直百分比
 	public static final Map<String,Boolean> MOVE_MAP=new HashMap<String,Boolean>();
+	public static final String FIRMWARE = "eztv4_en";
 	
 	
 	//需要删除的app集合, 如果是更新app的位置,先删除,再添加
@@ -1488,7 +1489,7 @@ public class LKHomeUtil {
 	// 读取当前用户名
 	public static String getUserName() {
 
-		String s = Build.FIRMWARE+"_"+lk_device.getDeviceId();
+		String s = FIRMWARE+"_"+lk_device.getDeviceId();
 		return s;
 	}
 	public static String getUserID() {

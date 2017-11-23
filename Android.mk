@@ -12,10 +12,10 @@ LOCAL_DEX_PREOPT := false
 
 
 
-LOCAL_STATIC_JAVA_LIBRARIES := xmpp jackon android-support-v4
+LOCAL_STATIC_JAVA_LIBRARIES := xmpp jackon android-support-v4 httpclient httpcore
 include $(BUILD_PACKAGE)
 
 include $(CLEAR_VARS)
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := xmpp:libs/asmack.jar jackon:libs/jackson-all-1.9.2.jar
+LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := xmpp:libs/asmack.jar jackon:libs/jackson-all-1.9.2.jar httpclient:libs/httpclient-4.2.5.jar httpcore:libs/httpcore-4.3.3.jar
 include $(BUILD_MULTI_PREBUILT)    
 
